@@ -10,4 +10,6 @@ FREESOUND_API_KEY=yours node server.js
 
 point your browser to ```localhost:3001/soundproxy/231``` to retrieve an MP3 file
 
-point your browser to ```localhost:3001/piano``` to see an a-frame scene with sounds coming from Freesound
+point your browser to ```localhost:3001/piano``` to see an a-frame scene with sounds coming from Freesound; unreliable
+
+point your browser to ```localhost:3001/client/test.html``` to see client-side fetching high quality MP3 previews from freesound
