@@ -9,56 +9,29 @@ var request = require('request');
 var progress = require('request-progress');
 var freesound = require('./lib/freesound.js');
 
-function pipeRequest(inReq, inResp, inURLString) {
-    console.log('open pipe', inURLString);
-
-    progress(
-        request({
-            uri: inURLString,
-            qs: inReq.query,
-            strictSSL: false
-        }, function(error, response, body) {
-            if (!error && response && response.statusCode == 200) {
-                console.log('success', inURLString), response.statusMessage;
-            } else {
-                // something went wrong
-                console.log('error', inURLString, response.statusCode, response.statusMessage);
-
-                if (response && response.headers && response.headers['content-length'] > 0) {
-                    console.log('CONTENT LENGTH NONZERO');
-                } else {
-                    inResp.sendStatus(500);
-                }
-            }
-        }).on('response', function(message) {
-          console.log('response', inURLString);
-
-          message.on('close', function() {
-            console.log('response closed', inURLString);
-          });
-          message.on('error', function() {
-            console.log('response error', inURLString);
-          });
-          message.on('end', function() {
-            console.log('response end', inURLString);
-          });
-        }), {
-            throttle: 200,
-            delay: 100
-        }
-    ).on('progress', function(state) {
-        console.log(inURLString, state);
-    }).pipe(inResp);
-    
-    console.log('done opening pipe', inURLString);
-}
-
 var server = express();
 
 server.set('view engine', 'handlebars');
 
 server.use('/lib', express.static('lib'));
 server.use('/client', express.static('client'));
+
+
+server.use('/apiv2', function(req, res) {
+  var options = {
+    url: 'https://www.freesound.org/apiv2'+ req.url,
+    headers: {
+      "Authorization": "Token 1beba8e340a9f1b0fad8c5bf14f0361df331a6fb",
+    }
+  };
+
+  console.log('proxy', options.url);
+
+  var r = request(options);
+
+  req.pipe(r).pipe(res);
+});
+
 
 server.engine('handlebars', expressHandlebars({
   defaultLayout: 'main',
@@ -80,7 +53,7 @@ server.get('/soundproxy/:id', function(req, resp) {
 				soundObj = JSON.parse(sound);
 				console.log('sound previews', soundObj.previews['preview-hq-mp3']);
 				var urlString = soundObj.previews['preview-hq-mp3'];
-		        pipeRequest(req, resp, urlString);
+				pipeRequest(req, resp, urlString);
 			}
 			catch(e) {
 				console.log('cannot parse', sound, e);
@@ -88,8 +61,6 @@ server.get('/soundproxy/:id', function(req, resp) {
 		}
 	);
 });
-
-// https://github.com/g-roma/freesound.js/blob/master/test.html
 
 server.get('/piano', function(req, resp) {
 	request.get({uri:'http://www.freesound.org/apiv2/search/text?query=mp3&token=' + process.env.FREESOUND_API_KEY, timeout:this.requestTimeout}, function (err, res, data) {

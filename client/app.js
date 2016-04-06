@@ -89,9 +89,6 @@ function handlePlay(event) {
 }
 
 window.onload = function(){
-    // TODO: must not disclose this in plaintext JS downloaded to user
-    freesound.setToken("1beba8e340a9f1b0fad8c5bf14f0361df331a6fb");
-
     document.getElementById('searchbutton').addEventListener('click', handleSearch);
 
     document.getElementById('playbutton').addEventListener('click', handlePlay);
