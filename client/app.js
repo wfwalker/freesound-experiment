@@ -1,10 +1,10 @@
 
 window.AudioContext = window.AudioContext||window.webkitAudioContext;
 var gAudioContext = new AudioContext();
-var myAudioElement = null;
-var mySource = null;
+var gSoundInfoByID = {};
+var gBufferByID = {};
 
-function playSound(url) {
+function playSound(inID, url) {
     var request = new XMLHttpRequest();
     request.open('GET', url, true);
     request.responseType = 'arraybuffer';
@@ -13,6 +13,7 @@ function playSound(url) {
     request.onload = function() {
         gAudioContext.decodeAudioData(request.response, function(inBuffer) {
             var aBufferSource = gAudioContext.createBufferSource();
+            gBufferByID[inID] = inBuffer;
             aBufferSource.buffer = inBuffer;
             aBufferSource.connect(gAudioContext.destination);
             aBufferSource.start();
@@ -24,6 +25,18 @@ function playSound(url) {
     request.send();
 }
 
+function playSoundByID(inID) {
+    freesound.getSound(inID,
+        function(sound) {
+            gSoundInfoByID[inID] = sound;
+            playSound(inID, sound.previews['preview-hq-mp3']);
+        },
+        function(e) {
+            displayError("Sound could not be retrieved.");
+        }
+    );
+}
+
 window.onload = function(){
     freesound.setToken("1beba8e340a9f1b0fad8c5bf14f0361df331a6fb");
 
@@ -32,26 +45,9 @@ window.onload = function(){
         }, function(err) {
             console.log('textsearch err', err);
         });
-    
-    freesound.getSound(96541,
-            function(sound){
-                var msg = "";
 
-                msg = "<h3>Getting info of sound: " + sound.name + "</h3>";
-                msg += "<strong>Url:</strong> " + sound.url + "<br>";
-                msg += "<strong>Description:</strong> " + sound.description + "<br>";
-                msg += "<strong>Tags:</strong><ul>";
-                for (i in sound.tags){
-                    msg += "<li>" + sound.tags[i] + "</li>";
-                }
-                msg += "</ul><br>";
-                msg += "<img src='" + sound.images.waveform_l + "'>";
-
-                displayMessage(msg,'resp1');                    
-
-                playSound(sound.previews['preview-hq-mp3']);
-            }, function(){ displayError("Sound could not be retrieved.")}
-    );
+    playSoundByID(96541);
+    playSoundByID(96542);
 };
 
 function displayError(text){
