@@ -4,14 +4,29 @@ var gAudioContext = new AudioContext();
 var myAudioElement = null;
 var mySource = null;
 
-window.onload = function(){
+function playSound(url) {
+    var request = new XMLHttpRequest();
+    request.open('GET', url, true);
+    request.responseType = 'arraybuffer';
 
+    // Decode asynchronously
+    request.onload = function() {
+        gAudioContext.decodeAudioData(request.response, function(inBuffer) {
+            var aBufferSource = gAudioContext.createBufferSource();
+            aBufferSource.buffer = inBuffer;
+            aBufferSource.connect(gAudioContext.destination);
+            aBufferSource.start();
+        }, function (e) {
+            console.log('error handler', e);
+        });
+    }
+
+    request.send();
+}
+
+window.onload = function(){
     freesound.setToken("1beba8e340a9f1b0fad8c5bf14f0361df331a6fb");
     
-    var fields = 'id,name,url';
-    // Example 1
-    // Example of geeting the info of a sound, queying for similar sounds (content based) and showing some analysis
-    // features. Both similar sounds and analysis features are obtained with additional requests to the api.
     freesound.getSound(96541,
             function(sound){
                 var msg = "";
@@ -26,23 +41,18 @@ window.onload = function(){
                 msg += "</ul><br>";
                 msg += "<img src='" + sound.images.waveform_l + "'>";
 
-                myAudioElement = new Audio(sound.previews['preview-hq-mp3']);
-                myAudioElement.setAttribute('crossorigin', 'anonymous')
-                mySource = gAudioContext.createMediaElementSource(myAudioElement);
-                mySource.connect(gAudioContext.destination);
+                if (true) {
+                    playSound(sound.previews['preview-hq-mp3']);
+                } else {
+                    myAudioElement = new Audio(sound.previews['preview-hq-mp3']);
+                    myAudioElement.setAttribute('crossorigin', 'anonymous')
+                    mySource = gAudioContext.createMediaElementSource(myAudioElement);
+                    mySource.connect(gAudioContext.destination);
+                }
 
-                // var oscillator = gAudioContext.createOscillator();
-
-                // oscillator.type = 'square';
-                // oscillator.frequency.value = 30; // value in hertz
-                // oscillator.connect(gAudioContext.destination);
-                // oscillator.start(0);
-
-                msg += '<br><button onclick="myAudioElement.play()">play</button><button onclick="myAudioElement.pause()">pause</button><br><br>';
                 displayMessage(msg,'resp1');                    
             }, function(){ displayError("Sound could not be retrieved.")}
     );
-    
 };
 
 function displayError(text){
