@@ -3,6 +3,7 @@ window.AudioContext = window.AudioContext||window.webkitAudioContext;
 var gAudioContext = new AudioContext();
 var gSoundInfoByID = {};
 var gBufferByID = {};
+var gSearchHistory = {};
 
 function playBufferForID(inID) {
     console.log('playBufferForID', inID);
@@ -62,12 +63,15 @@ function handleSearch(event) {
 
     var searchText = document.getElementById('searchtext').value;
     console.log('clicked', searchText);
+    gSearchHistory[searchText] = [];
 
     console.log('about to search', searchtext);
     freesound.textSearch(searchText, {},
         function(resultsObject) {
             for (var index = 0; index < resultsObject.results.length; index++) {
-                getInfoAndLoadPreviewByID(resultsObject.results[index].id);
+                var tempID = resultsObject.results[index].id;
+                gSearchHistory[searchText].push(tempID);
+                getInfoAndLoadPreviewByID(tempID);
             }
         }, function(err) {
             console.log('textsearch err', err);
