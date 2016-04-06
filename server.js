@@ -73,6 +73,10 @@ server.get('/piano', function(req, resp) {
 	});
 });
 
-server.listen(3001, function () {
-  console.log('Example app listening on port 3001!');
+
+var myPort = process.env.PORT || 3001;
+var mHost = process.env.VCAP_APP_HOST || "127.0.0.1";
+
+server.listen(myPort, function () {
+  console.log('Example app listening on port', myPort);
 });
