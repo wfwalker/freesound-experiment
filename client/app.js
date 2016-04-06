@@ -24,7 +24,7 @@ function createBufferForID(inID, url) {
         gAudioContext.decodeAudioData(request.response, function(inBuffer) {
             console.log('decoded', inID, url);
             gBufferByID[inID] = inBuffer;
-            playBufferForID(inID);
+            handleBufferListUpdate(inID);
         }, function (e) {
             console.log('error handler', e);
         });
@@ -33,11 +33,12 @@ function createBufferForID(inID, url) {
     request.send();
 }
 
-function playHighQualityMP3PreviewByID(inID) {
-    console.log('playHighQualityMP3PreviewByID', inID);
+function getInfoAndLoadPreviewByID(inID) {
+    console.log('getInfoAndLoadPreviewByID', inID);
     freesound.getSound(inID,
         function(sound) {
             gSoundInfoByID[inID] = sound;
+            handleSoundInfoUpdate(inID);
             createBufferForID(inID, sound.previews['preview-hq-mp3']);
         },
         function(e) {
@@ -46,12 +47,12 @@ function playHighQualityMP3PreviewByID(inID) {
     );
 }
 
-function playAllSoundsInSearchResults(inResults) {
-    console.log('playAllSoundsInSearchResults', inResults);
-    for (var index = 0; index < inResults.length; index++) {
-        console.log('loop', index, inResults[index]);
-        playHighQualityMP3PreviewByID(inResults[index].id);
-    }
+function handleBufferListUpdate(inID) {
+    console.log('buffers now', Object.keys(gBufferByID).length);
+}
+
+function handleSoundInfoUpdate(inID) {
+    console.log('sound info now', Object.keys(gSoundInfoByID).length);
 }
 
 function handleSearch(event) {
@@ -64,8 +65,7 @@ function handleSearch(event) {
     freesound.textSearch(searchText, {},
         function(resultsObject) {
             for (var index = 0; index < resultsObject.results.length; index++) {
-                console.log('loop', index, resultsObject.results[index]);
-                playHighQualityMP3PreviewByID(resultsObject.results[index].id);
+                getInfoAndLoadPreviewByID(resultsObject.results[index].id);
             }
         }, function(err) {
             console.log('textsearch err', err);
@@ -73,9 +73,20 @@ function handleSearch(event) {
     );
 }
 
+function handlePlay(event) {
+    event.preventDefault();
+    var soundIDs = Object.keys(gBufferByID);
+    var randomIndex = Math.floor(Math.random() * soundIDs.length);
+    playBufferForID(soundIDs[randomIndex]);
+
+    console.log('handlePlay');
+}
+
 window.onload = function(){
     // TODO: must not disclose this in plaintext JS downloaded to user
     freesound.setToken("1beba8e340a9f1b0fad8c5bf14f0361df331a6fb");
 
     document.getElementById('searchbutton').addEventListener('click', handleSearch);
+
+    document.getElementById('playbutton').addEventListener('click', handlePlay);
 };
