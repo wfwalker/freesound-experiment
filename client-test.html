@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Bill meets Freesound</title>
+    <script type="text/javascript" src="freesound-g-roma.js"></script>
+</head>
+<body style="font-family: Helvetica">
+<script type="text/javascript">
+
+    window.AudioContext = window.AudioContext||window.webkitAudioContext;
+    var gAudioContext = new AudioContext();
+    var myAudioElement = null;
+    var mySource = null;
+
+    window.onload = function(){
+
+        freesound.setToken("1beba8e340a9f1b0fad8c5bf14f0361df331a6fb");
+        
+        var fields = 'id,name,url';
+        // Example 1
+        // Example of geeting the info of a sound, queying for similar sounds (content based) and showing some analysis
+        // features. Both similar sounds and analysis features are obtained with additional requests to the api.
+        freesound.getSound(96541,
+                function(sound){
+                    var msg = "";
+
+                    msg = "<h3>Getting info of sound: " + sound.name + "</h3>";
+                    msg += "<strong>Url:</strong> " + sound.url + "<br>";
+                    msg += "<strong>Description:</strong> " + sound.description + "<br>";
+                    msg += "<strong>Tags:</strong><ul>";
+                    for (i in sound.tags){
+                        msg += "<li>" + sound.tags[i] + "</li>";
+                    }
+                    msg += "</ul><br>";
+                    msg += "<img src='" + sound.images.waveform_l + "'>";
+
+                    myAudioElement = new Audio(sound.previews['preview-hq-mp3']);
+                    mySource = gAudioContext.createMediaElementSource(myAudioElement);
+                    mySource.connect(gAudioContext.destination);
+
+                    // var oscillator = gAudioContext.createOscillator();
+
+                    // oscillator.type = 'square';
+                    // oscillator.frequency.value = 30; // value in hertz
+                    // oscillator.connect(gAudioContext.destination);
+                    // oscillator.start(0);
+
+                    msg += '<br><button onclick="myAudioElement.play()">play</button><button onclick="myAudioElement.pause()">pause</button><br><br>';
+                    displayMessage(msg,'resp1');                    
+                }, function(){ displayError("Sound could not be retrieved.")}
+        );
+        
+    };
+
+    function displayError(text){
+        document.getElementById('error').innerHTML=text;
+    }
+
+    function displayMessage(text,place){
+        document.getElementById(place).innerHTML=text;
+    }
+
+
+</script>
+
+<h1>Bill meets Freesound</h1>
+<div id="error" style="color:red"></div>
+<h2>Example 1</h2>
+<div id="resp1"></div>
+<hr>
+
+
+</body>
+</html>
