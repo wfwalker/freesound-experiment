@@ -4,7 +4,7 @@
   "description": "soundscapes using a-frame WebVR and freesound.org",
   "main": "server.js",
   "scripts": {
-    "start": "node js/server.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.10.6",
