@@ -21,7 +21,7 @@ server.use('/apiv2', function(req, res) {
   var options = {
     url: 'https://www.freesound.org/apiv2'+ req.url,
     headers: {
-      "Authorization": "Token 1beba8e340a9f1b0fad8c5bf14f0361df331a6fb",
+      "Authorization": "Token " + process.env.FREESOUND_API_KEY,
     }
   };
 
