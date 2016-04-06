@@ -26,35 +26,35 @@ function playSound(inID, url) {
 }
 
 function playSoundByID(inID) {
+    console.log('playSoundByID', inID);
     freesound.getSound(inID,
         function(sound) {
             gSoundInfoByID[inID] = sound;
             playSound(inID, sound.previews['preview-hq-mp3']);
         },
         function(e) {
-            displayError("Sound could not be retrieved.");
+            console.log("Sound could not be retrieved", e);
         }
     );
+}
+
+function playAllSoundsInSearchResults(inResults) {
+    console.log('playAllSoundsInSearchResults', inResults);
+    for (var index = 0; index < inResults.length; index++) {
+        console.log('loop', index, inResults[index]);
+        playSoundByID(inResults[index].id);
+    }
 }
 
 window.onload = function(){
     freesound.setToken("1beba8e340a9f1b0fad8c5bf14f0361df331a6fb");
 
-    freesound.textSearch('piano', {}, function(results) {
-            console.log('textsearch', results);
+    console.log('about to search');
+    freesound.textSearch('piano', {},
+        function(resultsObject) {
+            playAllSoundsInSearchResults(resultsObject.results);
         }, function(err) {
             console.log('textsearch err', err);
-        });
-
-    playSoundByID(96541);
-    playSoundByID(96542);
+        }
+    );
 };
-
-function displayError(text){
-    document.getElementById('error').innerHTML=text;
-}
-
-function displayMessage(text,place){
-    document.getElementById(place).innerHTML=text;
-}
-
