@@ -26,6 +26,12 @@ function playSound(url) {
 
 window.onload = function(){
     freesound.setToken("1beba8e340a9f1b0fad8c5bf14f0361df331a6fb");
+
+    freesound.textSearch('piano', {}, function(results) {
+            console.log('textsearch', results);
+        }, function(err) {
+            console.log('textsearch err', err);
+        });
     
     freesound.getSound(96541,
             function(sound){
@@ -41,16 +47,9 @@ window.onload = function(){
                 msg += "</ul><br>";
                 msg += "<img src='" + sound.images.waveform_l + "'>";
 
-                if (true) {
-                    playSound(sound.previews['preview-hq-mp3']);
-                } else {
-                    myAudioElement = new Audio(sound.previews['preview-hq-mp3']);
-                    myAudioElement.setAttribute('crossorigin', 'anonymous')
-                    mySource = gAudioContext.createMediaElementSource(myAudioElement);
-                    mySource.connect(gAudioContext.destination);
-                }
-
                 displayMessage(msg,'resp1');                    
+
+                playSound(sound.previews['preview-hq-mp3']);
             }, function(){ displayError("Sound could not be retrieved.")}
     );
 };
