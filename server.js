@@ -7,7 +7,7 @@ var http = require('http');
 var https = require('https');
 var request = require('request');
 var progress = require('request-progress');
-var freesound = require('./freesound-g-roma.js');
+var freesound = require('./lib/freesound.js');
 
 function pipeRequest(inReq, inResp, inURLString) {
     console.log('open pipe', inURLString);
@@ -58,6 +58,7 @@ var server = express();
 server.set('view engine', 'handlebars');
 
 server.use('/lib', express.static('lib'));
+server.use('/client', express.static('client'));
 
 server.engine('handlebars', expressHandlebars({
   defaultLayout: 'main',
