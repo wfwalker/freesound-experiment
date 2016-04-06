@@ -49,12 +49,18 @@ function playAllSoundsInSearchResults(inResults) {
 window.onload = function(){
     freesound.setToken("1beba8e340a9f1b0fad8c5bf14f0361df331a6fb");
 
-    console.log('about to search');
-    freesound.textSearch('piano', {},
-        function(resultsObject) {
-            playAllSoundsInSearchResults(resultsObject.results);
-        }, function(err) {
-            console.log('textsearch err', err);
-        }
-    );
+    document.getElementById('searchbutton').addEventListener('click', function (event) {
+        event.preventDefault();
+        var searchText = document.getElementById('searchtext').value;
+        console.log('clicked', searchText);
+
+        console.log('about to search', searchtext);
+        freesound.textSearch(searchText, {},
+            function(resultsObject) {
+                playAllSoundsInSearchResults(resultsObject.results);
+            }, function(err) {
+                console.log('textsearch err', err);
+            }
+        );
+    });
 };
