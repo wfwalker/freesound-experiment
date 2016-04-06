@@ -49,10 +49,12 @@ function getInfoAndLoadPreviewByID(inID) {
 
 function handleBufferListUpdate(inID) {
     console.log('buffers now', Object.keys(gBufferByID).length);
+    document.getElementById('buffercount').textContent = Object.keys(gBufferByID).length;
 }
 
 function handleSoundInfoUpdate(inID) {
     console.log('sound info now', Object.keys(gSoundInfoByID).length);
+    document.getElementById('soundinfocount').textContent = Object.keys(gSoundInfoByID).length;
 }
 
 function handleSearch(event) {
