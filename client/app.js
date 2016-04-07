@@ -25,6 +25,8 @@ function createBufferForID(inID, url) {
         gAudioContext.decodeAudioData(request.response, function(inBuffer) {
             console.log('decoded', inID, url);
             gBufferByID[inID] = inBuffer;
+            var selectorString = 'button[data-sound-id="' + inID + '"]';
+            document.querySelectorAll(selectorString)[0].removeAttribute('disabled');
             handleBufferListUpdate(inID);
         }, function (e) {
             console.log('error handler', e);
@@ -34,11 +36,34 @@ function createBufferForID(inID, url) {
     request.send();
 }
 
+function displaySoundInfo(inInfo) {
+    var newDiv = document.createElement("button");
+    newDiv.setAttribute('class', 'soundinfo');
+    newDiv.setAttribute('disabled', 'true');
+    newDiv.setAttribute('data-sound-id', inInfo.id);
+    var newContent = document.createTextNode(inInfo.id + ' ' + inInfo.name);
+    newDiv.appendChild(newContent); //add the text node to the newly created div.
+
+    // add the newly created element and its content into the DOM
+    var containerDiv = document.getElementById("soundcontainer");
+    containerDiv.appendChild(newDiv);
+
+    newDiv.addEventListener('click', function(event) {
+        console.log('clicked', inInfo.id);
+        if (gBufferByID[inInfo.id]) {
+            playBufferForID(inInfo.id);
+        } else {
+            console.log('no buffer yet for this sound');
+        }
+    });
+}
+
 function getInfoAndLoadPreviewByID(inID) {
     console.log('getInfoAndLoadPreviewByID', inID);
     freesound.getSound(inID,
         function(sound) {
             gSoundInfoByID[inID] = sound;
+            displaySoundInfo(sound);
             handleSoundInfoUpdate(inID);
             createBufferForID(inID, sound.previews['preview-hq-mp3']);
         },
