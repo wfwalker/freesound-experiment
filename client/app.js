@@ -92,7 +92,7 @@ function handleSearch(event) {
 
     // add container for search results
     var newDiv = document.createElement("div");
-    newDiv.setAttribute('class', 'searchcontainer');
+    newDiv.setAttribute('class', 'container');
     newDiv.setAttribute('data-search', searchText);
     var newContent = document.createTextNode(searchText);
     newDiv.appendChild(newContent); //add the text node to the newly created div.

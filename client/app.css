@@ -1,4 +1,6 @@
-.searchcontainer {
-	border: solid 1px gray;
+.container {
+	border: solid 1px white;
+	border-radius: 5px;
+	background: #eee;
 	padding: 20px;
 }
