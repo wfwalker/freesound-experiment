@@ -36,7 +36,7 @@ function createBufferForID(inID, url) {
     request.send();
 }
 
-function displaySoundInfo(inInfo) {
+function displaySoundInfo(inSearchText, inInfo) {
     var newDiv = document.createElement("button");
     newDiv.setAttribute('class', 'soundinfo');
     newDiv.setAttribute('disabled', 'true');
@@ -45,7 +45,7 @@ function displaySoundInfo(inInfo) {
     newDiv.appendChild(newContent); //add the text node to the newly created div.
 
     // add the newly created element and its content into the DOM
-    var containerDiv = document.getElementById("soundcontainer");
+    var containerDiv = document.querySelectorAll('div[data-search="' + inSearchText + '"]')[0];
     containerDiv.appendChild(newDiv);
 
     newDiv.addEventListener('click', function(event) {
@@ -58,12 +58,12 @@ function displaySoundInfo(inInfo) {
     });
 }
 
-function getInfoAndLoadPreviewByID(inID) {
+function getInfoAndLoadPreviewByID(inSearchText, inID) {
     console.log('getInfoAndLoadPreviewByID', inID);
     freesound.getSound(inID,
         function(sound) {
             gSoundInfoByID[inID] = sound;
-            displaySoundInfo(sound);
+            displaySoundInfo(inSearchText, sound);
             handleSoundInfoUpdate(inID);
             createBufferForID(inID, sound.previews['preview-hq-mp3']);
         },
@@ -90,13 +90,21 @@ function handleSearch(event) {
     console.log('clicked', searchText);
     gSearchHistory[searchText] = [];
 
-    console.log('about to search', searchtext);
+    // add container for search results
+    var newDiv = document.createElement("div");
+    newDiv.setAttribute('class', 'searchcontainer');
+    newDiv.setAttribute('data-search', searchText);
+    var newContent = document.createTextNode(searchText);
+    newDiv.appendChild(newContent); //add the text node to the newly created div.
+    document.getElementById('soundcontainer').appendChild(newDiv);
+
+    console.log('about to search', searchText);
     freesound.textSearch(searchText, {},
         function(resultsObject) {
             for (var index = 0; index < resultsObject.results.length; index++) {
                 var tempID = resultsObject.results[index].id;
                 gSearchHistory[searchText].push(tempID);
-                getInfoAndLoadPreviewByID(tempID);
+                getInfoAndLoadPreviewByID(searchText, tempID);
             }
         }, function(err) {
             console.log('textsearch err', err);
