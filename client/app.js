@@ -1,9 +1,12 @@
+// global variables
 
 window.AudioContext = window.AudioContext||window.webkitAudioContext;
 var gAudioContext = new AudioContext();
 var gSoundInfoByID = {};
 var gBufferByID = {};
 var gSearchHistory = {};
+
+// find AudioBuffer by ID, create a BufferSource, start it playing
 
 function playBufferForID(inID) {
     console.log('playBufferForID', inID);
@@ -12,6 +15,8 @@ function playBufferForID(inID) {
     aBufferSource.connect(gAudioContext.destination);
     aBufferSource.start();    
 }
+
+// Make an XMLHttpRequest for the MP3 preview file, decode the MP3, and save the buffer
 
 function createBufferForID(inID, url) {
     console.log('createBufferForID', inID, url);
@@ -36,6 +41,8 @@ function createBufferForID(inID, url) {
     request.send();
 }
 
+// create a play button for the sound info
+
 function displaySoundInfo(inSearchText, inInfo) {
     var newDiv = document.createElement("button");
     newDiv.setAttribute('class', 'soundinfo');
@@ -58,6 +65,8 @@ function displaySoundInfo(inSearchText, inInfo) {
     });
 }
 
+// load the sound info for a given sound ID
+
 function getInfoAndLoadPreviewByID(inSearchText, inID) {
     console.log('getInfoAndLoadPreviewByID', inID);
     freesound.getSound(inID,
@@ -73,15 +82,21 @@ function getInfoAndLoadPreviewByID(inSearchText, inID) {
     );
 }
 
+// respond to an update in the buffer list by updating the count
+
 function handleBufferListUpdate(inID) {
     console.log('buffers now', Object.keys(gBufferByID).length);
     document.getElementById('buffercount').textContent = Object.keys(gBufferByID).length;
 }
 
+// respond to an update in the sound info list by updating the count
+
 function handleSoundInfoUpdate(inID) {
     console.log('sound info now', Object.keys(gSoundInfoByID).length);
     document.getElementById('soundinfocount').textContent = Object.keys(gSoundInfoByID).length;
 }
+
+// handle the event handler by starting a Freesound text search
 
 function handleSearch(event) {
     event.preventDefault();
@@ -112,6 +127,8 @@ function handleSearch(event) {
     );
 }
 
+// choose a random ID from the buffer dictionary and start playing
+
 function handlePlay(event) {
     event.preventDefault();
     var soundIDs = Object.keys(gBufferByID);
@@ -120,6 +137,8 @@ function handlePlay(event) {
 
     console.log('handlePlay');
 }
+
+// when the window is loaded, set up search and play event handlers
 
 window.onload = function(){
     document.getElementById('searchbutton').addEventListener('click', handleSearch);
