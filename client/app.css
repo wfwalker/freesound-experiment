@@ -1,6 +1,19 @@
 .container {
 	border: solid 1px white;
-	border-radius: 5px;
+	border-radius: 15px;
 	background: #eee;
 	padding: 20px;
+}
+
+body {
+	font-family: Helvetica;
+	font-size: 14pt;
+}
+
+button {
+	font-size: 12pt;
+}
+
+input {
+	font-size: 12pt;
 }

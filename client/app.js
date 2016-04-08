@@ -41,7 +41,7 @@ function displaySoundInfo(inSearchText, inInfo) {
     newDiv.setAttribute('class', 'soundinfo');
     newDiv.setAttribute('disabled', 'true');
     newDiv.setAttribute('data-sound-id', inInfo.id);
-    var newContent = document.createTextNode(inInfo.id + ' ' + inInfo.name);
+    var newContent = document.createTextNode(inInfo.name);
     newDiv.appendChild(newContent); //add the text node to the newly created div.
 
     // add the newly created element and its content into the DOM
