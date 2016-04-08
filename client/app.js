@@ -13,7 +13,16 @@ function playBufferForID(inID) {
     var aBufferSource = gAudioContext.createBufferSource();
     aBufferSource.buffer = gBufferByID[inID];
     aBufferSource.connect(gAudioContext.destination);
-    aBufferSource.start();    
+    aBufferSource.start();
+
+    var selectorString = 'button[data-sound-id="' + inID + '"]';
+    document.querySelectorAll(selectorString)[0].setAttribute('playing', 'true');
+
+    aBufferSource.addEventListener('ended', function(e) {
+        console.log('ENDED', e);
+        var selectorString = 'button[data-sound-id="' + inID + '"]';
+        document.querySelectorAll(selectorString)[0].removeAttribute('playing');
+    })
 }
 
 // Make an XMLHttpRequest for the MP3 preview file, decode the MP3, and save the buffer
@@ -98,33 +107,42 @@ function handleSoundInfoUpdate(inID) {
 
 // handle the event handler by starting a Freesound text search
 
-function handleSearch(event) {
-    event.preventDefault();
-
-    var searchText = document.getElementById('searchtext').value;
-    console.log('clicked', searchText);
-    gSearchHistory[searchText] = [];
+function doSearch(inString) {
+    gSearchHistory[inString] = [];
 
     // add container for search results
     var newDiv = document.createElement("div");
     newDiv.setAttribute('class', 'container');
-    newDiv.setAttribute('data-search', searchText);
-    var newContent = document.createTextNode(searchText);
+    newDiv.setAttribute('data-search', inString);
+    var newContent = document.createTextNode(inString);
     newDiv.appendChild(newContent); //add the text node to the newly created div.
     document.getElementById('soundcontainer').appendChild(newDiv);
 
-    console.log('about to search', searchText);
-    freesound.textSearch(searchText, {},
+    console.log('about to search', inString);
+    freesound.textSearch(inString, {},
         function(resultsObject) {
             for (var index = 0; index < resultsObject.results.length; index++) {
                 var tempID = resultsObject.results[index].id;
-                gSearchHistory[searchText].push(tempID);
-                getInfoAndLoadPreviewByID(searchText, tempID);
+                gSearchHistory[inString].push(tempID);
+                getInfoAndLoadPreviewByID(inString, tempID);
             }
         }, function(err) {
             console.log('textsearch err', err);
         }
     );
+
+}
+
+function handleSearch(event) {
+    event.preventDefault();
+
+    var searchText = document.getElementById('searchtext').value;
+    console.log('clicked', searchText);
+
+    var stringTokens = searchText.split(' ');
+    for (var index = 0; index < stringTokens.length; index++) {
+        doSearch(stringTokens[index]);
+    }
 }
 
 // choose a random ID from the buffer dictionary and start playing
