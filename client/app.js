@@ -4,25 +4,38 @@ window.AudioContext = window.AudioContext||window.webkitAudioContext;
 var gAudioContext = new AudioContext();
 var gSoundInfoByID = {};
 var gBufferByID = {};
+var gBufferSourceByID = {};
 var gSearchHistory = {};
 
 // find AudioBuffer by ID, create a BufferSource, start it playing
 
 function playBufferForID(inID) {
-    console.log('playBufferForID', inID);
+    if (gBufferSourceByID[inID]) {
+        console.log('ALREADY PLAYING', inID, gSoundInfoByID[inID].name);
+        return;
+    }
+
+    console.log('PLAY', inID, gSoundInfoByID[inID].name);
     var aBufferSource = gAudioContext.createBufferSource();
     aBufferSource.buffer = gBufferByID[inID];
     aBufferSource.connect(gAudioContext.destination);
     aBufferSource.start();
+    gBufferSourceByID[inID] = aBufferSource;
+    console.log(gBufferSourceByID);
+    document.getElementById('playingcount').textContent = Object.keys(gBufferSourceByID).length;
+
 
     var selectorString = 'button[data-sound-id="' + inID + '"]';
     document.querySelectorAll(selectorString)[0].setAttribute('playing', 'true');
 
     aBufferSource.addEventListener('ended', function(e) {
-        console.log('ENDED', e);
+        console.log('ENDED', gSoundInfoByID[inID].name);
         var selectorString = 'button[data-sound-id="' + inID + '"]';
         document.querySelectorAll(selectorString)[0].removeAttribute('playing');
-    })
+        delete gBufferSourceByID[inID];
+        console.log(gBufferSourceByID);
+        document.getElementById('playingcount').textContent = Object.keys(gBufferSourceByID).length;
+    });
 }
 
 // Make an XMLHttpRequest for the MP3 preview file, decode the MP3, and save the buffer
@@ -32,6 +45,8 @@ function createBufferForID(inID, url) {
     var request = new XMLHttpRequest();
     request.open('GET', url, true);
     request.responseType = 'arraybuffer';
+
+    request.addEventListener('progress', function(event) { console.log(inID, gSoundInfoByID[inID].name, (100.0 * event.loaded / event.total)); });
 
     // Decode asynchronously
     request.onload = function() {
@@ -133,6 +148,8 @@ function doSearch(inString) {
 
 }
 
+// handle search event by tokenizing the string and doing a separate search for each token
+
 function handleSearch(event) {
     event.preventDefault();
 
@@ -156,10 +173,20 @@ function handlePlay(event) {
     console.log('handlePlay');
 }
 
+// stop all playing sounds. TODO: how?
+
+function handleStop(event) {
+    console.log('handleStop');
+    for (var bufferSourceID in gBufferSourceByID) {
+        console.log('STOP', bufferSourceID);
+        gBufferSourceByID[bufferSourceID].stop();
+    }
+}
+
 // when the window is loaded, set up search and play event handlers
 
 window.onload = function(){
     document.getElementById('searchbutton').addEventListener('click', handleSearch);
-
+    document.getElementById('stopbutton').addEventListener('click', handleStop);
     document.getElementById('playbutton').addEventListener('click', handlePlay);
 };
