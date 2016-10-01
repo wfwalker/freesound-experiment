@@ -8,6 +8,8 @@ var gBufferSourceByID = {};
 var gSearchHistory = {};
 
 // find AudioBuffer by ID, create a BufferSource, start it playing
+// track all currently playing buffersources in gBufferSourceByID
+// don't start another copy of a sound if it is already playing
 
 function playBufferForID(inID) {
     if (gBufferSourceByID[inID]) {
@@ -21,9 +23,7 @@ function playBufferForID(inID) {
     aBufferSource.connect(gAudioContext.destination);
     aBufferSource.start();
     gBufferSourceByID[inID] = aBufferSource;
-    console.log(gBufferSourceByID);
-    document.getElementById('playingcount').textContent = Object.keys(gBufferSourceByID).length;
-
+    handleBufferSourceListUpdated(inID);
 
     var selectorString = 'button[data-sound-id="' + inID + '"]';
     document.querySelectorAll(selectorString)[0].setAttribute('playing', 'true');
@@ -33,8 +33,7 @@ function playBufferForID(inID) {
         var selectorString = 'button[data-sound-id="' + inID + '"]';
         document.querySelectorAll(selectorString)[0].removeAttribute('playing');
         delete gBufferSourceByID[inID];
-        console.log(gBufferSourceByID);
-        document.getElementById('playingcount').textContent = Object.keys(gBufferSourceByID).length;
+        handleBufferSourceListUpdated(inID);
     });
 }
 
@@ -81,10 +80,15 @@ function displaySoundInfo(inSearchText, inInfo) {
 
     newDiv.addEventListener('click', function(event) {
         console.log('clicked', inInfo.id);
-        if (gBufferByID[inInfo.id]) {
-            playBufferForID(inInfo.id);
+        if (gBufferSourceByID[inInfo.id]) {
+            console.log('STOP', inInfo.name);
+            gBufferSourceByID[inInfo.id].stop();
         } else {
-            console.log('no buffer yet for this sound');
+            if (gBufferByID[inInfo.id]) {
+                playBufferForID(inInfo.id);
+            } else {
+                console.log('no buffer yet for this sound');
+            }            
         }
     });
 }
@@ -118,6 +122,11 @@ function handleBufferListUpdate(inID) {
 function handleSoundInfoUpdate(inID) {
     console.log('sound info now', Object.keys(gSoundInfoByID).length);
     document.getElementById('soundinfocount').textContent = Object.keys(gSoundInfoByID).length;
+}
+
+function handleBufferSourceListUpdated(inID) {
+    console.log(gBufferSourceByID);
+    document.getElementById('playingcount').textContent = Object.keys(gBufferSourceByID).length;   
 }
 
 // handle the event handler by starting a Freesound text search
@@ -173,7 +182,7 @@ function handlePlay(event) {
     console.log('handlePlay');
 }
 
-// stop all playing sounds. TODO: how?
+// stop all playing sounds by iterating through gBufferSourceByID
 
 function handleStop(event) {
     console.log('handleStop');
