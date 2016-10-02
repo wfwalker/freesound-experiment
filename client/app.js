@@ -235,7 +235,12 @@ function autoPlayTask() {
     } else {
         console.log('autoPlayTask do nothing')
     }
-    window.setTimeout(autoPlayTask, 1000 * autoPlayDelay);
+
+    if (document.getElementById('autoplayon').checked) {
+        window.setTimeout(autoPlayTask, 1000 * autoPlayDelay);
+    } else {
+        console.log('autoPlayTask not renewing');
+    }
 }
 
 function handleAutoPlay(event) {
