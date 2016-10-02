@@ -15,6 +15,12 @@ var gSearchHistory = {};
 // track all currently playing buffersources in gBufferSourceByID
 // don't start another copy of a sound if it is already playing
 
+function playRandomBuffer() {
+    var soundIDs = Object.keys(gBufferByID);
+    var randomIndex = Math.floor(Math.random() * soundIDs.length);
+    playBufferForID(soundIDs[randomIndex]);
+}
+
 function playBufferForID(inID) {
     if (gBufferSourceByID[inID]) {
         console.log('ALREADY PLAYING', inID, gSoundInfoByID[inID].name);
@@ -203,9 +209,7 @@ function handleSearch(event) {
 
 function handlePlay(event) {
     event.preventDefault();
-    var soundIDs = Object.keys(gBufferByID);
-    var randomIndex = Math.floor(Math.random() * soundIDs.length);
-    playBufferForID(soundIDs[randomIndex]);
+    playRandomBuffer();
 
     console.log('handlePlay');
 }
@@ -220,10 +224,36 @@ function handleStop(event) {
     }
 }
 
+function autoPlayTask() {
+
+    var autoPlayCount = document.getElementById('autoplaycount').value;
+    var autoPlayDelay = document.getElementById('autoplaydelay').value;
+
+    if (Object.keys(gBufferSourceByID).length < autoPlayCount) {
+        console.log('autoplay random buffer');
+        playRandomBuffer();
+    } else {
+        console.log('autoPlayTask do nothing')
+    }
+    window.setTimeout(autoPlayTask, 1000 * autoPlayDelay);
+}
+
+function handleAutoPlay(event) {
+    var autoPlayDelay = document.getElementById('autoplaydelay').value;
+
+    if (event.target.checked) {
+        console.log('autoplay', event.target.checked, autoPlayDelay);
+        window.setTimeout(autoPlayTask, 1000 * autoPlayDelay);
+    }
+}
+
 // when the window is loaded, set up search and play event handlers
 
 window.onload = function(){
+    document.getElementById('autoplayon').checked = false;
+
     document.getElementById('searchbutton').addEventListener('click', handleSearch);
     document.getElementById('stopbutton').addEventListener('click', handleStop);
     document.getElementById('playbutton').addEventListener('click', handlePlay);
+    document.getElementById('autoplayon').addEventListener('click', handleAutoPlay);
 };
