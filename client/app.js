@@ -26,12 +26,12 @@ function playBufferForID(inID) {
     handleBufferSourceListUpdated(inID);
 
     var selectorString = 'button[data-sound-id="' + inID + '"]';
-    document.querySelectorAll(selectorString)[0].setAttribute('playing', 'true');
+    document.querySelector(selectorString).setAttribute('playing', 'true');
 
     aBufferSource.addEventListener('ended', function(e) {
         console.log('ENDED', gSoundInfoByID[inID].name);
         var selectorString = 'button[data-sound-id="' + inID + '"]';
-        document.querySelectorAll(selectorString)[0].removeAttribute('playing');
+        document.querySelector(selectorString).removeAttribute('playing');
         delete gBufferSourceByID[inID];
         handleBufferSourceListUpdated(inID);
     });
@@ -47,20 +47,21 @@ function createBufferForID(inID, url) {
 
     request.addEventListener('progress', function(event) {
         var selectorString = 'button[data-sound-id="' + inID + '"] span';
-        document.querySelectorAll(selectorString)[0].textContent = Math.round(100 * event.loaded / event.total) + '%';
+        document.querySelector(selectorString).textContent = Math.round(100 * event.loaded / event.total) + '%';
     });
 
     // Decode asynchronously
     request.onload = function() {
         var selectorString = 'button[data-sound-id="' + inID + '"] span';
-        document.querySelectorAll(selectorString)[0].textContent = '';
+        var progressIndicator = document.querySelector(selectorString);
+        progressIndicator.parentNode.removeChild(progressIndicator);
 
         console.log('about to decode', inID, url);
         gAudioContext.decodeAudioData(request.response, function(inBuffer) {
             console.log('decoded', inID, url);
             gBufferByID[inID] = inBuffer;
             var selectorString = 'button[data-sound-id="' + inID + '"]';
-            document.querySelectorAll(selectorString)[0].removeAttribute('disabled');
+            document.querySelector(selectorString).removeAttribute('disabled');
             handleBufferListUpdate(inID);
         }, function (e) {
             console.log('error handler', e);
@@ -88,7 +89,7 @@ function displaySoundInfo(inSearchText, inInfo) {
     newButton.appendChild(newContent);
 
     // add the newly created element and its content into the DOM
-    var containerDiv = document.querySelectorAll('div[data-search="' + inSearchText + '"]')[0];
+    var containerDiv = document.querySelector('div[data-search="' + inSearchText + '"]');
     containerDiv.appendChild(newButton);
 
     newButton.addEventListener('click', function(event) {
