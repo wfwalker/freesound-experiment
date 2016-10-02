@@ -45,10 +45,16 @@ function createBufferForID(inID, url) {
     request.open('GET', url, true);
     request.responseType = 'arraybuffer';
 
-    request.addEventListener('progress', function(event) { console.log(inID, gSoundInfoByID[inID].name, (100.0 * event.loaded / event.total)); });
+    request.addEventListener('progress', function(event) {
+        var selectorString = 'button[data-sound-id="' + inID + '"] span';
+        document.querySelectorAll(selectorString)[0].textContent = Math.round(100 * event.loaded / event.total) + '%';
+    });
 
     // Decode asynchronously
     request.onload = function() {
+        var selectorString = 'button[data-sound-id="' + inID + '"] span';
+        document.querySelectorAll(selectorString)[0].textContent = '';
+
         console.log('about to decode', inID, url);
         gAudioContext.decodeAudioData(request.response, function(inBuffer) {
             console.log('decoded', inID, url);
@@ -67,18 +73,25 @@ function createBufferForID(inID, url) {
 // create a play button for the sound info
 
 function displaySoundInfo(inSearchText, inInfo) {
-    var newDiv = document.createElement("button");
-    newDiv.setAttribute('class', 'soundinfo');
-    newDiv.setAttribute('disabled', 'true');
-    newDiv.setAttribute('data-sound-id', inInfo.id);
+    var newButton = document.createElement("button");
+
+    newButton.setAttribute('class', 'soundinfo');
+    newButton.setAttribute('disabled', 'true');
+    newButton.setAttribute('data-sound-id', inInfo.id);
+
     var newContent = document.createTextNode(inInfo.name);
-    newDiv.appendChild(newContent); //add the text node to the newly created div.
+    var newProgress = document.createElement('span');
+
+    newProgress.setAttribute('class', 'progressinfo');
+
+    newButton.appendChild(newProgress);
+    newButton.appendChild(newContent);
 
     // add the newly created element and its content into the DOM
     var containerDiv = document.querySelectorAll('div[data-search="' + inSearchText + '"]')[0];
-    containerDiv.appendChild(newDiv);
+    containerDiv.appendChild(newButton);
 
-    newDiv.addEventListener('click', function(event) {
+    newButton.addEventListener('click', function(event) {
         console.log('clicked', inInfo.id);
         if (gBufferSourceByID[inInfo.id]) {
             console.log('STOP', inInfo.name);
@@ -135,12 +148,12 @@ function doSearch(inString) {
     gSearchHistory[inString] = [];
 
     // add container for search results
-    var newDiv = document.createElement("div");
-    newDiv.setAttribute('class', 'container');
-    newDiv.setAttribute('data-search', inString);
+    var newButton = document.createElement("div");
+    newButton.setAttribute('class', 'container');
+    newButton.setAttribute('data-search', inString);
     var newContent = document.createTextNode(inString);
-    newDiv.appendChild(newContent); //add the text node to the newly created div.
-    document.getElementById('soundcontainer').appendChild(newDiv);
+    newButton.appendChild(newContent); //add the text node to the newly created div.
+    document.getElementById('soundcontainer').appendChild(newButton);
 
     console.log('about to search', inString);
     freesound.textSearch(inString, {},
