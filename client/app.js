@@ -1,5 +1,9 @@
 // global variables
 
+// TODO: button sizes proportional to duration
+// TODO: autoplay controls that periodically start sounds in order to reach desired average density
+// TODO: weight random choice of sound to pick short ones more often
+
 window.AudioContext = window.AudioContext||window.webkitAudioContext;
 var gAudioContext = new AudioContext();
 var gSoundInfoByID = {};
@@ -40,7 +44,7 @@ function playBufferForID(inID) {
 // Make an XMLHttpRequest for the MP3 preview file, decode the MP3, and save the buffer
 
 function createBufferForID(inID, url) {
-    console.log('createBufferForID', inID, url);
+    console.log('createBufferForID', inID, gSoundInfoByID[inID].name);
     var request = new XMLHttpRequest();
     request.open('GET', url, true);
     request.responseType = 'arraybuffer';
@@ -62,9 +66,9 @@ function createBufferForID(inID, url) {
         var progressIndicator = document.querySelector(selectorString);
         progressIndicator.parentNode.removeChild(progressIndicator);
 
-        console.log('about to decode', inID, url);
+        console.log('about to decode', inID, gSoundInfoByID[inID].name);
         gAudioContext.decodeAudioData(request.response, function(inBuffer) {
-            console.log('decoded', inID, url);
+            console.log('decoded', inID, gSoundInfoByID[inID].name);
             gBufferByID[inID] = inBuffer;
             var selectorString = 'button[data-sound-id="' + inID + '"]';
             document.querySelector(selectorString).removeAttribute('disabled');
@@ -86,7 +90,7 @@ function displaySoundInfo(inSearchText, inInfo) {
     newButton.setAttribute('disabled', 'true');
     newButton.setAttribute('data-sound-id', inInfo.id);
 
-    var newContent = document.createTextNode(inInfo.name);
+    var newContent = document.createTextNode(inInfo.name + ' (' + Math.round(inInfo.duration) + 's)');
     var newProgress = document.createElement('span');
 
     newProgress.setAttribute('class', 'progressinfo');
@@ -99,7 +103,7 @@ function displaySoundInfo(inSearchText, inInfo) {
     containerDiv.appendChild(newButton);
 
     newButton.addEventListener('click', function(event) {
-        console.log('clicked', inInfo.id);
+        console.log('clicked', inInfo.name);
         if (gBufferSourceByID[inInfo.id]) {
             console.log('STOP', inInfo.name);
             gBufferSourceByID[inInfo.id].stop();
@@ -107,7 +111,7 @@ function displaySoundInfo(inSearchText, inInfo) {
             if (gBufferByID[inInfo.id]) {
                 playBufferForID(inInfo.id);
             } else {
-                console.log('no buffer yet for this sound');
+                console.log('no buffer yet for', inInfo.name);
             }            
         }
     });
@@ -133,19 +137,23 @@ function getInfoAndLoadPreviewByID(inSearchText, inID) {
 // respond to an update in the buffer list by updating the count
 
 function handleBufferListUpdate(inID) {
-    console.log('buffers now', Object.keys(gBufferByID).length);
+    console.log('buffer list adding', gSoundInfoByID[inID].name)
     document.getElementById('buffercount').textContent = Object.keys(gBufferByID).length;
 }
 
 // respond to an update in the sound info list by updating the count
 
 function handleSoundInfoUpdate(inID) {
-    console.log('sound info now', Object.keys(gSoundInfoByID).length);
+    console.log('sound info adding', gSoundInfoByID[inID].name);
     document.getElementById('soundinfocount').textContent = Object.keys(gSoundInfoByID).length;
 }
 
 function handleBufferSourceListUpdated(inID) {
-    console.log(gBufferSourceByID);
+    if (gBufferSourceByID[inID]) { 
+        console.log('buffer sources add', gSoundInfoByID[inID].name);
+    } else {
+        console.log('buffer sources remove', gSoundInfoByID[inID].name);
+    }
     document.getElementById('playingcount').textContent = Object.keys(gBufferSourceByID).length;   
 }
 
