@@ -46,12 +46,18 @@ function createBufferForID(inID, url) {
     request.responseType = 'arraybuffer';
 
     request.addEventListener('progress', function(event) {
+        var selectorString = 'button[data-sound-id="' + inID + '"]';
+        document.querySelector(selectorString).setAttribute('loading', 'true');
+
         var selectorString = 'button[data-sound-id="' + inID + '"] span';
         document.querySelector(selectorString).textContent = Math.round(100 * event.loaded / event.total) + '%';
     });
 
     // Decode asynchronously
     request.onload = function() {
+        var selectorString = 'button[data-sound-id="' + inID + '"]';
+        document.querySelector(selectorString).removeAttribute('loading');
+
         var selectorString = 'button[data-sound-id="' + inID + '"] span';
         var progressIndicator = document.querySelector(selectorString);
         progressIndicator.parentNode.removeChild(progressIndicator);
