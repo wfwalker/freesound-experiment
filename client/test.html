@@ -9,16 +9,20 @@
 
     <script type="text/javascript" src="/lib/freesound.js"></script>
     <script type="text/javascript" src="/client/app.js"></script>
+
     <link href="/client/app.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
 <body>
     <h2>Freesound Musique Concr&egrave;te</h2>
     <div class='container'>
+        <i class="material-icons">search</i>
         <input id='searchtext' type='text' />
         <button id='searchbutton'>Search</button>
     </div>
     <div class='container'>
+        <i class="material-icons">alarm</i>
         <input id='autoplayon' type='checkbox'/> autoplay:
         count <input id='autoplaycount' size='3' type='text' value='2'/>
         delay <input id='autoplaydelay' size='3' type='text' value='5'/>
@@ -26,6 +30,7 @@
     <div class='container'>
         <button id='playbutton'>Play Random</button>
         <button id='stopbutton'>Stop All</button>
+
         sounds: <span id='soundinfocount'>0</span> found, <span id='buffercount'>0</span> loaded, <span id='playingcount'>0</span> playing
     </div>
     <div id='soundcontainer'>
