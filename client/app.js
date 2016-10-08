@@ -41,7 +41,9 @@ function playBufferForID(inID) {
     aBufferSource.addEventListener('ended', function(e) {
         console.log('ENDED', gSoundInfoByID[inID].name);
         var selectorString = 'button[data-sound-id="' + inID + '"]';
-        document.querySelector(selectorString).removeAttribute('playing');
+        if (document.querySelector(selectorString)) {
+            document.querySelector(selectorString).removeAttribute('playing');
+        }
         delete gBufferSourceByID[inID];
         handleBufferSourceListUpdated(inID);
     });
@@ -169,12 +171,42 @@ function doSearch(inString) {
     gSearchHistory[inString] = [];
 
     // add container for search results
-    var newButton = document.createElement("div");
-    newButton.setAttribute('class', 'container');
-    newButton.setAttribute('data-search', inString);
-    var newContent = document.createTextNode(inString);
-    newButton.appendChild(newContent); //add the text node to the newly created div.
-    document.getElementById('soundcontainer').appendChild(newButton);
+    var searchResultContainer = document.createElement("div");
+    searchResultContainer.setAttribute('class', 'container');
+    searchResultContainer.setAttribute('data-search', inString);
+
+    var searchLabel = document.createElement('div');
+    searchLabel.setAttribute('class', 'searchStringLabel');
+    searchLabel.appendChild(document.createTextNode(inString));
+
+    var removeSearchButton = document.createElement('button');
+    removeSearchButton.setAttribute('data-search-term', inString);
+    removeSearchButton.appendChild(document.createTextNode('-'));
+
+    removeSearchButton.addEventListener('click', function(e) {
+        var searchTerm = e.target.getAttribute('data-search-term');
+        var searchHits = gSearchHistory[searchTerm];
+
+        console.log('clicked remove ', searchTerm, searchHits);
+        for (var index = 0; index < searchHits.length; index++) {
+            var anID = searchHits[index];
+            // stop playing
+            if (gBufferSourceByID[anID]) {
+                gBufferSourceByID[anID].stop();
+            }
+            delete gBufferSourceByID[anID];
+            delete gBufferByID[anID];
+            handleBufferSourceListUpdated(anID);
+
+            // remove whole category
+            searchResultContainer.remove();
+            delete gSearchHistory[searchTerm];
+        }
+    });
+    searchLabel.appendChild(removeSearchButton);
+
+    searchResultContainer.appendChild(searchLabel);
+    document.getElementById('soundcontainer').appendChild(searchResultContainer);
 
     console.log('about to search', inString);
     freesound.textSearch(inString, {},
