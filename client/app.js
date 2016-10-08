@@ -293,4 +293,7 @@ window.onload = function(){
     document.getElementById('stopbutton').addEventListener('click', handleStop);
     document.getElementById('playbutton').addEventListener('click', handlePlay);
     document.getElementById('autoplayon').addEventListener('click', handleAutoPlay);
+
+    // var demo = Handlebars.compile(document.querySelector('#demo-template').innerHTML);
+    // document.body.insertAdjacentHTML('beforeend', demo({}));
 };
