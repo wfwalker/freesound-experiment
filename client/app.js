@@ -170,43 +170,8 @@ function handleBufferSourceListUpdated(inID) {
 function doSearch(inString) {
     gSearchHistory[inString] = [];
 
-    // add container for search results
-    var searchResultContainer = document.createElement("div");
-    searchResultContainer.setAttribute('class', 'container');
-    searchResultContainer.setAttribute('data-search', inString);
-
-    var searchLabel = document.createElement('div');
-    searchLabel.setAttribute('class', 'searchStringLabel');
-    searchLabel.appendChild(document.createTextNode(inString));
-
-    var removeSearchButton = document.createElement('button');
-    removeSearchButton.setAttribute('data-search-term', inString);
-    removeSearchButton.appendChild(document.createTextNode('-'));
-
-    removeSearchButton.addEventListener('click', function(e) {
-        var searchTerm = e.target.getAttribute('data-search-term');
-        var searchHits = gSearchHistory[searchTerm];
-
-        console.log('clicked remove ', searchTerm, searchHits);
-        for (var index = 0; index < searchHits.length; index++) {
-            var anID = searchHits[index];
-            // stop playing
-            if (gBufferSourceByID[anID]) {
-                gBufferSourceByID[anID].stop();
-            }
-            delete gBufferSourceByID[anID];
-            delete gBufferByID[anID];
-            handleBufferSourceListUpdated(anID);
-
-            // remove whole category
-            searchResultContainer.remove();
-            delete gSearchHistory[searchTerm];
-        }
-    });
-    searchLabel.appendChild(removeSearchButton);
-
-    searchResultContainer.appendChild(searchLabel);
-    document.getElementById('soundcontainer').appendChild(searchResultContainer);
+    var searchResults = Handlebars.compile(document.querySelector('#search-results-template').innerHTML);
+    document.getElementById('soundcontainer').insertAdjacentHTML('beforeend', searchResults({term: inString}));
 
     console.log('about to search', inString);
     freesound.textSearch(inString, {},
@@ -294,6 +259,4 @@ window.onload = function(){
     document.getElementById('playbutton').addEventListener('click', handlePlay);
     document.getElementById('autoplayon').addEventListener('click', handleAutoPlay);
 
-    // var demo = Handlebars.compile(document.querySelector('#demo-template').innerHTML);
-    // document.body.insertAdjacentHTML('beforeend', demo({}));
 };

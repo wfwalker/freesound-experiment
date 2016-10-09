@@ -15,9 +15,12 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
-<script id="demo-template" type="text/x-handlebars-template">
-    <div class="demo">
-        hello, world!
+<script id="search-results-template" type="text/x-handlebars-template">
+    <div class='container' data-search='{{term}}'>
+        <div class='searchStringLabel'>
+            {{term}}
+            <button data-search-term='{{term}}'>-</button>
+        </div>
     </div>
 </script>
 
