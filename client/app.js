@@ -92,32 +92,21 @@ function createBufferForID(inID, url) {
 // create a play button for the sound info
 
 function displaySoundInfo(inSearchText, inInfo) {
-    var newButton = document.createElement("button");
-
-    newButton.setAttribute('class', 'soundinfo');
-    newButton.setAttribute('disabled', 'true');
-    newButton.setAttribute('data-sound-id', inInfo.id);
-
-    var newContent = document.createTextNode(inInfo.name + ' (' + Math.round(inInfo.duration) + 's)');
-    var newProgress = document.createElement('span');
-
-    newProgress.setAttribute('class', 'progressinfo');
-
-    newButton.appendChild(newProgress);
-    newButton.appendChild(newContent);
+    var soundButton = Handlebars.compile(document.querySelector('#sound-button-template').innerHTML);
 
     // add the newly created element and its content into the DOM
     var containerDiv = document.querySelector('div[data-search="' + inSearchText + '"]');
-    containerDiv.appendChild(newButton);
+    containerDiv.insertAdjacentHTML('beforeend', soundButton(inInfo));
 
-    newButton.addEventListener('click', function(event) {
+    document.querySelector('button[data-sound-id="' + inInfo.id + '"]').addEventListener('click', function(event) {
         console.log('clicked', inInfo.name);
         if (gBufferSourceByID[inInfo.id]) {
-            console.log('STOP', inInfo.name);
+            console.log('STOP', inInfo.name, gBufferSourceByID[inInfo.id]);
             gBufferSourceByID[inInfo.id].stop();
         } else {
             if (gBufferByID[inInfo.id]) {
                 playBufferForID(inInfo.id);
+                console.log('PLAY', inInfo.name, gBufferSourceByID[inInfo.id]);
             } else {
                 console.log('no buffer yet for', inInfo.name);
             }            
@@ -172,6 +161,28 @@ function doSearch(inString) {
 
     var searchResults = Handlebars.compile(document.querySelector('#search-results-template').innerHTML);
     document.getElementById('soundcontainer').insertAdjacentHTML('beforeend', searchResults({term: inString}));
+
+    document.querySelector('button[data-search-term="' + inString + '"]').addEventListener('click', function(e) {
+        var searchTerm = e.target.getAttribute('data-search-term');
+        var searchHits = gSearchHistory[searchTerm];
+
+        console.log('clicked remove ', searchTerm, searchHits);
+
+        for (var index = 0; index < searchHits.length; index++) {
+            var anID = searchHits[index];
+            // stop playing
+            if (gBufferSourceByID[anID]) {
+                gBufferSourceByID[anID].stop();
+            }
+            delete gBufferSourceByID[anID];
+            delete gBufferByID[anID];
+            handleBufferSourceListUpdated(anID);
+        }
+
+        // remove whole category
+        document.querySelector('div[data-search="' + inString + '"]').remove();
+        delete gSearchHistory[searchTerm];
+    });
 
     console.log('about to search', inString);
     freesound.textSearch(inString, {},
