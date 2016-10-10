@@ -11,6 +11,11 @@ var gBufferByID = {};
 var gBufferSourceByID = {};
 var gSearchHistory = {};
 
+function $ (selector, el) {
+     if (!el) {el = document;}
+     return el.querySelector(selector);
+}
+
 // find AudioBuffer by ID, create a BufferSource, start it playing
 // track all currently playing buffersources in gBufferSourceByID
 // don't start another copy of a sound if it is already playing
@@ -35,14 +40,13 @@ function playBufferForID(inID) {
     gBufferSourceByID[inID] = aBufferSource;
     handleBufferSourceListUpdated(inID);
 
-    var selectorString = 'button[data-sound-id="' + inID + '"]';
-    document.querySelector(selectorString).setAttribute('playing', 'true');
+    $('button[data-sound-id="' + inID + '"]').setAttribute('playing', 'true');
 
     aBufferSource.addEventListener('ended', function(e) {
         console.log('ENDED', gSoundInfoByID[inID].name);
         var selectorString = 'button[data-sound-id="' + inID + '"]';
-        if (document.querySelector(selectorString)) {
-            document.querySelector(selectorString).removeAttribute('playing');
+        if ($(selectorString)) {
+            $(selectorString).removeAttribute('playing');
         }
         delete gBufferSourceByID[inID];
         handleBufferSourceListUpdated(inID);
@@ -58,20 +62,15 @@ function createBufferForID(inID, url) {
     request.responseType = 'arraybuffer';
 
     request.addEventListener('progress', function(event) {
-        var selectorString = 'button[data-sound-id="' + inID + '"]';
-        document.querySelector(selectorString).setAttribute('loading', 'true');
-
-        var selectorString = 'button[data-sound-id="' + inID + '"] span';
-        document.querySelector(selectorString).textContent = Math.round(100 * event.loaded / event.total) + '%';
+        $('button[data-sound-id="' + inID + '"]').setAttribute('loading', 'true');
+        $('button[data-sound-id="' + inID + '"] span').textContent = Math.round(100 * event.loaded / event.total) + '%';
     });
 
     // Decode asynchronously
     request.onload = function() {
-        var selectorString = 'button[data-sound-id="' + inID + '"]';
-        document.querySelector(selectorString).removeAttribute('loading');
+        $('button[data-sound-id="' + inID + '"]').removeAttribute('loading');
 
-        var selectorString = 'button[data-sound-id="' + inID + '"] span';
-        var progressIndicator = document.querySelector(selectorString);
+        var progressIndicator = $('button[data-sound-id="' + inID + '"] span');
         progressIndicator.parentNode.removeChild(progressIndicator);
 
         console.log('about to decode', inID, gSoundInfoByID[inID].name);
@@ -79,7 +78,7 @@ function createBufferForID(inID, url) {
             console.log('decoded', inID, gSoundInfoByID[inID].name);
             gBufferByID[inID] = inBuffer;
             var selectorString = 'button[data-sound-id="' + inID + '"]';
-            document.querySelector(selectorString).removeAttribute('disabled');
+            $(selectorString).removeAttribute('disabled');
             handleBufferListUpdate(inID);
         }, function (e) {
             console.log('error handler', e);
@@ -92,13 +91,13 @@ function createBufferForID(inID, url) {
 // create a play button for the sound info
 
 function displaySoundInfo(inSearchText, inInfo) {
-    var soundButton = Handlebars.compile(document.querySelector('#sound-button-template').innerHTML);
+    var soundButton = Handlebars.compile($('#sound-button-template').innerHTML);
 
     // add the newly created element and its content into the DOM
-    var containerDiv = document.querySelector('div[data-search="' + inSearchText + '"]');
+    var containerDiv = $('div[data-search="' + inSearchText + '"]');
     containerDiv.insertAdjacentHTML('beforeend', soundButton(inInfo));
 
-    document.querySelector('button[data-sound-id="' + inInfo.id + '"]').addEventListener('click', function(event) {
+    $('button[data-sound-id="' + inInfo.id + '"]').addEventListener('click', function(event) {
         console.log('clicked', inInfo.name);
         if (gBufferSourceByID[inInfo.id]) {
             console.log('STOP', inInfo.name, gBufferSourceByID[inInfo.id]);
@@ -159,10 +158,10 @@ function handleBufferSourceListUpdated(inID) {
 function doSearch(inString) {
     gSearchHistory[inString] = [];
 
-    var searchResults = Handlebars.compile(document.querySelector('#search-results-template').innerHTML);
+    var searchResults = Handlebars.compile($('#search-results-template').innerHTML);
     document.getElementById('soundcontainer').insertAdjacentHTML('beforeend', searchResults({term: inString}));
 
-    document.querySelector('button[data-search-term="' + inString + '"]').addEventListener('click', function(e) {
+    $('button[data-search-term="' + inString + '"]').addEventListener('click', function(e) {
         var searchTerm = e.target.getAttribute('data-search-term');
         var searchHits = gSearchHistory[searchTerm];
 
@@ -180,7 +179,7 @@ function doSearch(inString) {
         }
 
         // remove whole category
-        document.querySelector('div[data-search="' + inString + '"]').remove();
+        $('div[data-search="' + inString + '"]').remove();
         delete gSearchHistory[searchTerm];
     });
 
