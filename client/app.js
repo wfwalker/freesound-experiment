@@ -77,8 +77,7 @@ function createBufferForID(inID, url) {
         gAudioContext.decodeAudioData(request.response, function(inBuffer) {
             console.log('decoded', inID, gSoundInfoByID[inID].name);
             gBufferByID[inID] = inBuffer;
-            var selectorString = 'button[data-sound-id="' + inID + '"]';
-            $(selectorString).removeAttribute('disabled');
+            $('button[data-sound-id="' + inID + '"]').removeAttribute('disabled');
             handleBufferListUpdate(inID);
         }, function (e) {
             console.log('error handler', e);
@@ -133,14 +132,22 @@ function getInfoAndLoadPreviewByID(inSearchText, inID) {
 // respond to an update in the buffer list by updating the count
 
 function handleBufferListUpdate(inID) {
-    console.log('buffer list adding', gSoundInfoByID[inID].name)
+    if (gBufferByID[inID]) {
+        console.log('buffer list adding', gSoundInfoByID[inID].name);
+    } else {
+        console.log('buffer list removing', inID);
+    }
     document.getElementById('buffercount').textContent = Object.keys(gBufferByID).length;
 }
 
 // respond to an update in the sound info list by updating the count
 
 function handleSoundInfoUpdate(inID) {
-    console.log('sound info adding', gSoundInfoByID[inID].name);
+    if (gSoundInfoByID[inID]) {
+        console.log('sound info adding', gSoundInfoByID[inID].name);
+    } else {
+        console.log('sound info removing', inID);
+    }
     document.getElementById('soundinfocount').textContent = Object.keys(gSoundInfoByID).length;
 }
 
@@ -148,7 +155,7 @@ function handleBufferSourceListUpdated(inID) {
     if (gBufferSourceByID[inID]) { 
         console.log('buffer sources add', gSoundInfoByID[inID].name);
     } else {
-        console.log('buffer sources remove', gSoundInfoByID[inID].name);
+        console.log('buffer sources remove', inID);
     }
     document.getElementById('playingcount').textContent = Object.keys(gBufferSourceByID).length;   
 }
@@ -174,8 +181,11 @@ function doSearch(inString) {
                 gBufferSourceByID[anID].stop();
             }
             delete gBufferSourceByID[anID];
+            delete gSoundInfoByID[anID];
             delete gBufferByID[anID];
             handleBufferSourceListUpdated(anID);
+            handleSoundInfoUpdate(anID);
+            handleBufferListUpdate(anID);
         }
 
         // remove whole category
