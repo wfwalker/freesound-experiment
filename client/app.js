@@ -64,14 +64,14 @@ function createBufferForID(inID, url) {
 
     request.addEventListener('progress', function(event) {
         $('button[data-sound-id="' + inID + '"]').setAttribute('loading', 'true');
-        $('button[data-sound-id="' + inID + '"] span').textContent = Math.round(100 * event.loaded / event.total) + '%';
+        $('span[data-sound-id="' + inID + '"]').textContent = Math.round(100 * event.loaded / event.total) + '%';
     });
 
     // Decode asynchronously
     request.onload = function() {
         $('button[data-sound-id="' + inID + '"]').removeAttribute('loading');
 
-        var progressIndicator = $('button[data-sound-id="' + inID + '"] span');
+        var progressIndicator = $('span[data-sound-id="' + inID + '"]');
         progressIndicator.parentNode.removeChild(progressIndicator);
 
         console.log('about to decode', inID, gSoundInfoByID[inID].name);
@@ -94,7 +94,7 @@ function displaySoundInfo(inSearchText, inInfo) {
     var soundButton = Handlebars.compile($('#sound-button-template').innerHTML);
 
     // add the newly created element and its content into the DOM
-    var containerDiv = $('div[data-search="' + inSearchText + '"]');
+    var containerDiv = $('table[data-search="' + inSearchText + '"]');
     containerDiv.insertAdjacentHTML('beforeend', soundButton(inInfo));
 
     $('button[data-sound-id="' + inInfo.id + '"]').addEventListener('click', function(event) {
@@ -243,7 +243,6 @@ function handleStop(event) {
 }
 
 function autoPlayTask() {
-
     var autoPlayCount = document.getElementById('autoplaycount').value;
     var autoPlayDelay = document.getElementById('autoplaydelay').value;
 
@@ -274,6 +273,10 @@ function handleAutoPlay(event) {
 
 window.onload = function(){
     document.getElementById('autoplayon').checked = false;
+
+    Handlebars.registerHelper('round', function (num) {
+        return Math.round(num);
+    });
 
     document.getElementById('searchbutton').addEventListener('click', handleSearch);
     document.getElementById('stopbutton').addEventListener('click', handleStop);

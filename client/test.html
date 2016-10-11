@@ -13,22 +13,37 @@
 
     <link href="/client/app.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-</head>
 
-<script id="search-results-template" type="text/x-handlebars-template">
-    <div class='container' data-search='{{term}}'>
-        <div class='searchStringLabel'>
-            <button data-search-term='{{term}}'>X</button>
-            {{term}}
+    <script id="search-results-template" type="text/x-handlebars-template">
+        <div class='container' data-search='{{term}}'>
+            <div class='searchStringLabel'>
+                <button data-search-term='{{term}}'>X</button>
+                {{term}}
+            </div>
+            <table data-search='{{term}}'>
+            </table>
         </div>
-    </div>
-</script>
+    </script>
 
-<script id="sound-button-template" type="text/x-handlebars-template">
-    <button class='soundinfo' disabled='true' data-sound-id='{{id}}'>
-        <span class='progressinfo'></span> {{name}} ({{duration}}s)
-    </button>
-</script>
+    <script id="sound-button-template" type="text/x-handlebars-template">
+    <tr>
+        <td style='width: 4em; text-align: right'>
+            <span data-sound-id='{{id}}' class='progressinfo'></span>
+        </td>
+        <td align='right'>
+            {{round duration}}s
+        </td>
+        <td>
+            <button class='soundinfo' disabled='true' data-sound-id='{{id}}'>
+                 play
+            </button>
+        </td>
+        <td>
+            {{name}}
+        </td>
+    </tr>
+    </script>
+</head>
 
 <body>
     <h2>Freesound Musique Concr&egrave;te</h2>
