@@ -21,6 +21,7 @@ function $ (selector, el) {
 // don't start another copy of a sound if it is already playing
 
 function playRandomBuffer() {
+    console.log('playRandomBuffer');
     var soundIDs = Object.keys(gBufferByID);
     var randomIndex = Math.floor(Math.random() * soundIDs.length);
     playBufferForID(soundIDs[randomIndex]);
@@ -280,3 +281,69 @@ window.onload = function(){
     document.getElementById('autoplayon').addEventListener('click', handleAutoPlay);
 
 };
+
+// Check if the Web MIDI API is supported by the browser
+if (navigator.requestMIDIAccess) {
+    // Try to connect to the MIDI interface.
+    navigator.requestMIDIAccess().then(midiSucess, midiFailure);
+
+} else {
+    console.log("Web MIDI API not supported!");
+}
+
+function dispatchMIDIMessage(message) {
+{
+      // Mask off the lower nibble (MIDI channel, which we don't care about)
+      switch (event.data[0] & 0xf0) {
+        case 0x90:
+          if (event.data[2]!=0) {  // if velocity != 0, this is a note-on message
+            console.log('START', event.data[1]);
+            playRandomBuffer();
+            return;
+          }
+          // if velocity == 0, fall thru: it's a note-off.  MIDI's weird, y'all.
+        case 0x80:
+            console.log('STOP', event.data[1]);
+            return;
+        case 0xA0:
+            console.log('aftertouch', event.data[1], event.data[2]);
+            return;
+        case 0xB0:
+            console.log('knob', event.data[1], event.data[2]);
+            return;
+        case 0xC0:
+            console.log('patch change', event.data[1], event.data[2]);
+            return;
+        case 0xD0:
+            console.log('channel pressure', event.data[1], event.data[2]);
+            return;
+        case 0xE0:
+            console.log('pitch bend', event.data[1], event.data[2]);
+            return;
+      }
+    }
+
+}
+
+// Function executed on successful connection
+function midiSucess(interface) {
+
+  var noteon,
+      noteoff,
+      outputs = [];
+
+  // Grab an array of all available devices
+  var iter = interface.inputs.values();
+  for (var i = iter.next(); i && !i.done; i = iter.next()) {
+    console.log('input', i.value);
+    i.value.addEventListener('midimessage', function (e) {
+        dispatchMIDIMessage(e);
+    })
+  }
+
+}
+
+// Function executed on failed connection
+function midiFailure(error) {
+  console.log("Could not connect to the MIDI interface");
+}

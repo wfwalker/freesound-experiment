@@ -7,7 +7,7 @@
 
 body {
 	font-family: Helvetica;
-	font-size: 14pt;
+	font-size: 10pt;
 }
 
 button {
@@ -23,5 +23,5 @@ button[loading] {
 }
 
 input {
-	font-size: 12pt;
+	font-size: 10pt;
 }
