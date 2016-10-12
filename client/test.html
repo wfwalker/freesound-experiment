@@ -25,6 +25,12 @@
         </div>
     </script>
 
+    <script id="buffer-playing-template" type="text/x-handlebars-template">
+        <div class='playing' data-sound-id='{{id}}'>
+            {{name}}, {{round duration}}s
+        </div>
+    </script>
+
     <script id="sound-button-template" type="text/x-handlebars-template">
     <tr>
         <td style='width: 4em; text-align: right'>
@@ -65,6 +71,9 @@
         <button id='stopbutton'>Stop All</button>
 
         sounds: <span id='soundinfocount'>0</span> found, <span id='buffercount'>0</span> loaded, <span id='playingcount'>0</span> playing
+
+        <div id='playingcontainer'>
+        </div>
     </div>
     <div id='soundcontainer'>
     </div>

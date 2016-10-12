@@ -5,6 +5,13 @@
 	padding: 20px;
 }
 
+.playing {
+	border-radius: 3px;
+	border: solid 1px lightgray;
+	padding: 5px;
+	margin-top: 10px;
+}
+
 body {
 	font-family: Helvetica;
 	font-size: 10pt;

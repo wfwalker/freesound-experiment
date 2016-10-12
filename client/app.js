@@ -10,6 +10,7 @@ var gSoundInfoByID = {};
 var gBufferByID = {};
 var gBufferSourceByID = {};
 var gSearchHistory = {};
+var gTemplates = {};
 
 function $ (selector, el) {
      if (!el) {el = document;}
@@ -91,11 +92,9 @@ function downloadBufferForID(inID, url) {
 // create a play button for the sound info
 
 function displaySoundInfo(inSearchText, inInfo) {
-    var soundButton = Handlebars.compile($('#sound-button-template').innerHTML);
-
     // add the newly created element and its content into the DOM
     var containerDiv = $('table[data-search="' + inSearchText + '"]');
-    containerDiv.insertAdjacentHTML('beforeend', soundButton(inInfo));
+    containerDiv.insertAdjacentHTML('beforeend', gTemplates['sound-button'](inInfo));
 
     $('button[data-sound-id="' + inInfo.id + '"]').addEventListener('click', function(event) {
         console.log('clicked', inInfo.name);
@@ -155,8 +154,10 @@ function handleSoundInfoUpdate(inID) {
 function handleBufferSourceListUpdated(inID) {
     if (gBufferSourceByID[inID]) { 
         console.log('buffer sources add', gSoundInfoByID[inID].name);
+        $('#playingcontainer').insertAdjacentHTML('beforeend', gTemplates['buffer-playing'](gSoundInfoByID[inID]));
     } else {
         console.log('buffer sources remove', inID);
+        $('div[data-sound-id="' + inID + '"]').remove();
     }
     document.getElementById('playingcount').textContent = Object.keys(gBufferSourceByID).length;   
 }
@@ -166,8 +167,7 @@ function handleBufferSourceListUpdated(inID) {
 function doSearch(inString) {
     gSearchHistory[inString] = [];
 
-    var searchResults = Handlebars.compile($('#search-results-template').innerHTML);
-    document.getElementById('soundcontainer').insertAdjacentHTML('beforeend', searchResults({term: inString}));
+    document.getElementById('soundcontainer').insertAdjacentHTML('beforeend', gTemplates['search-results']({term: inString}));
 
     $('button[data-search-term="' + inString + '"]').addEventListener('click', function(e) {
         var searchTerm = e.target.getAttribute('data-search-term');
@@ -276,6 +276,10 @@ function handleAutoPlay(event) {
 
 window.onload = function(){
     document.getElementById('autoplayon').checked = false;
+
+    gTemplates['sound-button'] = Handlebars.compile($('#sound-button-template').innerHTML);
+    gTemplates['search-results'] = Handlebars.compile($('#search-results-template').innerHTML);
+    gTemplates['buffer-playing'] = Handlebars.compile($('#buffer-playing-template').innerHTML);
 
     Handlebars.registerHelper('round', function (num) {
         return Math.round(num);
