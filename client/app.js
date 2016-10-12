@@ -56,8 +56,8 @@ function playBufferForID(inID) {
 
 // Make an XMLHttpRequest for the MP3 preview file, decode the MP3, and save the buffer
 
-function createBufferForID(inID, url) {
-    console.log('createBufferForID', inID, gSoundInfoByID[inID].name);
+function downloadBufferForID(inID, url) {
+    console.log('downloadBufferForID', inID, gSoundInfoByID[inID].name);
     var request = new XMLHttpRequest();
     request.open('GET', url, true);
     request.responseType = 'arraybuffer';
@@ -122,7 +122,7 @@ function getInfoAndLoadPreviewByID(inSearchText, inID) {
             gSoundInfoByID[inID] = sound;
             displaySoundInfo(inSearchText, sound);
             handleSoundInfoUpdate(inID);
-            createBufferForID(inID, sound.previews['preview-hq-mp3']);
+            downloadBufferForID(inID, sound.previews['preview-hq-mp3']);
         },
         function(e) {
             console.log("Sound could not be retrieved", e);
@@ -171,23 +171,7 @@ function doSearch(inString) {
 
     $('button[data-search-term="' + inString + '"]').addEventListener('click', function(e) {
         var searchTerm = e.target.getAttribute('data-search-term');
-        var searchHits = gSearchHistory[searchTerm];
-
-        console.log('clicked remove ', searchTerm, searchHits);
-
-        for (var index = 0; index < searchHits.length; index++) {
-            var anID = searchHits[index];
-            // stop playing
-            if (gBufferSourceByID[anID]) {
-                gBufferSourceByID[anID].stop();
-            }
-            delete gBufferSourceByID[anID];
-            delete gSoundInfoByID[anID];
-            delete gBufferByID[anID];
-            handleBufferSourceListUpdated(anID);
-            handleSoundInfoUpdate(anID);
-            handleBufferListUpdate(anID);
-        }
+        deleteBuffersForSearch(searchTerm);
 
         // remove whole category
         $('div[data-search="' + inString + '"]').remove();
@@ -206,7 +190,26 @@ function doSearch(inString) {
             console.log('textsearch err', err);
         }
     );
+}
 
+function deleteBuffersForSearch(inSearchTerm) {
+    var searchHits = gSearchHistory[inSearchTerm];
+
+    console.log('deleteBuffersForSearch', inSearchTerm, searchHits);
+
+    for (var index = 0; index < searchHits.length; index++) {
+        var anID = searchHits[index];
+        // stop playing
+        if (gBufferSourceByID[anID]) {
+            gBufferSourceByID[anID].stop();
+        }
+        delete gBufferSourceByID[anID];
+        delete gSoundInfoByID[anID];
+        delete gBufferByID[anID];
+        handleBufferSourceListUpdated(anID);
+        handleSoundInfoUpdate(anID);
+        handleBufferListUpdate(anID);
+    }
 }
 
 // handle search event by tokenizing the string and doing a separate search for each token
@@ -215,7 +218,7 @@ function handleSearch(event) {
     event.preventDefault();
 
     var searchText = document.getElementById('searchtext').value;
-    console.log('clicked', searchText);
+    console.log('handleSearh', searchText);
 
     var stringTokens = searchText.split(' ');
     for (var index = 0; index < stringTokens.length; index++) {
