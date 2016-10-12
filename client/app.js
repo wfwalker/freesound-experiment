@@ -157,7 +157,9 @@ function handleBufferSourceListUpdated(inID) {
         $('#playingcontainer').insertAdjacentHTML('beforeend', gTemplates['buffer-playing'](gSoundInfoByID[inID]));
     } else {
         console.log('buffer sources remove', inID);
-        $('div[data-sound-id="' + inID + '"]').remove();
+        if ($('div[data-sound-id="' + inID + '"]')) {
+            $('div[data-sound-id="' + inID + '"]').remove();
+        }
     }
     document.getElementById('playingcount').textContent = Object.keys(gBufferSourceByID).length;   
 }
