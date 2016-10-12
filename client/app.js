@@ -286,9 +286,7 @@ window.onload = function(){
 
 // Check if the Web MIDI API is supported by the browser
 if (navigator.requestMIDIAccess) {
-    // Try to connect to the MIDI interface.
     navigator.requestMIDIAccess().then(midiSucess, midiFailure);
-
 } else {
     console.log("Web MIDI API not supported!");
 }

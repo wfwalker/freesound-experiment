@@ -12,10 +12,13 @@ body {
 
 button {
 	font-size: 9pt;
+	border: solid 1px lightgray;
+	border-radius: 3px;
 }
 
 button[playing] {
-	font-weight: bold;
+	background-color: darkgray;
+	color: white;
 }
 
 button[loading] {
