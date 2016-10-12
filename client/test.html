@@ -17,8 +17,8 @@
     <script id="search-results-template" type="text/x-handlebars-template">
         <div class='container' data-search='{{term}}'>
             <div class='searchStringLabel'>
-                <button data-search-term='{{term}}'>X</button>
-                {{term}}
+                <button data-search-term='{{term}}'><i class="material-icons">close</i></button>
+                <span class='search-title'>{{term}}</span>
             </div>
             <table data-search='{{term}}'>
             </table>
@@ -51,9 +51,8 @@
 <body>
     <h2>Freesound Musique Concr&egrave;te</h2>
     <div class='container'>
-        <i class="material-icons">search</i>
-        <input id='searchtext' type='text' />
-        <button id='searchbutton'>Search</button>
+        <input class='search-title' id='searchtext' type='text' />
+        <button class='search-title' id='searchbutton'><i class="material-icons">search</i></button>
     </div>
     <div class='container'>
         <i class="material-icons">alarm</i>

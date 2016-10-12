@@ -1,13 +1,17 @@
 .container {
 	border: solid 1px white;
 	border-radius: 15px;
-	background: #eee;
+	background: #efefef;
 	padding: 20px;
 }
 
 body {
 	font-family: Helvetica;
 	font-size: 10pt;
+}
+
+.search-title {
+	font-size: 24pt;
 }
 
 button {
