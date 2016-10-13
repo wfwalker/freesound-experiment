@@ -42,11 +42,11 @@ function playBufferForID(inID) {
     gBufferSourceByID[inID] = aBufferSource;
     handleBufferSourceListUpdated(inID);
 
-    $('button[data-sound-id="' + inID + '"]').setAttribute('playing', 'true');
+    $('#play-sound-' + inID).setAttribute('playing', 'true');
 
     aBufferSource.addEventListener('ended', function(e) {
         console.log('ENDED', gSoundInfoByID[inID].name);
-        var selectorString = 'button[data-sound-id="' + inID + '"]';
+        var selectorString = '#play-sound-' + inID;
         if ($(selectorString)) {
             $(selectorString).removeAttribute('playing');
         }
@@ -64,13 +64,13 @@ function downloadBufferForID(inID, url) {
     request.responseType = 'arraybuffer';
 
     request.addEventListener('progress', function(event) {
-        $('button[data-sound-id="' + inID + '"]').setAttribute('loading', 'true');
+        $('#play-sound-' + inID).setAttribute('loading', 'true');
         $('span[data-sound-id="' + inID + '"]').textContent = Math.round(100 * event.loaded / event.total) + '%';
     });
 
     // Decode asynchronously
     request.onload = function() {
-        $('button[data-sound-id="' + inID + '"]').removeAttribute('loading');
+        $('#play-sound-' + inID).removeAttribute('loading');
 
         var progressIndicator = $('span[data-sound-id="' + inID + '"]');
         progressIndicator.parentNode.removeChild(progressIndicator);
@@ -79,7 +79,8 @@ function downloadBufferForID(inID, url) {
         gAudioContext.decodeAudioData(request.response, function(inBuffer) {
             console.log('decoded', inID, gSoundInfoByID[inID].name);
             gBufferByID[inID] = inBuffer;
-            $('button[data-sound-id="' + inID + '"]').removeAttribute('disabled');
+            $('#play-sound-' + inID).removeAttribute('disabled');
+            $('#remove-sound-' + inID).removeAttribute('disabled');
             handleBufferListUpdate(inID);
         }, function (e) {
             console.log('error handler', e);
@@ -96,7 +97,7 @@ function displaySoundInfo(inSearchText, inInfo) {
     var containerDiv = $('table[data-search="' + inSearchText + '"]');
     containerDiv.insertAdjacentHTML('beforeend', gTemplates['sound-button'](inInfo));
 
-    $('button[data-sound-id="' + inInfo.id + '"]').addEventListener('click', function(event) {
+    $('#play-sound-' + inInfo.id).addEventListener('click', function(event) {
         console.log('clicked', inInfo.name);
         if (gBufferSourceByID[inInfo.id]) {
             console.log('STOP', inInfo.name, gBufferSourceByID[inInfo.id]);
@@ -109,6 +110,11 @@ function displaySoundInfo(inSearchText, inInfo) {
                 console.log('no buffer yet for', inInfo.name);
             }            
         }
+    });
+
+    //TODO: add hadler for remove sound button
+    $('#remove-sound-' + inInfo.id).addEventListener('click', function(event) {
+        console.log('remove-sound', event.target);
     });
 }
 

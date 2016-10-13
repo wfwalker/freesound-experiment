@@ -27,7 +27,9 @@
 
     <script id="buffer-playing-template" type="text/x-handlebars-template">
         <div class='playing' data-sound-id='{{id}}'>
-            {{name}}, {{round duration}}s
+            <div>{{name}}</div>
+            <div>{{round duration}}s</div>
+            <div>{{username}}</div>
         </div>
     </script>
 
@@ -40,8 +42,13 @@
             {{round duration}}s
         </td>
         <td>
-            <button class='soundinfo' disabled='true' data-sound-id='{{id}}'>
+            <button class='soundinfo' disabled='true' id='play-sound-{{id}}'>
                  play
+            </button>
+        </td>
+        <td>
+            <button class='soundinfo' disabled='true' id='remove-sound-{{id}}'>
+                 remove
             </button>
         </td>
         <td>
@@ -70,9 +77,12 @@
         <button id='playbutton'>Play Random</button>
         <button id='stopbutton'>Stop All</button>
 
-        sounds: <span id='soundinfocount'>0</span> found, <span id='buffercount'>0</span> loaded, <span id='playingcount'>0</span> playing
+        sounds:
+        <span id='soundinfocount'>0</span> found,
+        <span id='buffercount'>0</span> loaded, 
+        <span id='playingcount'>0</span> playing
 
-        <div id='playingcontainer'>
+        <div style='height: 110px; padding-top: 10px' id='playingcontainer'>
         </div>
     </div>
     <div id='soundcontainer'>

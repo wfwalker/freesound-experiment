@@ -1,7 +1,7 @@
 .container {
 	border: solid 1px white;
 	border-radius: 15px;
-	background: #efefef;
+	background: #f8f8f8;
 	padding: 20px;
 }
 
@@ -9,7 +9,12 @@
 	border-radius: 3px;
 	border: solid 1px lightgray;
 	padding: 5px;
-	margin-top: 10px;
+	margin-right: 10px;
+	width: 200px;
+	height: 100px;
+	overflow: hidden;
+	float: left;
+	white-space: nowrap;
 }
 
 body {
