@@ -35,6 +35,7 @@ function playBufferForID(inID) {
     }
 
     console.log('PLAY', inID, gSoundInfoByID[inID].name);
+    gSoundInfoByID[inID].starttime = new Date();
     var aBufferSource = gAudioContext.createBufferSource();
     aBufferSource.buffer = gBufferByID[inID];
     aBufferSource.connect(gAudioContext.destination);
@@ -51,6 +52,8 @@ function playBufferForID(inID) {
             $(selectorString).removeAttribute('playing');
         }
         delete gBufferSourceByID[inID];
+        delete gSoundInfoByID[inID].starttime;
+
         handleBufferSourceListUpdated(inID);
     });
 }
@@ -280,6 +283,19 @@ function handleAutoPlay(event) {
     }
 }
 
+function elapsedTask() {
+    var timers = document.querySelectorAll('.elapsed');
+
+    if (timers) {
+        for (var index = 0; index < timers.length; index++) {
+            var delta = new Date() - new Date(timers[index].getAttribute('data-starttime'));
+            console.log(delta);
+            timers[index].innerHTML = Math.round(delta / 1000);
+        }
+    }
+    window.setTimeout(elapsedTask, 1000);
+}
+
 // when the window is loaded, set up search and play event handlers
 
 window.onload = function(){
@@ -297,7 +313,11 @@ window.onload = function(){
     document.getElementById('stopbutton').addEventListener('click', handleStop);
     document.getElementById('playbutton').addEventListener('click', handlePlay);
     document.getElementById('autoplayon').addEventListener('click', handleAutoPlay);
+
+    console.log('start moo');
+    window.setTimeout(elapsedTask, 1000);
 };
+
 
 // Check if the Web MIDI API is supported by the browser
 if (navigator.requestMIDIAccess) {

@@ -28,8 +28,8 @@
     <script id="buffer-playing-template" type="text/x-handlebars-template">
         <div class='playing' data-sound-id='{{id}}'>
             <div>{{name}}</div>
-            <div>{{round duration}}s</div>
             <div>{{username}}</div>
+            <div><span class='elapsed' data-starttime='{{starttime}}'></span> of <span>{{round duration}}s</span></div>
         </div>
     </script>
 
@@ -85,7 +85,9 @@
         <div style='height: 110px; padding-top: 10px' id='playingcontainer'>
         </div>
     </div>
-    <div id='soundcontainer'>
+    <div style='height: 300px; overflow: scroll; border-top: solid 5px lightgray'>
+        <div id='soundcontainer'>
+        </div>
     </div>
 </body>
 
