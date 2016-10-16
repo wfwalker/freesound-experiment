@@ -46,13 +46,19 @@ function playBufferForID(inID) {
     $('#play-sound-' + inID).setAttribute('playing', 'true');
 
     aBufferSource.addEventListener('ended', function(e) {
-        console.log('ENDED', gSoundInfoByID[inID].name);
+        if (gSoundInfoByID[inID]) {
+            console.log('ENDED', gSoundInfoByID[inID].name);
+            delete gSoundInfoByID[inID].starttime;
+        } else {
+            console.log('ENDED', inID);
+        }
+
         var selectorString = '#play-sound-' + inID;
         if ($(selectorString)) {
             $(selectorString).removeAttribute('playing');
         }
+
         delete gBufferSourceByID[inID];
-        delete gSoundInfoByID[inID].starttime;
 
         handleBufferSourceListUpdated(inID);
     });
