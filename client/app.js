@@ -118,6 +118,10 @@ function displaySoundInfo(inSearchText, inInfo) {
     //TODO: add hadler for remove sound button
     $('#remove-sound-' + inInfo.id).addEventListener('click', function(event) {
         console.log('remove-sound', event.target);
+        // stop playing,  remove from arrays, notify observers
+        deleteBufferForID(inInfo.id);
+        // remove from table
+        $('#sound-button-row-' + inInfo.id).remove();
     });
 }
 
@@ -203,6 +207,20 @@ function doSearch(inString) {
     );
 }
 
+function deleteBufferForID(anID) {  
+    console.log('deleteBufferForID', anID);
+    // stop playing
+    if (gBufferSourceByID[anID]) {
+        gBufferSourceByID[anID].stop();
+    }
+    delete gBufferSourceByID[anID];
+    delete gSoundInfoByID[anID];
+    delete gBufferByID[anID];
+    handleBufferSourceListUpdated(anID);
+    handleSoundInfoUpdate(anID);
+    handleBufferListUpdate(anID);
+}
+
 function deleteBuffersForSearch(inSearchTerm) {
     var searchHits = gSearchHistory[inSearchTerm];
 
@@ -210,16 +228,7 @@ function deleteBuffersForSearch(inSearchTerm) {
 
     for (var index = 0; index < searchHits.length; index++) {
         var anID = searchHits[index];
-        // stop playing
-        if (gBufferSourceByID[anID]) {
-            gBufferSourceByID[anID].stop();
-        }
-        delete gBufferSourceByID[anID];
-        delete gSoundInfoByID[anID];
-        delete gBufferByID[anID];
-        handleBufferSourceListUpdated(anID);
-        handleSoundInfoUpdate(anID);
-        handleBufferListUpdate(anID);
+        deleteBufferForID(anID);
     }
 }
 
