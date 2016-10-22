@@ -54,52 +54,62 @@ function handleBufferPlayEnded(e) {
 
     if (gSoundInfoByID[freesoundID]) {
         console.log('ENDED', gSoundInfoByID[freesoundID].name);
+        // turn off timer
         delete gSoundInfoByID[freesoundID].starttime;
+        // remove buffer from global buffer list
+        delete gBufferSourceByID[freesoundID];
+        // notify observers of global buffer list
+        handleBufferSourceListUpdated(freesoundID);
     } else {
         console.log('ENDED', freesoundID);
     }
 
+    // if there's a play-button, mark it as not playing
     var selectorString = '#play-sound-' + freesoundID;
     if ($(selectorString)) {
         $(selectorString).removeAttribute('playing');
     }
-
-    delete gBufferSourceByID[freesoundID];
-
-    handleBufferSourceListUpdated(freesoundID);
 }
 
 // Make an XMLHttpRequest for the MP3 preview file, decode the MP3, and save the buffer
+
+function handleSoundDownloadProgress(event) {
+    var freesoundID = event.target.freesoundID;
+    $('#play-sound-' + freesoundID).setAttribute('loading', 'true');
+    $('span[data-sound-id="' + freesoundID + '"]').textContent = Math.round(100 * event.loaded / event.total) + '%';    
+}
+
+function handleSoundDownloadDone(event) {
+    var freesoundID = event.target.freesoundID;
+    $('#play-sound-' + freesoundID).removeAttribute('loading');
+
+    var progressIndicator = $('span[data-sound-id="' + freesoundID + '"]');
+    progressIndicator.parentNode.removeChild(progressIndicator);
+
+    console.log('about to decode', freesoundID, gSoundInfoByID[freesoundID].name);
+    gAudioContext.decodeAudioData(event.target.response, function(inBuffer) {
+        console.log('decoded', freesoundID, gSoundInfoByID[freesoundID].name);
+        gBufferByID[freesoundID] = inBuffer;
+        $('#play-sound-' + freesoundID).removeAttribute('disabled');
+        $('#remove-sound-' + freesoundID).removeAttribute('disabled');
+        handleBufferListUpdate(freesoundID);
+    }, function (e) {
+        console.log('error handler', e);
+    });
+}
 
 function downloadBufferForID(inID, url) {
     console.log('downloadBufferForID', inID, gSoundInfoByID[inID].name);
     var request = new XMLHttpRequest();
     request.open('GET', url, true);
     request.responseType = 'arraybuffer';
+    request.freesoundID = inID;
 
-    request.addEventListener('progress', function(event) {
-        $('#play-sound-' + inID).setAttribute('loading', 'true');
-        $('span[data-sound-id="' + inID + '"]').textContent = Math.round(100 * event.loaded / event.total) + '%';
-    });
+    // handle progress events
+    request.addEventListener('progress', handleSoundDownloadProgress);
 
     // Decode asynchronously
-    request.onload = function() {
-        $('#play-sound-' + inID).removeAttribute('loading');
-
-        var progressIndicator = $('span[data-sound-id="' + inID + '"]');
-        progressIndicator.parentNode.removeChild(progressIndicator);
-
-        console.log('about to decode', inID, gSoundInfoByID[inID].name);
-        gAudioContext.decodeAudioData(request.response, function(inBuffer) {
-            console.log('decoded', inID, gSoundInfoByID[inID].name);
-            gBufferByID[inID] = inBuffer;
-            $('#play-sound-' + inID).removeAttribute('disabled');
-            $('#remove-sound-' + inID).removeAttribute('disabled');
-            handleBufferListUpdate(inID);
-        }, function (e) {
-            console.log('error handler', e);
-        });
-    }
+    request.onload = handleSoundDownloadDone;
 
     request.send();
 }
