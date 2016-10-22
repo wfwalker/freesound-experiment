@@ -36,11 +36,20 @@ function playBufferForID(inID) {
 
     console.log('PLAY', inID, gSoundInfoByID[inID].name);
     gSoundInfoByID[inID].starttime = new Date();
+
+    // CREATE gain node
+    var gainNode = gAudioContext.createGain();
+    gainNode.gain.value = 1;
+    gainNode.connect(gAudioContext.destination);
+
+    // CREATE audio buffer source
     var aBufferSource = gAudioContext.createBufferSource();
     aBufferSource.buffer = gBufferByID[inID];
     aBufferSource.freesoundID = inID;
-    aBufferSource.connect(gAudioContext.destination);
+    aBufferSource.connect(gainNode);
     aBufferSource.start();
+    aBufferSource.myGainNode = gainNode;
+
     gBufferSourceByID[inID] = aBufferSource;
     handleBufferSourceListUpdated(inID);
 
@@ -56,6 +65,8 @@ function handleBufferPlayEnded(e) {
         console.log('ENDED', gSoundInfoByID[freesoundID].name);
         // turn off timer
         delete gSoundInfoByID[freesoundID].starttime;
+        // disconnect gain node
+        gBufferSourceByID[freesoundID].myGainNode.disconnect();
         // remove buffer from global buffer list
         delete gBufferSourceByID[freesoundID];
         // notify observers of global buffer list
