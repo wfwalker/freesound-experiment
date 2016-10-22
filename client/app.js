@@ -38,6 +38,7 @@ function playBufferForID(inID) {
     gSoundInfoByID[inID].starttime = new Date();
     var aBufferSource = gAudioContext.createBufferSource();
     aBufferSource.buffer = gBufferByID[inID];
+    aBufferSource.freesoundID = inID;
     aBufferSource.connect(gAudioContext.destination);
     aBufferSource.start();
     gBufferSourceByID[inID] = aBufferSource;
@@ -45,23 +46,27 @@ function playBufferForID(inID) {
 
     $('#play-sound-' + inID).setAttribute('playing', 'true');
 
-    aBufferSource.addEventListener('ended', function(e) {
-        if (gSoundInfoByID[inID]) {
-            console.log('ENDED', gSoundInfoByID[inID].name);
-            delete gSoundInfoByID[inID].starttime;
-        } else {
-            console.log('ENDED', inID);
-        }
+    aBufferSource.addEventListener('ended', handleBufferPlayEnded);
+}
 
-        var selectorString = '#play-sound-' + inID;
-        if ($(selectorString)) {
-            $(selectorString).removeAttribute('playing');
-        }
+function handleBufferPlayEnded(e) {
+    var freesoundID = e.target.freesoundID;
 
-        delete gBufferSourceByID[inID];
+    if (gSoundInfoByID[freesoundID]) {
+        console.log('ENDED', gSoundInfoByID[freesoundID].name);
+        delete gSoundInfoByID[freesoundID].starttime;
+    } else {
+        console.log('ENDED', freesoundID);
+    }
 
-        handleBufferSourceListUpdated(inID);
-    });
+    var selectorString = '#play-sound-' + freesoundID;
+    if ($(selectorString)) {
+        $(selectorString).removeAttribute('playing');
+    }
+
+    delete gBufferSourceByID[freesoundID];
+
+    handleBufferSourceListUpdated(freesoundID);
 }
 
 // Make an XMLHttpRequest for the MP3 preview file, decode the MP3, and save the buffer
@@ -304,7 +309,6 @@ function elapsedTask() {
     if (timers) {
         for (var index = 0; index < timers.length; index++) {
             var delta = new Date() - new Date(timers[index].getAttribute('data-starttime'));
-            console.log(delta);
             timers[index].innerHTML = Math.round(delta / 1000);
         }
     }
