@@ -177,12 +177,24 @@ function getInfoAndLoadPreviewByID(inSearchText, inID) {
 // respond to an update in the buffer list by updating the count
 
 function handleBufferListUpdate(inID) {
+    var bufferCount = Object.keys(gBufferByID).length;
+
     if (gBufferByID[inID]) {
         console.log('buffer list adding', gSoundInfoByID[inID].name);
+        $('#autoplayon').removeAttribute('disabled');
+        $('#playbutton').removeAttribute('disabled');
+        $('#stopbutton').removeAttribute('disabled');
     } else {
         console.log('buffer list removing', inID);
+
+        if (bufferCount == 0) {
+            $('#autoplayon').setAttribute('disabled', 'true');
+            $('#playbutton').setAttribute('disabled', 'true');
+            $('#stopbutton').setAttribute('disabled', 'true');
+        }
     }
-    document.getElementById('buffercount').textContent = Object.keys(gBufferByID).length;
+
+    document.getElementById('buffercount').textContent = bufferCount;
 }
 
 // respond to an update in the sound info list by updating the count
