@@ -20,7 +20,19 @@
                 <button data-search-term='{{term}}'><i class="material-icons">close</i></button>
                 <span class='search-title'>{{term}}</span>
             </div>
-            <table data-search='{{term}}'>
+            <table>
+                <thead>
+                    <tr>
+                        <th>%</th>
+                        <th>dur</th>
+                        <th>+</th>
+                        <th>X</th>
+                        <th>username</th>
+                        <th>soundname</th>
+                    </tr>
+                </thead>
+                <tbody data-search='{{term}}'>
+                </tbody>
             </table>
         </div>
     </script>
@@ -46,12 +58,12 @@
         </td>
         <td>
             <button class='soundinfo' disabled='true' id='play-sound-{{id}}'>
-                 play
+                 +
             </button>
         </td>
         <td>
             <button class='soundinfo' disabled='true' id='remove-sound-{{id}}'>
-                 remove
+                 X
             </button>
         </td>
         <td>

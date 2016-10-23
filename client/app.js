@@ -129,7 +129,7 @@ function downloadBufferForID(inID, url) {
 
 function displaySoundInfo(inSearchText, inInfo) {
     // add the newly created element and its content into the DOM
-    var containerDiv = $('table[data-search="' + inSearchText + '"]');
+    var containerDiv = $('tbody[data-search="' + inSearchText + '"]');
     containerDiv.insertAdjacentHTML('beforeend', gTemplates['sound-button'](inInfo));
 
     $('#play-sound-' + inInfo.id).addEventListener('click', function(event) {
