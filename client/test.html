@@ -65,32 +65,35 @@
 </head>
 
 <body>
-    <h2>Freesound Musique Concr&egrave;te</h2>
-    <div class='container'>
-        <input class='search-title' id='searchtext' type='text' />
-        <button class='search-title' id='searchbutton'><i class="material-icons">search</i></button>
+    <div style='height: 300px'>
     </div>
-    <div class='container'>
-        <i class="material-icons">alarm</i>
-        <input id='autoplayon' type='checkbox'/> autoplay:
-        count <input id='autoplaycount' size='3' type='text' value='2'/>
-        delay <input id='autoplaydelay' size='3' type='text' value='5'/>
-    </div>
-    <div class='container'>
-        <button id='playbutton'>Play Random</button>
-        <button id='stopbutton'>Stop All</button>
 
-        sounds:
-        <span id='soundinfocount'>0</span> found,
-        <span id='buffercount'>0</span> loaded, 
-        <span id='playingcount'>0</span> playing
+    <div class='floating-container'>
+        <div class='inner-container'>
+            <input class='search-title' id='searchtext' type='text' />
+            <button class='search-title' id='searchbutton'><i class="material-icons">search</i></button>
+            <span style='float: right; font-size: 18pt'>Freesound Musique Concr&egrave;te</span>
+        </div>
+        <div class='inner-container'>
+            <i class="material-icons">alarm</i>
+            <input id='autoplayon' type='checkbox'/> <label>autoplay:</label>
+            count <input id='autoplaycount' size='3' type='text' value='2'/>
+            delay <input id='autoplaydelay' size='3' type='text' value='5'/>
+        </div>
+        <div class='inner-container'>
+            <button id='playbutton'>Play Random</button>
+            <button id='stopbutton'>Stop All</button>
 
-        <div style='height: 110px; padding-top: 10px' id='playingcontainer'>
+            sounds:
+            <span id='soundinfocount'>0</span> found,
+            <span id='buffercount'>0</span> loaded, 
+            <span id='playingcount'>0</span> playing
+
+            <div style='height: 110px; padding-top: 10px' id='playingcontainer'>
+            </div>
         </div>
     </div>
-    <div style='height: 300px; overflow: scroll; border-top: solid 5px lightgray'>
-        <div id='soundcontainer'>
-        </div>
+    <div id='soundcontainer'>
     </div>
 </body>
 
