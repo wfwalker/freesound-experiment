@@ -40,6 +40,10 @@ body {
 	font-size: 24pt;
 }
 
+.controls {
+	font-size: 18pt;
+}
+
 button {
 	font-size: 9pt;
 	border: solid 1px lightgray;

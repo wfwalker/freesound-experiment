@@ -76,18 +76,22 @@
         </div>
         <div class='inner-container'>
             <i class="material-icons">alarm</i>
-            <input disabled='true' id='autoplayon' type='checkbox'> <label for='autoplayon'>autoplay:</label>
-            count <input id='autoplaycount' size='3' type='text' value='3'/>
-            delay <input id='autoplaydelay' size='3' type='text' value='1'/>
+            <span class='controls'>
+                <input disabled='true' id='autoplayon' type='checkbox'> <label for='autoplayon'>autoplay:</label>
+                count <input id='autoplaycount' size='3' type='text' value='3'/>
+                delay <input id='autoplaydelay' size='3' type='text' value='1'/>
+            </span>
         </div>
         <div class='inner-container'>
-            <button disabled='true' id='playbutton'>Play Random</button>
-            <button disabled='true' id='stopbutton'>Stop All</button>
+            <button class='controls' disabled='true' id='playbutton'>play random</button>
+            <button class='controls' disabled='true' id='stopbutton'>stop all</button>
 
-            sounds:
-            <span id='soundinfocount'>0</span> found,
-            <span id='buffercount'>0</span> loaded, 
-            <span id='playingcount'>0</span> playing
+            <span class='controls'>
+                sounds:
+                <span id='soundinfocount'>0</span> found,
+                <span id='buffercount'>0</span> loaded, 
+                <span id='playingcount'>0</span> playing
+            </span>
 
             <div style='height: 110px; padding-top: 10px' id='playingcontainer'>
             </div>
