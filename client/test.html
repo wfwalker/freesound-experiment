@@ -10,10 +10,11 @@
     <script type="text/javascript" src="/lib/freesound.js"></script>
     <script type="text/javascript" src="/client/app.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 
     <link href="/client/app.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Fredericka+the+Great|Open+Sans+Condensed:300" rel="stylesheet">
 
     <script id="search-results-template" type="text/x-handlebars-template">
         <div class='container' data-search='{{term}}'>
@@ -43,9 +44,7 @@
             <div>{{name}}</div>
             <div>{{username}}</div>
             <div><span class='elapsed' data-starttime='{{starttime}}'></span> of <span>{{round duration}}s</span></div>
-            <button class='remove-sound' data-sound-id='{{id}}'>
-                 remove
-            </button>
+            <button class='remove-sound' data-sound-id='{{id}}'>X</button>
         </div>
     </script>
 
@@ -85,7 +84,7 @@
         <div class='inner-container'>
             <input class='search-title' id='searchtext' type='text' />
             <button class='search-title' id='searchbutton'><i class="material-icons">search</i></button>
-            <span style='float: right; font-size: 18pt'>Freesound Musique Concr&egrave;te</span>
+            <span class='logotype'>Freesound Musique Concr&egrave;te</span>
         </div>
         <div class='inner-container'>
             <i class="material-icons">alarm</i>

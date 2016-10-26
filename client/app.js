@@ -82,7 +82,7 @@ function handleBufferPlayEnded(e) {
 function handleSoundDownloadProgress(event) {
     var freesoundID = event.target.freesoundID;
     $('#play-sound-' + freesoundID).attr('loading', 'true');
-    $('span[data-sound-id="' + freesoundID + '"]').textContent = Math.round(100 * event.loaded / event.total) + '%';    
+    $('span[data-sound-id="' + freesoundID + '"]').text(Math.round(100 * event.loaded / event.total) + '%');
 }
 
 function handleSoundDownloadDone(event) {

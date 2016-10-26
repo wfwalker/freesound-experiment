@@ -1,7 +1,14 @@
+.logotype {
+	font-family: 'Fredericka the Great';
+	float: right; 
+	font-size: 36pt;
+}
+
 .container {
 	border: solid 1px white;
 	border-radius: 15px;
 	padding: 20px;
+	font-family: 'Open Sans Condensed';
 }
 
 .floating-container {
@@ -29,11 +36,11 @@
 	overflow: hidden;
 	float: left;
 	white-space: nowrap;
+	font-family: 'Open Sans Condensed';	
 }
 
 body {
-	font-family: Helvetica;
-	font-size: 10pt;
+	font-family: 'Open Sans Condensed';
 }
 
 .search-title {
@@ -45,7 +52,7 @@ body {
 }
 
 button {
-	font-size: 9pt;
+	font-family: 'Open Sans Condensed';
 	border: solid 1px lightgray;
 	border-radius: 3px;
 }
@@ -60,5 +67,5 @@ button[loading] {
 }
 
 input {
-	font-size: 10pt;
+	font-family: 'Open Sans Condensed';
 }
