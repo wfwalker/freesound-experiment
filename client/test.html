@@ -10,6 +10,7 @@
     <script type="text/javascript" src="/lib/freesound.js"></script>
     <script type="text/javascript" src="/client/app.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 
     <link href="/client/app.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -42,7 +43,7 @@
             <div>{{name}}</div>
             <div>{{username}}</div>
             <div><span class='elapsed' data-starttime='{{starttime}}'></span> of <span>{{round duration}}s</span></div>
-            <button class='soundinfo' id='remove-sound-{{id}}'>
+            <button class='remove-sound' data-sound-id='{{id}}'>
                  remove
             </button>
         </div>
@@ -62,7 +63,7 @@
             </button>
         </td>
         <td>
-            <button class='soundinfo' disabled='true' id='remove-sound-{{id}}'>
+            <button class='remove-sound' disabled='true' data-sound-id='{{id}}'>
                  X
             </button>
         </td>

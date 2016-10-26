@@ -12,11 +12,6 @@ var gBufferSourceByID = {};
 var gSearchHistory = {};
 var gTemplates = {};
 
-function $ (selector, el) {
-     if (!el) {el = document;}
-     return el.querySelector(selector);
-}
-
 // find AudioBuffer by ID, create a BufferSource, start it playing
 // track all currently playing buffersources in gBufferSourceByID
 // don't start another copy of a sound if it is already playing
@@ -53,7 +48,7 @@ function playBufferForID(inID) {
     gBufferSourceByID[inID] = aBufferSource;
     handleBufferSourceListUpdated(inID);
 
-    $('#play-sound-' + inID).setAttribute('playing', 'true');
+    $('#play-sound-' + inID).attr('playing', 'true');
 
     aBufferSource.addEventListener('ended', handleBufferPlayEnded);
 }
@@ -78,7 +73,7 @@ function handleBufferPlayEnded(e) {
     // if there's a play-button, mark it as not playing
     var selectorString = '#play-sound-' + freesoundID;
     if ($(selectorString)) {
-        $(selectorString).removeAttribute('playing');
+        $(selectorString).removeAttr('playing');
     }
 }
 
@@ -86,23 +81,23 @@ function handleBufferPlayEnded(e) {
 
 function handleSoundDownloadProgress(event) {
     var freesoundID = event.target.freesoundID;
-    $('#play-sound-' + freesoundID).setAttribute('loading', 'true');
+    $('#play-sound-' + freesoundID).attr('loading', 'true');
     $('span[data-sound-id="' + freesoundID + '"]').textContent = Math.round(100 * event.loaded / event.total) + '%';    
 }
 
 function handleSoundDownloadDone(event) {
     var freesoundID = event.target.freesoundID;
-    $('#play-sound-' + freesoundID).removeAttribute('loading');
+    $('#play-sound-' + freesoundID).removeAttr('loading');
 
     var progressIndicator = $('span[data-sound-id="' + freesoundID + '"]');
-    progressIndicator.parentNode.removeChild(progressIndicator);
+    progressIndicator.remove();
 
     console.log('about to decode', freesoundID, gSoundInfoByID[freesoundID].name);
     gAudioContext.decodeAudioData(event.target.response, function(inBuffer) {
         console.log('decoded', freesoundID, gSoundInfoByID[freesoundID].name);
         gBufferByID[freesoundID] = inBuffer;
-        $('#play-sound-' + freesoundID).removeAttribute('disabled');
-        $('#remove-sound-' + freesoundID).removeAttribute('disabled');
+        $('#play-sound-' + freesoundID).removeAttr('disabled');
+        $('.remove-sound[data-sound-id="'+freesoundID+'"]').removeAttr('disabled');
         handleBufferListUpdate(freesoundID);
     }, function (e) {
         console.log('error handler', e);
@@ -130,9 +125,9 @@ function downloadBufferForID(inID, url) {
 function displaySoundInfo(inSearchText, inInfo) {
     // add the newly created element and its content into the DOM
     var containerDiv = $('tbody[data-search="' + inSearchText + '"]');
-    containerDiv.insertAdjacentHTML('beforeend', gTemplates['sound-button'](inInfo));
+    containerDiv.append(gTemplates['sound-button'](inInfo));
 
-    $('#play-sound-' + inInfo.id).addEventListener('click', function(event) {
+    $('#play-sound-' + inInfo.id).click(function(event) {
         console.log('clicked', inInfo.name);
         if (gBufferSourceByID[inInfo.id]) {
             console.log('STOP', inInfo.name, gBufferSourceByID[inInfo.id]);
@@ -148,7 +143,7 @@ function displaySoundInfo(inSearchText, inInfo) {
     });
 
     //TODO: add hadler for remove sound button
-    $('#remove-sound-' + inInfo.id).addEventListener('click', function(event) {
+    $('.remove-sound[data-sound-id="'+inInfo.id+'"]').click(function(event) {
         console.log('remove-sound', event.target);
         // stop playing,  remove from arrays, notify observers
         deleteBufferForID(inInfo.id);
@@ -181,16 +176,16 @@ function handleBufferListUpdate(inID) {
 
     if (gBufferByID[inID]) {
         console.log('buffer list adding', gSoundInfoByID[inID].name);
-        $('#autoplayon').removeAttribute('disabled');
-        $('#playbutton').removeAttribute('disabled');
-        $('#stopbutton').removeAttribute('disabled');
+        $('#autoplayon').removeAttr('disabled');
+        $('#playbutton').removeAttr('disabled');
+        $('#stopbutton').removeAttr('disabled');
     } else {
         console.log('buffer list removing', inID);
 
         if (bufferCount == 0) {
-            $('#autoplayon').setAttribute('disabled', 'true');
-            $('#playbutton').setAttribute('disabled', 'true');
-            $('#stopbutton').setAttribute('disabled', 'true');
+            $('#autoplayon').attr('disabled', 'true');
+            $('#playbutton').attr('disabled', 'true');
+            $('#stopbutton').attr('disabled', 'true');
         }
     }
 
@@ -211,7 +206,17 @@ function handleSoundInfoUpdate(inID) {
 function handleBufferSourceListUpdated(inID) {
     if (gBufferSourceByID[inID]) { 
         console.log('buffer sources add', gSoundInfoByID[inID].name);
-        $('#playingcontainer').insertAdjacentHTML('beforeend', gTemplates['buffer-playing'](gSoundInfoByID[inID]));
+        $('#playingcontainer').append(gTemplates['buffer-playing'](gSoundInfoByID[inID]));
+
+        // TODO wire up remove sound button
+        $('.remove-sound[data-sound-id="'+inID+'"]').click(function(event) {
+            console.log('remove-sound', event.target);
+            // stop playing,  remove from arrays, notify observers
+            deleteBufferForID(inID);
+            // remove from table
+            $('#sound-button-row-' + inID).remove();
+        });
+
     } else {
         console.log('buffer sources remove', inID);
         if ($('div[data-sound-id="' + inID + '"]')) {
@@ -226,9 +231,9 @@ function handleBufferSourceListUpdated(inID) {
 function doSearch(inString) {
     gSearchHistory[inString] = [];
 
-    document.getElementById('soundcontainer').insertAdjacentHTML('beforeend', gTemplates['search-results']({term: inString}));
+    $('#soundcontainer').append(gTemplates['search-results']({term: inString}));
 
-    $('button[data-search-term="' + inString + '"]').addEventListener('click', function(e) {
+    $('button[data-search-term="' + inString + '"]').click(function(e) {
         var searchTerm = e.target.getAttribute('data-search-term');
         deleteBuffersForSearch(searchTerm);
 
@@ -353,9 +358,9 @@ function elapsedTask() {
 window.onload = function(){
     document.getElementById('autoplayon').checked = false;
 
-    gTemplates['sound-button'] = Handlebars.compile($('#sound-button-template').innerHTML);
-    gTemplates['search-results'] = Handlebars.compile($('#search-results-template').innerHTML);
-    gTemplates['buffer-playing'] = Handlebars.compile($('#buffer-playing-template').innerHTML);
+    gTemplates['sound-button'] = Handlebars.compile($('#sound-button-template').html());
+    gTemplates['search-results'] = Handlebars.compile($('#search-results-template').html());
+    gTemplates['buffer-playing'] = Handlebars.compile($('#buffer-playing-template').html());
 
     Handlebars.registerHelper('round', function (num) {
         return Math.round(num);
