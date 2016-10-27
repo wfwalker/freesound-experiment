@@ -1,7 +1,7 @@
 .logotype {
 	font-family: 'Fredericka the Great';
 	float: right; 
-	font-size: 36pt;
+	font-size: 24pt;
 }
 
 .container {
@@ -48,7 +48,7 @@ body {
 }
 
 .controls {
-	font-size: 18pt;
+	font-size: 24pt;
 }
 
 button {

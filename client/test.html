@@ -19,7 +19,7 @@
     <script id="search-results-template" type="text/x-handlebars-template">
         <div class='container' data-search='{{term}}'>
             <div class='searchStringLabel'>
-                <button data-search-term='{{term}}'><i class="material-icons">close</i></button>
+                <button data-search-term='{{term}}'>X</button>
                 <span class='search-title'>{{term}}</span>
             </div>
             <table>
@@ -77,34 +77,19 @@
 </head>
 
 <body>
-    <div style='height: 300px'>
+    <div style='height: 210px'>
     </div>
 
     <div class='floating-container'>
-        <div class='inner-container'>
+        <div class='inner-container controls'>
             <input class='search-title' id='searchtext' type='text' />
             <button class='search-title' id='searchbutton'><i class="material-icons">search</i></button>
+            <input disabled='true' id='autoplayon' type='checkbox'> <label for='autoplayon'><i class="material-icons">volume_up</i></label>
+            count <input class='search-title' id='autoplaycount' size='2' type='text' value='3'/>
+            delay <input class='search-title' id='autoplaydelay' size='2' type='text' value='1'/>
             <span class='logotype'>Freesound Musique Concr&egrave;te</span>
         </div>
         <div class='inner-container'>
-            <i class="material-icons">alarm</i>
-            <span class='controls'>
-                <input disabled='true' id='autoplayon' type='checkbox'> <label for='autoplayon'>autoplay:</label>
-                count <input id='autoplaycount' size='3' type='text' value='3'/>
-                delay <input id='autoplaydelay' size='3' type='text' value='1'/>
-            </span>
-        </div>
-        <div class='inner-container'>
-            <button class='controls' disabled='true' id='playbutton'>play random</button>
-            <button class='controls' disabled='true' id='stopbutton'>stop all</button>
-
-            <span class='controls'>
-                sounds:
-                <span id='soundinfocount'>0</span> found,
-                <span id='buffercount'>0</span> loaded, 
-                <span id='playingcount'>0</span> playing
-            </span>
-
             <div style='height: 110px; padding-top: 10px' id='playingcontainer'>
             </div>
         </div>

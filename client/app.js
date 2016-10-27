@@ -60,20 +60,23 @@ function handleBufferPlayEnded(e) {
         console.log('ENDED', gSoundInfoByID[freesoundID].name);
         // turn off timer
         delete gSoundInfoByID[freesoundID].starttime;
-        // disconnect gain node
-        gBufferSourceByID[freesoundID].myGainNode.disconnect();
-        // remove buffer from global buffer list
-        delete gBufferSourceByID[freesoundID];
-        // notify observers of global buffer list
-        handleBufferSourceListUpdated(freesoundID);
     } else {
-        console.log('ENDED', freesoundID);
+        console.log('ENDED no sound info?', freesoundID);
     }
+
+    // disconnect gain node
+    gBufferSourceByID[freesoundID].myGainNode.disconnect();
+    // remove buffer from global buffer list
+    delete gBufferSourceByID[freesoundID];
+    // notify observers of global buffer list
+    handleBufferSourceListUpdated(freesoundID);
 
     // if there's a play-button, mark it as not playing
     var selectorString = '#play-sound-' + freesoundID;
     if ($(selectorString)) {
         $(selectorString).removeAttr('playing');
+    } else {
+        console.log('no play button');
     }
 }
 
@@ -177,19 +180,13 @@ function handleBufferListUpdate(inID) {
     if (gBufferByID[inID]) {
         console.log('buffer list adding', gSoundInfoByID[inID].name);
         $('#autoplayon').removeAttr('disabled');
-        $('#playbutton').removeAttr('disabled');
-        $('#stopbutton').removeAttr('disabled');
     } else {
         console.log('buffer list removing', inID);
 
         if (bufferCount == 0) {
             $('#autoplayon').attr('disabled', 'true');
-            $('#playbutton').attr('disabled', 'true');
-            $('#stopbutton').attr('disabled', 'true');
         }
     }
-
-    document.getElementById('buffercount').textContent = bufferCount;
 }
 
 // respond to an update in the sound info list by updating the count
@@ -200,7 +197,6 @@ function handleSoundInfoUpdate(inID) {
     } else {
         console.log('sound info removing', inID);
     }
-    document.getElementById('soundinfocount').textContent = Object.keys(gSoundInfoByID).length;
 }
 
 function handleBufferSourceListUpdated(inID) {
@@ -223,7 +219,6 @@ function handleBufferSourceListUpdated(inID) {
             $('div[data-sound-id="' + inID + '"]').remove();
         }
     }
-    document.getElementById('playingcount').textContent = Object.keys(gBufferSourceByID).length;   
 }
 
 // handle the event handler by starting a Freesound text search
@@ -297,38 +292,24 @@ function handleSearch(event) {
 
 // choose a random ID from the buffer dictionary and start playing
 
-function handlePlay(event) {
-    event.preventDefault();
-    playRandomBuffer();
-
-    console.log('handlePlay');
-}
-
-// stop all playing sounds by iterating through gBufferSourceByID
-
-function handleStop(event) {
-    console.log('handleStop');
-    for (var bufferSourceID in gBufferSourceByID) {
-        console.log('STOP', bufferSourceID);
-        gBufferSourceByID[bufferSourceID].stop();
-    }
-}
-
 function autoPlayTask() {
     var autoPlayCount = document.getElementById('autoplaycount').value;
     var autoPlayDelay = document.getElementById('autoplaydelay').value;
 
-    if (Object.keys(gBufferSourceByID).length < autoPlayCount) {
-        console.log('autoplay random buffer');
-        playRandomBuffer();
-    } else {
-        console.log('autoPlayTask do nothing')
-    }
-
+    // if autoplay still checked
     if (document.getElementById('autoplayon').checked) {
+        // and there's not enough sounds playing
+        if (Object.keys(gBufferSourceByID).length < autoPlayCount) {
+            console.log('autoplay random buffer');
+            playRandomBuffer();
+        } else {
+            console.log('autoPlayTask do nothing')
+        }
+
+        // do it again soon
         window.setTimeout(autoPlayTask, 1000 * autoPlayDelay);
     } else {
-        console.log('autoPlayTask not renewing');
+        console.log('autoPlayTask already off');
     }
 }
 
@@ -338,6 +319,12 @@ function handleAutoPlay(event) {
     if (event.target.checked) {
         console.log('autoplay', event.target.checked, autoPlayDelay);
         window.setTimeout(autoPlayTask, 1000 * autoPlayDelay);
+    } else {
+        console.log('stop all');
+        for (var bufferSourceID in gBufferSourceByID) {
+            console.log('STOP', bufferSourceID);
+            gBufferSourceByID[bufferSourceID].stop();
+        }
     }
 }
 
@@ -367,8 +354,6 @@ window.onload = function(){
     });
 
     document.getElementById('searchbutton').addEventListener('click', handleSearch);
-    document.getElementById('stopbutton').addEventListener('click', handleStop);
-    document.getElementById('playbutton').addEventListener('click', handlePlay);
     document.getElementById('autoplayon').addEventListener('click', handleAutoPlay);
 
     console.log('start moo');
