@@ -8,6 +8,28 @@ var FreesoundCollection = function(inAudioContext) {
 	this.audioContext = inAudioContext;
 }
 
+FreesoundCollection.prototype.handleBufferSourceListUpdated = function(inID) {
+    if (this.bufferSourceByID[inID]) { 
+        console.log('buffer sources add', this.soundInfoByID[inID].name);
+        $('#playingcontainer').append(gTemplates['buffer-playing'](this.soundInfoByID[inID]));
+
+        // TODO wire up remove sound button
+        $('.remove-sound[data-sound-id="'+inID+'"]').click(function(event) {
+            console.log('remove-sound', event.target);
+            // stop playing,  remove from arrays, notify observers
+            this.deleteBufferForID(inID);
+            // remove from table
+            $('#sound-button-row-' + inID).remove();
+        }.bind(this));
+
+    } else {
+        console.log('buffer sources remove', inID);
+        if ($('div[data-sound-id="' + inID + '"]')) {
+            $('div[data-sound-id="' + inID + '"]').remove();
+        }
+    }
+}
+
 FreesoundCollection.prototype.playBufferForID = function(inID) {
     if (this.bufferSourceByID[inID]) {
         console.log('ALREADY PLAYING', inID, this.soundInfoByID[inID].name);
@@ -20,7 +42,7 @@ FreesoundCollection.prototype.playBufferForID = function(inID) {
     // CREATE gain node
     var gainNode = this.audioContext.createGain();
     gainNode.gain.value = 1;
-    gainNode.connect(gAudioContext.destination);
+    gainNode.connect(this.audioContext.destination);
 
     // CREATE audio buffer source
     var aBufferSource = this.audioContext.createBufferSource();
@@ -31,14 +53,31 @@ FreesoundCollection.prototype.playBufferForID = function(inID) {
     aBufferSource.myGainNode = gainNode;
 
     this.bufferSourceByID[inID] = aBufferSource;
-    handleBufferSourceListUpdated(inID);
+    this.handleBufferSourceListUpdated(inID);
 
     $('#play-sound-' + inID).attr('playing', 'true');
 
-    aBufferSource.addEventListener('ended', handleBufferPlayEnded);
+    aBufferSource.addEventListener('ended', function(e) {
+    	this.handleBufferPlayEnded(e);
+    }.bind(this));
 }
 
-function handleBufferPlayEnded(e) {
+FreesoundCollection.prototype.onPlayButtonClicked = function(inInfo) {
+    console.log('clicked', inInfo.name);
+    if (this.bufferSourceByID[inInfo.id]) {
+        console.log('STOP', inInfo.name, this.bufferSourceByID[inInfo.id]);
+        this.bufferSourceByID[inInfo.id].stop();
+    } else {
+        if (this.bufferByID[inInfo.id]) {
+            this.playBufferForID(inInfo.id);
+            console.log('PLAY', inInfo.name, this.bufferSourceByID[inInfo.id]);
+        } else {
+            console.log('no buffer yet for', inInfo.name);
+        }            
+    }
+}
+
+FreesoundCollection.prototype.handleBufferPlayEnded = function(e) {
     var freesoundID = e.target.freesoundID;
 
     if (this.soundInfoByID[freesoundID]) {
@@ -54,15 +93,15 @@ function handleBufferPlayEnded(e) {
     // remove buffer from global buffer list
     delete this.bufferSourceByID[freesoundID];
     // notify observers of global buffer list
-    handleBufferSourceListUpdated(freesoundID);
+    this.handleBufferSourceListUpdated(freesoundID);
 
-    // // if there's a play-button, mark it as not playing
-    // var selectorString = '#play-sound-' + freesoundID;
-    // if ($(selectorString)) {
-    //     $(selectorString).removeAttr('playing');
-    // } else {
-    //     console.log('no play button');
-    // }
+    // if there's a play-button, mark it as not playing
+    var selectorString = '#play-sound-' + freesoundID;
+    if ($(selectorString)) {
+        $(selectorString).removeAttr('playing');
+    } else {
+        console.log('no play button');
+    }
 }
 
 FreesoundCollection.prototype.playRandomBuffer = function() {
@@ -75,17 +114,15 @@ FreesoundCollection.prototype.playRandomBuffer = function() {
 FreesoundCollection.prototype.search = function(inString) {
     console.log('about to search', inString);
     this.searchHistory[inString] = [];
-    var collection = this;
 
     freesound.textSearch(inString, {},
         function(resultsObject) {
             for (var index = 0; index < resultsObject.results.length; index++) {
                 var tempID = resultsObject.results[index].id;
-                console.log('collection', collection.searchHistory, inString);
-                collection.searchHistory[inString].push(tempID);
-                collection.getInfoAndLoadPreviewByID(inString, tempID);
+                this.searchHistory[inString].push(tempID);
+                this.getInfoAndLoadPreviewByID(inString, tempID);
             }
-        }, function(err) {
+        }.bind(this), function(err) {
             console.log('textsearch err', err);
         }
     );
@@ -95,26 +132,27 @@ FreesoundCollection.prototype.search = function(inString) {
 FreesoundCollection.prototype.handleSoundDownloadProgress = function(event) {
     var freesoundID = event.target.freesoundID;
     console.log('progress', event.target.freesoundID, event.loaded, event.total);
-    // $('#play-sound-' + freesoundID).attr('loading', 'true');
-    // $('span[data-sound-id="' + freesoundID + '"]').text(Math.round(100 * event.loaded / event.total) + '%');
+    $('#play-sound-' + freesoundID).attr('loading', 'true');
+    $('span[data-sound-id="' + freesoundID + '"]').text(Math.round(100 * event.loaded / event.total) + '%');
 }
 
 FreesoundCollection.prototype.handleSoundDownloadDone = function(event) {
     var freesoundID = event.target.freesoundID;
-    var collection = event.target.collection;
-    // $('#play-sound-' + freesoundID).removeAttr('loading');
+    $('#play-sound-' + freesoundID).removeAttr('loading');
 
-    // var progressIndicator = $('span[data-sound-id="' + freesoundID + '"]');
-    // progressIndicator.remove();
+    var progressIndicator = $('span[data-sound-id="' + freesoundID + '"]');
+    progressIndicator.remove();
 
     console.log('about to decode', freesoundID);
-    collection.audioContext.decodeAudioData(event.target.response, function(inBuffer) {
-        console.log('decoded', freesoundID, collection.soundInfoByID[freesoundID].name);
-        collection.bufferByID[freesoundID] = inBuffer;
-        // $('#play-sound-' + freesoundID).removeAttr('disabled');
-        // $('.remove-sound[data-sound-id="'+freesoundID+'"]').removeAttr('disabled');
-        // handleBufferListUpdate(freesoundID);
-    }, function (e) {
+    this.audioContext.decodeAudioData(event.target.response, function(inBuffer) {
+        console.log('decoded', freesoundID, this.soundInfoByID[freesoundID].name);
+        this.bufferByID[freesoundID] = inBuffer;
+
+        // TODO belongs elsewhere?
+        $('#play-sound-' + freesoundID).removeAttr('disabled');
+        $('.remove-sound[data-sound-id="'+freesoundID+'"]').removeAttr('disabled');
+        handleBufferListUpdate(freesoundID);
+    }.bind(this), function (e) {
         console.log('error handler', e);
     });
 }
@@ -126,13 +164,12 @@ FreesoundCollection.prototype.downloadBufferForID = function(inID, url) {
     request.open('GET', url, true);
     request.responseType = 'arraybuffer';
     request.freesoundID = inID;
-    request.collection = this;
 
     // handle progress events
     request.addEventListener('progress', this.handleSoundDownloadProgress);
 
     // Decode asynchronously
-    request.onload = this.handleSoundDownloadDone;
+    request.onload = this.handleSoundDownloadDone.bind(this);
 
     request.send();
 }
@@ -146,21 +183,20 @@ FreesoundCollection.prototype.deleteBufferForID = function(anID) {
     delete this.bufferSourceByID[anID];
     delete this.soundInfoByID[anID];
     delete this.bufferByID[anID];
-    // handleBufferSourceListUpdated(anID);
-    // handleBufferListUpdate(anID);
+    this.handleBufferSourceListUpdated(anID);
+    handleBufferListUpdate(anID);
 }
 
 
 FreesoundCollection.prototype.getInfoAndLoadPreviewByID = function(inSearchText, inID) {
     console.log('getInfoAndLoadPreviewByID', inID);
-    var collection = this;
 
     freesound.getSound(inID,
         function(sound) {
-            collection.soundInfoByID[inID] = sound;
-            // collection.displaySoundInfo(inSearchText, sound);
-            collection.downloadBufferForID(inID, sound.previews['preview-hq-mp3']);
-        },
+            this.soundInfoByID[inID] = sound;
+            displaySoundInfo(inSearchText, sound);
+            this.downloadBufferForID(inID, sound.previews['preview-hq-mp3']);
+        }.bind(this),
         function(e) {
             console.log("Sound could not be retrieved", e);
         }
