@@ -9,11 +9,12 @@ var FreesoundCollection = function(inAudioContext) {
 }
 
 FreesoundCollection.prototype.handleBufferSourceListUpdated = function(inID) {
-    if (this.bufferSourceByID[inID]) { 
+    // if an ID was added, use the template to add an HTML element for it...
+    if (this.bufferSourceByID[inID]) {
         console.log('buffer sources add', this.soundInfoByID[inID].name);
         $('#playingcontainer').append(gTemplates['buffer-playing'](this.soundInfoByID[inID]));
 
-        // TODO wire up remove sound button
+        // upon pressing the remove sound button
         $('.remove-sound[data-sound-id="'+inID+'"]').click(function(event) {
             console.log('remove-sound', event.target);
             // stop playing,  remove from arrays, notify observers
@@ -21,7 +22,7 @@ FreesoundCollection.prototype.handleBufferSourceListUpdated = function(inID) {
             // remove from table
             $('#sound-button-row-' + inID).remove();
         }.bind(this));
-
+    // ...otherwise remove the HTML element for this ID
     } else {
         console.log('buffer sources remove', inID);
         if ($('div[data-sound-id="' + inID + '"]')) {
@@ -116,10 +117,11 @@ FreesoundCollection.prototype.playRandomBuffer = function() {
 }
 
 FreesoundCollection.prototype.search = function(inString) {
-    console.log('about to search', inString);
+    var fullSearch = inString + '&filter=duration:[1 TO 90]'
+    console.log('about to search', fullSearch);
     this.searchHistory[inString] = [];
 
-    freesound.textSearch(inString, {},
+    freesound.textSearch(fullSearch, {},
         function(resultsObject) {
             for (var index = 0; index < resultsObject.results.length; index++) {
                 var tempID = resultsObject.results[index].id;
