@@ -57,7 +57,7 @@ function doSearch(inString) {
 
     $('button[data-search-term="' + inString + '"]').click(function(e) {
         var searchTerm = e.target.getAttribute('data-search-term');
-        deleteBuffersForSearch(searchTerm);
+        theCollection.deleteBuffersForSearch(searchTerm);
 
         // remove whole category
         $('div[data-search="' + inString + '"]').remove();
