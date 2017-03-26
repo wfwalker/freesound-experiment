@@ -88,12 +88,16 @@ FreesoundCollection.prototype.handleBufferPlayEnded = function(e) {
         console.log('ENDED no sound info?', freesoundID);
     }
 
-    // disconnect gain node
-    this.bufferSourceByID[freesoundID].myGainNode.disconnect();
-    // remove buffer from global buffer list
-    delete this.bufferSourceByID[freesoundID];
-    // notify observers of global buffer list
-    this.handleBufferSourceListUpdated(freesoundID);
+    if (this.bufferSourceByID[freesoundID]) {
+        // disconnect gain node
+        this.bufferSourceByID[freesoundID].myGainNode.disconnect();
+        // remove buffer from global buffer list
+        delete this.bufferSourceByID[freesoundID];
+        // notify observers of global buffer list
+        this.handleBufferSourceListUpdated(freesoundID);
+    } else {
+        console.log('ENDED no buffer source?', freesoundID);
+    }
 
     // if there's a play-button, mark it as not playing
     var selectorString = '#play-sound-' + freesoundID;
