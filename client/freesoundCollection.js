@@ -37,6 +37,11 @@ FreesoundCollection.prototype.playBufferForID = function(inID) {
         return;
     }
 
+    if (! this.soundInfoByID[inID]) {
+        console.log('NO SOUND INFO FOR', inID);
+        return;
+    }
+
     console.log('PLAY', inID, this.soundInfoByID[inID].name);
     this.soundInfoByID[inID].starttime = new Date();
 
@@ -218,6 +223,8 @@ FreesoundCollection.prototype.deleteBuffersForSearch = function(inSearchTerm) {
         var anID = searchHits[index];
         this.deleteBufferForID(anID);
     }
+
+    delete this.searchHistory[inSearchTerm];
 }
 
 if (typeof module != 'undefined') {

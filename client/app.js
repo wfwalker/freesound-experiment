@@ -44,7 +44,9 @@ function handleBufferListUpdate(inID) {
         console.log('buffer list removing', inID);
 
         if (bufferCount == 0) {
+            $('#autoplayon').prop('checked', false);
             $('#autoplayon').attr('disabled', 'true');
+            $('#autoplayon').click();
         }
     }
 }
@@ -61,7 +63,6 @@ function doSearch(inString) {
 
         // remove whole category
         $('div[data-search="' + inString + '"]').remove();
-        delete gSearchHistory[searchTerm];
     });
 
     console.log('about to search', inString);
