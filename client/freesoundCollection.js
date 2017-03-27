@@ -45,7 +45,7 @@ FreesoundCollection.prototype.playBufferForID = function(inID) {
     console.log('PLAY', inID, this.soundInfoByID[inID].name);
     var tempDate = new Date();
     this.soundInfoByID[inID].starttime = tempDate;
-    $('span[data-starttime-id="' + inID + '"]').text(tempDate);
+    $('span[data-starttime-id="' + inID + '"]').text(tempDate.getHours() + ':' + tempDate.getMinutes() + ':' + tempDate.getSeconds());
 
     // CREATE gain node
     var gainNode = this.audioContext.createGain();
@@ -144,7 +144,7 @@ FreesoundCollection.prototype.search = function(inString) {
 
 FreesoundCollection.prototype.handleSoundDownloadProgress = function(event) {
     var freesoundID = event.target.freesoundID;
-    console.log('progress', event.target.freesoundID, event.loaded, event.total);
+    // console.log('progress', event.target.freesoundID, event.loaded, event.total);
     $('#play-sound-' + freesoundID).attr('loading', 'true');
     $('span[data-sound-id="' + freesoundID + '"]').text(Math.round(100 * event.loaded / event.total) + '%');
 }
