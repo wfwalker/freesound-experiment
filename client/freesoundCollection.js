@@ -15,6 +15,7 @@ FreesoundCollection.prototype.handleBufferSourceListUpdated = function(inID) {
         $('#playingcontainer').append(gTemplates['buffer-playing'](this.soundInfoByID[inID]));
 
         // upon pressing the remove sound button
+        // TODO: two copies of this click handler, one in app.js and one in freesoundCollection.js
         $('.remove-sound[data-sound-id="'+inID+'"]').click(function(event) {
             console.log('remove-sound', event.target);
             // stop playing,  remove from arrays, notify observers

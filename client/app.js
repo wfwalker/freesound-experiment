@@ -22,7 +22,7 @@ function displaySoundInfo(inSearchText, inInfo) {
         theCollection.onPlayButtonClicked(inInfo);
     });
 
-    //TODO: combine with FreesoundCollection.prototype.handleBufferSourceListUpdated
+    // TODO: two copies of this click handler, one in app.js and one in freesoundCollection.js
     $('.remove-sound[data-sound-id="'+inInfo.id+'"]').click(function(event) {
         console.log('remove-sound', event.target);
         // stop playing,  remove from arrays, notify observers
