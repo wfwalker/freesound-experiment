@@ -75,7 +75,7 @@ function handleSearch(event) {
     event.preventDefault();
 
     var searchText = document.getElementById('searchtext').value;
-    console.log('handleSearh', searchText);
+    console.log('handleSearch', searchText);
 
     var stringTokens = searchText.split(' ');
     for (var index = 0; index < stringTokens.length; index++) {
@@ -121,6 +121,8 @@ function handleAutoPlay(event) {
     }
 }
 
+// run every second updating all elapsed time displayers
+
 function elapsedTask() {
     var timers = document.querySelectorAll('.elapsed');
 
@@ -136,20 +138,24 @@ function elapsedTask() {
 // when the window is loaded, set up search and play event handlers
 
 window.onload = function(){
+    // make sure autoPlay starts out unchecked
     document.getElementById('autoplayon').checked = false;
 
+    // compile all the templates
     gTemplates['sound-button'] = Handlebars.compile($('#sound-button-template').html());
     gTemplates['search-results'] = Handlebars.compile($('#search-results-template').html());
     gTemplates['buffer-playing'] = Handlebars.compile($('#buffer-playing-template').html());
 
+    // register Handlebars helpers for use inside templates
     Handlebars.registerHelper('round', function (num) {
         return Math.round(num);
     });
 
+    // register click handlers for doing search and for toggling autoplay
     document.getElementById('searchbutton').addEventListener('click', handleSearch);
     document.getElementById('autoplayon').addEventListener('click', handleAutoPlay);
 
-    console.log('start moo');
+    console.log('Done window.onload, Start Elapsed Timer');
     window.setTimeout(elapsedTask, 1000);
 };
 
