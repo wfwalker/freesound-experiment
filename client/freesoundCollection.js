@@ -43,7 +43,9 @@ FreesoundCollection.prototype.playBufferForID = function(inID) {
     }
 
     console.log('PLAY', inID, this.soundInfoByID[inID].name);
-    this.soundInfoByID[inID].starttime = new Date();
+    var tempDate = new Date();
+    this.soundInfoByID[inID].starttime = tempDate;
+    $('span[data-starttime-id="' + inID + '"]').text(tempDate);
 
     // CREATE gain node
     var gainNode = this.audioContext.createGain();
