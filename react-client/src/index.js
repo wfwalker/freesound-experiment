@@ -1,0 +1,257 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+import './index.css';
+
+// ReactDOM.render(
+//   <App />,
+//   document.getElementById('root')
+// );
+
+window.AudioContext = window.AudioContext||window.webkitAudioContext;
+var gAudioContext = new AudioContext();
+
+// --------------------------------------------------------------------- //
+
+class Toggle extends React.Component {
+	constructor(props) {
+		super(props)
+
+		this.state = {isToggleOn: true};
+		this.handleClick = this.handleClick.bind(this);
+	}
+
+	handleClick() {
+		this.setState(prevState => ({
+			isToggleOn: !prevState.isToggleOn
+		}));
+		this.props.onStateChange(this.state.isToggleOn);
+	}
+
+	render() {
+		return (
+			<button onClick={this.handleClick} disabled={this.props.disabled} >
+				{this.state.isToggleOn ? (
+					<span>ON</span>
+				) : (
+					<span>OFF</span>
+				)}
+			</button>
+		)
+	}
+}
+
+class NameForm extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {value: ''};
+
+		this.handleChange = this.handleChange.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+	handleChange(event) {
+		this.setState({value: event.target.value});
+	}
+
+	handleSubmit(event) {
+		console.log('A name was submitted: ' + this.state.value);
+		event.preventDefault();
+		this.props.onSubmit(this.state.value);
+	}
+
+	render() {
+		return (
+			<form onSubmit={this.handleSubmit}>
+				<label>
+					Name:
+					<input type="text" value={this.state.value} onChange={this.handleChange} />
+				</label>
+				<input type="submit" value="Submit" />
+			</form>
+		);
+	}
+}
+
+class Clock extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {date: new Date()};
+	}
+
+	componentDidMount() {
+		this.timerID = setInterval(
+			() => this.tick(),
+			1000
+		);
+	}
+
+	componentWillUnmount() {
+		clearInterval(this.timerID);
+	}
+
+	tick() {
+		this.setState({
+			date: new Date()
+		});
+	}
+
+	render() {
+		return (
+			<h2>{this.state.date.toLocaleString()}</h2>
+	    );
+	}
+}
+
+// ----------------------------------------- LIFTED STATE ------------------------------- //
+
+class FreesoundSearch extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = { searches: ['surf'] };
+		this.searchFreesound = this.searchFreesound.bind(this);
+	}
+
+	searchFreesound(inTerm) {
+		console.log('FreesoundList searchFreesound', inTerm);
+		this.setState(function(prevState) {
+			return {
+				searches: prevState.searches.concat([inTerm])
+			};
+		});
+	}
+
+	render() {
+		console.log('render search', this.state.searches);
+		return (
+			<div>
+				<NameForm onSubmit={this.searchFreesound} />
+				<h1>{this.state.searches.length} searches</h1>
+				{this.state.searches.map(aSearch => <FreesoundList key={aSearch} term={aSearch} />)}
+			</div>
+		)
+	}
+}
+
+class AudioBufferLoader extends React.Component {
+	constructor(props) {
+		super(props);
+		this.componentDidMount = this.componentDidMount.bind(this);
+		this.bufferDecoded = this.bufferDecoded.bind(this);
+	}
+
+	bufferDecoded(buffer) {
+		console.log('decoded', buffer);
+		this.props.onBufferDecoded(buffer);
+	}
+
+	bufferError(error) {
+		console.log('error', error);
+	}
+
+	componentDidMount() {
+		fetch(this.props.data['preview-hq-mp3'])
+		.then(result => result.blob())
+		.then(function(blob) {
+			let reader = new FileReader();
+
+			reader.onload = function(event) {
+				console.log('file read blob', event.target.result);
+			    gAudioContext.decodeAudioData(event.target.result, this.bufferDecoded, this.bufferError);
+			}.bind(this);
+
+			reader.readAsArrayBuffer(blob);
+		}.bind(this));
+	}
+
+	componentWillUnmount() {
+	}
+
+	render() {
+		return (<span>LOADER</span>)
+	}
+}
+
+class Freesound extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = { details: {} };
+		this.onBufferDecoded = this.onBufferDecoded.bind(this);
+		this.playButtonChanged = this.playButtonChanged.bind(this);
+	}
+
+	componentDidMount() {
+		fetch('http://localhost:3001/apiv2/sounds/' + this.props.data.id + '?format=json')
+		.then(result=>result.json())
+		.then(data=>this.setState({details: data}))
+	}
+
+	componentWillUnmount() {
+	}
+
+	onBufferDecoded(buffer) {
+		console.log('onBufferDecoded', buffer);
+		this.setState({ buffer: buffer });
+	}
+
+	playButtonChanged(value) {
+		console.log('play button changed', value);
+
+		if (value) {
+		    let aBufferSource = gAudioContext.createBufferSource();
+		    aBufferSource.buffer = this.state.buffer;
+		    aBufferSource.connect(gAudioContext.destination);
+		    aBufferSource.start();
+		}
+	}
+
+	render() {
+		return (
+			<li key={this.props.data.id}>
+				Sound "{this.props.data.name}" (#{this.props.data.id})
+				{this.state.details.previews && (! this.state.buffer) && (<AudioBufferLoader onBufferDecoded={this.onBufferDecoded} data={this.state.details.previews} />)}
+				<span>
+					<Toggle onStateChange={this.playButtonChanged} disabled={! this.state.buffer} /> 
+					{this.state.buffer && Math.round(this.state.buffer.duration)}s
+				</span>
+			</li>
+		)
+	}
+}
+
+class FreesoundList extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {listItems: []};
+	}
+
+	componentDidMount() {
+		fetch('http://localhost:3001/apiv2/search/text?format=json&query=' + this.props.term + '&filter=duration:[1 TO 90]')
+		.then(result=>result.json())
+		.then(data=>this.setState({listItems: data.results}))
+	}
+
+	componentWillUnmount() {
+	}
+
+	render() {
+		return (
+			<div>
+				<h1>{this.props.term}</h1>
+				<h2>{this.state.listItems.length} items</h2>
+				<ul>
+					{this.state.listItems.map(item => <Freesound key={item.id} data={item} />)}
+				</ul>
+			</div>
+		)
+	}
+}
+
+ReactDOM.render(
+	<div>
+		<Clock color='#000' />
+		<FreesoundSearch />
+	</div>,
+	document.getElementById('root')
+);
+
