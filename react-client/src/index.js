@@ -113,7 +113,6 @@ class FreesoundSearch extends React.Component {
 	}
 
 	searchFreesound(inTerm) {
-		console.log('FreesoundList searchFreesound', inTerm);
 		this.setState(function(prevState) {
 			return {
 				searches: prevState.searches.concat([inTerm])
@@ -122,7 +121,6 @@ class FreesoundSearch extends React.Component {
 	}
 
 	render() {
-		console.log('render search', this.state.searches);
 		return (
 			<div>
 				<NameForm onSubmit={this.searchFreesound} />
@@ -175,7 +173,7 @@ class AudioBufferLoader extends React.Component {
 class Freesound extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { details: {} };
+		this.state = { details: {}, bufferSource: null};
 		this.onBufferDecoded = this.onBufferDecoded.bind(this);
 		this.playButtonChanged = this.playButtonChanged.bind(this);
 	}
@@ -202,6 +200,10 @@ class Freesound extends React.Component {
 		    aBufferSource.buffer = this.state.buffer;
 		    aBufferSource.connect(gAudioContext.destination);
 		    aBufferSource.start();
+		    this.setState({ bufferSource: aBufferSource })
+		} else if (this.state.bufferSource) {
+			this.state.bufferSource.stop();
+			this.setState({ bufferSource: null });
 		}
 	}
 
@@ -214,6 +216,7 @@ class Freesound extends React.Component {
 					<Toggle onStateChange={this.playButtonChanged} disabled={! this.state.buffer} /> 
 					{this.state.buffer && Math.round(this.state.buffer.duration)}s
 				</span>
+				<button data-freesound-id={this.props.data.id} onClick={this.props.handleRemove}>remove</button>
 			</li>
 		)
 	}
@@ -223,6 +226,7 @@ class FreesoundList extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {listItems: []};
+		this.handleRemove = this.handleRemove.bind(this);
 	}
 
 	componentDidMount() {
@@ -234,13 +238,21 @@ class FreesoundList extends React.Component {
 	componentWillUnmount() {
 	}
 
+	handleRemove(event) {
+		let freesoundID = event.target.getAttribute('data-freesound-id');
+		console.log('handleRemove', freesoundID);
+		this.setState(prevState => ({
+			listItems: prevState.listItems.filter(item => item.id != freesoundID)
+		}));
+	}
+
 	render() {
 		return (
 			<div>
 				<h1>{this.props.term}</h1>
 				<h2>{this.state.listItems.length} items</h2>
 				<ul>
-					{this.state.listItems.map(item => <Freesound key={item.id} data={item} />)}
+					{this.state.listItems.map(item => <Freesound key={item.id} data={item} handleRemove={this.handleRemove} />)}
 				</ul>
 			</div>
 		)
