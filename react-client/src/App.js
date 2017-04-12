@@ -182,7 +182,8 @@ class Freesound extends React.Component {
       bufferSource: null
     };
     this.onBufferDecoded = this.onBufferDecoded.bind(this);
-    this.playButtonChanged = this.playButtonChanged.bind(this);
+    this.startSound = this.startSound.bind(this);
+    this.stopSound = this.stopSound.bind(this);
   }
 
   componentDidMount() {
@@ -200,24 +201,21 @@ class Freesound extends React.Component {
     this.setState({ buffer: buffer });
   }
 
-  playButtonChanged(value) {
-    console.log('play button changed', value);
+  startSound() {
+    let aBufferSource = gAudioContext.createBufferSource();
+    aBufferSource.buffer = this.state.buffer;
+    aBufferSource.connect(gAudioContext.destination);
+    aBufferSource.start();
+    this.setState({ bufferSource: aBufferSource });
 
-    if (value) {
-      let aBufferSource = gAudioContext.createBufferSource();
-      aBufferSource.buffer = this.state.buffer;
-      aBufferSource.connect(gAudioContext.destination);
-      aBufferSource.start();
-      this.setState({ bufferSource: aBufferSource });
-
-      aBufferSource.addEventListener('ended', function(e) {
-        console.log('buffer ended', e)
-      }.bind(this));
-
-    } else if (this.state.bufferSource) {
-      this.state.bufferSource.stop();
+    aBufferSource.addEventListener('ended', function(e) {
+      console.log('buffer ended', e)
       this.setState({ bufferSource: null });
-    }
+    }.bind(this));
+  }
+
+  stopSound() {
+    this.state.bufferSource.stop();
   }
 
   render() {
@@ -226,10 +224,12 @@ class Freesound extends React.Component {
         Sound "{this.props.data.name}" (#{this.props.data.id})
         {this.state.details.previews && (! this.state.buffer) && (<AudioBufferLoader onBufferDecoded={this.onBufferDecoded} data={this.state.details.previews} />)}
         <span>
-          <Toggle onStateChange={this.playButtonChanged} disabled={! this.state.buffer} /> 
+          <button data-freesound-id={this.props.data.id} disabled={! this.state.buffer} onClick={this.startSound}>start</button>
+          <button data-freesound-id={this.props.data.id} disabled={! this.state.bufferSource} onClick={this.stopSound}>stop</button>
+
           {this.state.buffer && Math.round(this.state.buffer.duration)}s
         </span>
-        <button data-freesound-id={this.props.data.id} onClick={this.props.handleRemove}>remove</button>
+        <button data-freesound-id={this.props.data.id} disabled={! this.state.buffer} onClick={this.props.handleRemove}>remove</button>
       </li>
     )
   }
