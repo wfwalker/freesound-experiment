@@ -77,26 +77,40 @@ class FreesoundSearch extends React.Component {
   }
 }
 
-class AudioBufferLoader extends React.Component {
+class Freesound extends React.Component {
   constructor(props) {
     super(props);
-    this.componentDidMount = this.componentDidMount.bind(this);
+    this.state = {
+      details: {},
+      bufferSource: null
+    };
+    this.startSound = this.startSound.bind(this);
+    this.stopSound = this.stopSound.bind(this);
     this.bufferDecoded = this.bufferDecoded.bind(this);
-  }
-
-  bufferDecoded(buffer) {
-    console.log('decoded', buffer);
-    this.props.onBufferDecoded(buffer);
-  }
-
-  bufferError(error) {
-    console.log('error', error);
+    this.bufferError = this.bufferError.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this.loadAndDecodeBuffer = this.loadAndDecodeBuffer.bind(this);
   }
 
   componentDidMount() {
-    fetch(this.props.data['preview-hq-mp3'])
+    fetch('http://localhost:3001/apiv2/sounds/' + this.props.data.id + '?format=json')
+    .then(result=>result.json())
+    .then(function(data) {
+      console.log('details', data);
+      this.loadAndDecodeBuffer(data.previews);
+      this.setState({details: data});
+    }.bind(this));
+  }
+
+  componentWillUnmount() {
+    console.log('sound unmount', this.props.data.id);
+  }
+
+  loadAndDecodeBuffer(previews) {
+    fetch(previews['preview-hq-mp3'])
     .then(result => result.blob())
     .then(function(blob) {
+      console.log('blob', blob);
       let reader = new FileReader();
 
       reader.onload = function(event) {
@@ -108,39 +122,13 @@ class AudioBufferLoader extends React.Component {
     }.bind(this));
   }
 
-  componentWillUnmount() {
-  }
-
-  render() {
-    return (<span>LOADER</span>)
-  }
-}
-
-class Freesound extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      details: {},
-      bufferSource: null
-    };
-    this.onBufferDecoded = this.onBufferDecoded.bind(this);
-    this.startSound = this.startSound.bind(this);
-    this.stopSound = this.stopSound.bind(this);
-  }
-
-  componentDidMount() {
-    fetch('http://localhost:3001/apiv2/sounds/' + this.props.data.id + '?format=json')
-    .then(result=>result.json())
-    .then(data=>this.setState({details: data}))
-  }
-
-  componentWillUnmount() {
-    console.log('sound unmount', this.props.data.id);
-  }
-
-  onBufferDecoded(buffer) {
+  bufferDecoded(buffer) {
     console.log('onBufferDecoded', buffer);
     this.setState({ buffer: buffer });
+  }
+
+  bufferError(error) {
+    console.log('error', error);
   }
 
   startSound() {
@@ -164,7 +152,6 @@ class Freesound extends React.Component {
     return (
       <li key={this.props.data.id}>
         Sound "{this.props.data.name}" (#{this.props.data.id})
-        {this.state.details.previews && (! this.state.buffer) && (<AudioBufferLoader onBufferDecoded={this.onBufferDecoded} data={this.state.details.previews} />)}
         <span>
           <button data-freesound-id={this.props.data.id} disabled={(! this.state.buffer) || this.state.bufferSource} onClick={this.startSound}>start</button>
           <button data-freesound-id={this.props.data.id} disabled={! this.state.bufferSource} onClick={this.stopSound}>stop</button>
