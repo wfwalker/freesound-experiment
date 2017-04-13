@@ -166,7 +166,7 @@ class Freesound extends React.Component {
         Sound "{this.props.data.name}" (#{this.props.data.id})
         {this.state.details.previews && (! this.state.buffer) && (<AudioBufferLoader onBufferDecoded={this.onBufferDecoded} data={this.state.details.previews} />)}
         <span>
-          <button data-freesound-id={this.props.data.id} disabled={! this.state.buffer} onClick={this.startSound}>start</button>
+          <button data-freesound-id={this.props.data.id} disabled={(! this.state.buffer) || this.state.bufferSource} onClick={this.startSound}>start</button>
           <button data-freesound-id={this.props.data.id} disabled={! this.state.bufferSource} onClick={this.stopSound}>stop</button>
 
           {this.state.buffer && Math.round(this.state.buffer.duration)}s
