@@ -7,34 +7,6 @@ var gAudioContext = new AudioContext();
 
 // --------------------------------------------------------------------- //
 
-class Toggle extends React.Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {isToggleOn: true};
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleClick() {
-    this.setState(prevState => ({
-      isToggleOn: !prevState.isToggleOn
-    }));
-    this.props.onStateChange(this.state.isToggleOn);
-  }
-
-  render() {
-    return (
-      <button onClick={this.handleClick} disabled={this.props.disabled} >
-        {this.state.isToggleOn ? (
-          <span>ON</span>
-        ) : (
-          <span>OFF</span>
-        )}
-      </button>
-    )
-  }
-}
-
 class NameForm extends React.Component {
   constructor(props) {
     super(props);
@@ -63,36 +35,6 @@ class NameForm extends React.Component {
         </label>
         <input type="submit" value="Submit" />
       </form>
-    );
-  }
-}
-
-class Clock extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {date: new Date()};
-  }
-
-  componentDidMount() {
-    this.timerID = setInterval(
-      () => this.tick(),
-      1000
-    );
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.timerID);
-  }
-
-  tick() {
-    this.setState({
-      date: new Date()
-    });
-  }
-
-  render() {
-    return (
-      <h2>{this.state.date.toLocaleString()}</h2>
     );
   }
 }
@@ -280,7 +222,6 @@ class App extends Component {
       <div className="App">
         <div className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <Clock />
         </div>
 
         <FreesoundSearch />
