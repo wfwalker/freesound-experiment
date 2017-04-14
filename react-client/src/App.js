@@ -77,19 +77,63 @@ class FreesoundSearch extends React.Component {
   }
 }
 
+class FreesoundPlayer extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      bufferSource: null
+    };
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this.componentWillUnmount = this.componentWillUnmount.bind(this);
+  }
+
+  componentDidMount() {
+    let aBufferSource = gAudioContext.createBufferSource();
+    aBufferSource.buffer = this.props.buffer;
+    aBufferSource.connect(gAudioContext.destination);
+    aBufferSource.start();
+    this.setState({ bufferSource: aBufferSource });
+
+    aBufferSource.addEventListener('ended', function(e) {
+      console.log('buffer ended', e)
+      this.setState({ bufferSource: null });
+      // this.props.onPlayEnded();
+    }.bind(this));
+  }
+
+  componentWillUnmount() {
+    if (this.state.bufferSource) {
+      console.log('stopping', this.state.bufferSource);
+      this.state.bufferSource.stop();
+    } else {
+      console.log('already stopped');
+    }
+  }
+
+  render() {
+    return (<span>PLAYAH {this.state.bufferSource && ('ing')}</span>);
+  }
+}
+
 class Freesound extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       details: {},
-      bufferSource: null
+      play: false
     };
-    this.startSound = this.startSound.bind(this);
-    this.stopSound = this.stopSound.bind(this);
     this.bufferDecoded = this.bufferDecoded.bind(this);
     this.bufferError = this.bufferError.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.loadAndDecodeBuffer = this.loadAndDecodeBuffer.bind(this);
+    this.handlePlayToggle = this.handlePlayToggle.bind(this);
+  }
+
+  handlePlayToggle() {
+    console.log('handlePlayToggle', this.state.play);
+    this.setState(prevState => ({
+      play: ! prevState.play
+    }))
   }
 
   componentDidMount() {
@@ -131,34 +175,16 @@ class Freesound extends React.Component {
     console.log('error', error);
   }
 
-  startSound() {
-    let aBufferSource = gAudioContext.createBufferSource();
-    aBufferSource.buffer = this.state.buffer;
-    aBufferSource.connect(gAudioContext.destination);
-    aBufferSource.start();
-    this.setState({ bufferSource: aBufferSource });
-
-    aBufferSource.addEventListener('ended', function(e) {
-      console.log('buffer ended', e)
-      this.setState({ bufferSource: null });
-    }.bind(this));
-  }
-
-  stopSound() {
-    this.state.bufferSource.stop();
-  }
-
   render() {
     return (
       <li key={this.props.data.id}>
         Sound "{this.props.data.name}" (#{this.props.data.id})
         <span>
-          <button data-freesound-id={this.props.data.id} disabled={(! this.state.buffer) || this.state.bufferSource} onClick={this.startSound}>start</button>
-          <button data-freesound-id={this.props.data.id} disabled={! this.state.bufferSource} onClick={this.stopSound}>stop</button>
-
           {this.state.buffer && Math.round(this.state.buffer.duration)}s
         </span>
-        <button data-freesound-id={this.props.data.id} disabled={! this.state.buffer} onClick={this.props.handleRemove}>remove</button>
+        <button data-freesound-id={this.props.data.id} onClick={this.props.handleRemove}>remove</button>
+        <button data-freesound-id={this.props.data.id} onClick={this.handlePlayToggle}>toggle</button>
+        {this.state.buffer && this.state.play && <FreesoundPlayer buffer={this.state.buffer} />}
       </li>
     )
   }
@@ -192,7 +218,10 @@ class FreesoundList extends React.Component {
   render() {
     return (
       <div>
-        <h1>{this.props.term}, {this.state.listItems.length} items <button data-freesound-search={this.props.term} onClick={this.props.onRemoveSearch}>remove</button></h1>
+        <h1>
+          {this.props.term}, {this.state.listItems.length} items
+          <button data-freesound-search={this.props.term} onClick={this.props.onRemoveSearch}>remove</button>
+        </h1>
         <ul>
           {this.state.listItems.map(item => <Freesound key={item.id} data={item} handleRemove={this.handleRemove} />)}
         </ul>
