@@ -177,15 +177,16 @@ class Freesound extends React.Component {
 
   render() {
     return (
-      <li key={this.props.data.id}>
-        Sound "{this.props.data.name}" (#{this.props.data.id})
-        <span>
+      <tr key={this.props.data.id}>
+        <td><button data-freesound-id={this.props.data.id} onClick={this.props.handleRemove}>remove</button></td>
+        <td>Sound "{this.props.data.name}" (#{this.props.data.id})</td>
+        <td>
           {this.state.buffer && Math.round(this.state.buffer.duration)}s
-        </span>
-        <button data-freesound-id={this.props.data.id} onClick={this.props.handleRemove}>remove</button>
-        <button data-freesound-id={this.props.data.id} onClick={this.handlePlayToggle}>toggle</button>
-        {this.state.buffer && this.state.play && <FreesoundPlayer buffer={this.state.buffer} />}
-      </li>
+        </td>
+        <td><button onClick={this.handlePlayToggle}>toggle</button></td>
+        <td>{this.state.buffer && this.state.play && <FreesoundPlayer buffer={this.state.buffer} />}</td>
+        <td>{this.state.details.previews && <a target='_blank' href={this.state.details.previews['preview-hq-mp3']}>download</a>}</td>
+      </tr>
     )
   }
 }
@@ -222,9 +223,11 @@ class FreesoundList extends React.Component {
           {this.props.term}, {this.state.listItems.length} items
           <button data-freesound-search={this.props.term} onClick={this.props.onRemoveSearch}>remove</button>
         </h1>
-        <ul>
-          {this.state.listItems.map(item => <Freesound key={item.id} data={item} handleRemove={this.handleRemove} />)}
-        </ul>
+        <table>
+          <tbody>
+            {this.state.listItems.map(item => <Freesound key={item.id} data={item} handleRemove={this.handleRemove} />)}
+          </tbody>
+        </table>
       </div>
     )
   }
