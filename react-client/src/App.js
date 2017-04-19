@@ -97,7 +97,7 @@ class FreesoundPlayer extends React.Component {
     aBufferSource.addEventListener('ended', function(e) {
       console.log('buffer ended', e)
       this.setState({ bufferSource: null });
-      // this.props.onPlayEnded();
+      this.props.onPlayEnded();
     }.bind(this));
   }
 
@@ -127,13 +127,21 @@ class Freesound extends React.Component {
     this.componentDidMount = this.componentDidMount.bind(this);
     this.loadAndDecodeBuffer = this.loadAndDecodeBuffer.bind(this);
     this.handlePlayToggle = this.handlePlayToggle.bind(this);
+    this.handlePlayEnded = this.handlePlayEnded.bind(this);
   }
 
   handlePlayToggle() {
     console.log('handlePlayToggle', this.state.play);
     this.setState(prevState => ({
       play: ! prevState.play
-    }))
+    }));
+  }
+
+  handlePlayEnded() {
+    console.log('handlePlayEnded', this.state.play);
+    this.setState({
+      play: false
+    });
   }
 
   componentDidMount() {
@@ -184,7 +192,7 @@ class Freesound extends React.Component {
           {this.state.buffer && Math.round(this.state.buffer.duration)}s
         </td>
         <td><button onClick={this.handlePlayToggle}>toggle</button></td>
-        <td>{this.state.buffer && this.state.play && <FreesoundPlayer buffer={this.state.buffer} />}</td>
+        <td>{this.state.buffer && this.state.play && <FreesoundPlayer onPlayEnded={this.handlePlayEnded} buffer={this.state.buffer} />}</td>
         <td>{this.state.details.previews && <a target='_blank' href={this.state.details.previews['preview-hq-mp3']}>download</a>}</td>
       </tr>
     )
