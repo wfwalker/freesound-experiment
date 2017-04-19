@@ -7,7 +7,7 @@ var gAudioContext = new AudioContext();
 
 // --------------------------------------------------------------------- //
 
-class NameForm extends React.Component {
+class SearchForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {value: ''};
@@ -21,7 +21,7 @@ class NameForm extends React.Component {
   }
 
   handleSubmit(event) {
-    console.log('A name was submitted: ' + this.state.value);
+    console.log('Search', this.state.value);
     event.preventDefault();
     this.props.onSubmit(this.state.value);
   }
@@ -30,7 +30,7 @@ class NameForm extends React.Component {
     return (
       <form onSubmit={this.handleSubmit}>
         <label>
-          Name:
+          Search:
           <input type="text" value={this.state.value} onChange={this.handleChange} />
         </label>
         <input type="submit" value="Submit" />
@@ -69,7 +69,7 @@ class FreesoundSearch extends React.Component {
   render() {
     return (
       <div>
-        <NameForm onSubmit={this.searchFreesound} />
+        <SearchForm onSubmit={this.searchFreesound} />
         <h1>{this.state.searches.length} searches</h1>
         {this.state.searches.map(aSearch => <FreesoundList onRemoveSearch={this.handleRemoveSearch} key={aSearch} term={aSearch} />)}
       </div>
@@ -232,6 +232,14 @@ class FreesoundList extends React.Component {
           <button data-freesound-search={this.props.term} onClick={this.props.onRemoveSearch}>remove</button>
         </h1>
         <table>
+          <thead>
+            <td>remove</td>
+            <td>title</td>
+            <td>duration</td>
+            <td>toggle</td>
+            <td>player</td>
+            <td>download</td>
+          </thead>
           <tbody>
             {this.state.listItems.map(item => <Freesound key={item.id} data={item} handleRemove={this.handleRemove} />)}
           </tbody>
