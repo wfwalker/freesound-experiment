@@ -119,7 +119,6 @@ class Freesound extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      details: {},
       play: false
     };
     this.bufferDecoded = this.bufferDecoded.bind(this);
@@ -148,9 +147,9 @@ class Freesound extends React.Component {
     fetch('http://localhost:3001/apiv2/sounds/' + this.props.data.id + '?format=json')
     .then(result=>result.json())
     .then(function(data) {
-      console.log('details', data);
+      console.log('fetched details', data);
       this.loadAndDecodeBuffer(data.previews);
-      this.setState({details: data});
+      this.props.handleDetails(data);
     }.bind(this));
   }
 
@@ -193,7 +192,7 @@ class Freesound extends React.Component {
         </td>
         <td><button onClick={this.handlePlayToggle}>toggle</button></td>
         <td>{this.state.buffer && this.state.play && <FreesoundPlayer onPlayEnded={this.handlePlayEnded} buffer={this.state.buffer} />}</td>
-        <td>{this.state.details.previews && <a target='_blank' href={this.state.details.previews['preview-hq-mp3']}>download</a>}</td>
+        <td>{this.props.data.details && <a target='_blank' href={this.props.data.details.previews['preview-hq-mp3']}>download</a>}</td>
       </tr>
     )
   }
@@ -204,6 +203,7 @@ class FreesoundList extends React.Component {
     super(props);
     this.state = {listItems: []};
     this.handleRemove = this.handleRemove.bind(this);
+    this.handleDetails = this.handleDetails.bind(this);
   }
 
   componentDidMount() {
@@ -224,6 +224,18 @@ class FreesoundList extends React.Component {
     }));
   }
 
+  handleDetails(data) {
+    this.setState(function(prevState) {
+      let temp = prevState.listItems.filter(item => item.id == data.id);
+      let others = prevState.listItems.filter(item => item.id != data.id);
+      temp[0].details = data;
+      console.log('temp', temp, 'others', others.length);
+      return {
+        listItems: others.concat(temp)
+      }
+    })
+  }
+
   render() {
     return (
       <div>
@@ -241,7 +253,7 @@ class FreesoundList extends React.Component {
             <td>download</td>
           </thead>
           <tbody>
-            {this.state.listItems.map(item => <Freesound key={item.id} data={item} handleRemove={this.handleRemove} />)}
+            {this.state.listItems.map(item => <Freesound key={item.id} data={item} handleDetails={this.handleDetails} handleRemove={this.handleRemove} />)}
           </tbody>
         </table>
       </div>
