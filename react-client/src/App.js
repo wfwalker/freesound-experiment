@@ -98,7 +98,7 @@ class FreesoundPlayer extends React.Component {
     aBufferSource.addEventListener('ended', function(e) {
       console.log('buffer ended', e)
       this.setState({ bufferSource: null });
-      this.props.onPlayEnded();
+      this.props.onPlayEnded(this.props.id);
     }.bind(this));
   }
 
@@ -119,27 +119,9 @@ class FreesoundPlayer extends React.Component {
 class Freesound extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      play: false
-    };
+
     this.componentDidMount = this.componentDidMount.bind(this);
     this.loadAndDecodeBuffer = this.loadAndDecodeBuffer.bind(this);
-    this.handlePlayToggle = this.handlePlayToggle.bind(this);
-    this.handlePlayEnded = this.handlePlayEnded.bind(this);
-  }
-
-  handlePlayToggle() {
-    console.log('handlePlayToggle', this.state.play);
-    this.setState(prevState => ({
-      play: ! prevState.play
-    }));
-  }
-
-  handlePlayEnded() {
-    console.log('handlePlayEnded', this.state.play);
-    this.setState({
-      play: false
-    });
   }
 
   componentDidMount() {
@@ -182,8 +164,8 @@ class Freesound extends React.Component {
         <button data-freesound-id={this.props.data.id} onClick={this.props.handleRemove}>remove</button>
         Sound "{this.props.data.name}" (#{this.props.data.id})
         {this.props.data.buffer && Math.round(this.props.data.buffer.duration)}s
-        <button onClick={this.handlePlayToggle}>toggle</button>
-        {this.props.data.buffer && this.state.play && <FreesoundPlayer onPlayEnded={this.handlePlayEnded} buffer={this.props.data.buffer} />}
+        <button data-freesound-id={this.props.data.id} onClick={this.props.handlePlayToggle}>toggle</button>
+        {this.props.data.buffer && this.props.data.play && <FreesoundPlayer id={this.props.data.id} onPlayEnded={this.props.handlePlayEnded} buffer={this.props.data.buffer} />}
         {this.props.data.details && <a target='_blank' href={this.props.data.details.previews['preview-hq-mp3']}>download</a>}
       </div>
     )
@@ -197,6 +179,8 @@ class FreesoundList extends React.Component {
     this.handleRemove = this.handleRemove.bind(this);
     this.handleDetails = this.handleDetails.bind(this);
     this.handleBuffer = this.handleBuffer.bind(this);
+    this.handlePlayToggle = this.handlePlayToggle.bind(this);
+    this.handlePlayEnded = this.handlePlayEnded.bind(this);
   }
 
   componentDidMount() {
@@ -215,6 +199,35 @@ class FreesoundList extends React.Component {
     this.setState(prevState => ({
       listItems: prevState.listItems.filter(item => item.id != freesoundID)
     }));
+  }
+
+  handlePlayToggle(event) {
+    let freesoundID = event.target.getAttribute('data-freesound-id');
+    console.log('handlePlayToggle', event.target, freesoundID);
+
+    this.setState(function(prevState) {
+      let temp = prevState.listItems.filter(item => item.id == freesoundID);
+      let others = prevState.listItems.filter(item => item.id != freesoundID);
+      temp[0].play = ! temp[0].play;
+      console.log('temp', temp, 'others', others.length);
+      return {
+        listItems: others.concat(temp)
+      }
+    })
+  }
+
+  handlePlayEnded(inFreesoundID) {
+    console.log('handlePlayEnded', inFreesoundID);
+
+    this.setState(function(prevState) {
+      let temp = prevState.listItems.filter(item => item.id == inFreesoundID);
+      let others = prevState.listItems.filter(item => item.id != inFreesoundID);
+      temp[0].play = false;
+      console.log('temp', temp, 'others', others.length);
+      return {
+        listItems: others.concat(temp)
+      }
+    })
   }
 
   handleDetails(data) {
@@ -250,10 +263,11 @@ class FreesoundList extends React.Component {
           {this.props.term},
           {this.state.listItems.length} items, 
           {this.state.listItems.filter(li => li.details).length} details, 
-          {this.state.listItems.filter(li => li.buffer).length} buffers
+          {this.state.listItems.filter(li => li.buffer).length} buffers,
+          {this.state.listItems.filter(li => li.play).length} playing
         </h1>
 
-        {this.state.listItems.map(item => <Freesound key={item.id} data={item} handleBuffer={this.handleBuffer} handleDetails={this.handleDetails} handleRemove={this.handleRemove} />)}
+        {this.state.listItems.map(item => <Freesound key={item.id} data={item} handlePlayToggle={this.handlePlayToggle} handlePlayEnded={this.handlePlayEnded} handleBuffer={this.handleBuffer} handleDetails={this.handleDetails} handleRemove={this.handleRemove} />)}
       </div>
     )
   }
