@@ -21,7 +21,7 @@ class SearchForm extends React.Component {
   }
 
   handleSubmit(event) {
-    console.log('Search', this.state.value);
+    console.log('SearchForm.handleSubmit', this.state.value);
     event.preventDefault();
     this.props.onSubmit(this.state.value);
   }
@@ -88,7 +88,7 @@ class FreesoundPlayer extends React.Component {
   }
 
   componentDidMount() {
-    console.log('FreesoundPlayer componentDidMount', this.props);
+    console.log('FreesoundPlayer.componentDidMount', this.props);
     let aBufferSource = gAudioContext.createBufferSource();
     aBufferSource.buffer = this.props.buffer;
     aBufferSource.connect(gAudioContext.destination);
@@ -96,7 +96,7 @@ class FreesoundPlayer extends React.Component {
     this.setState({ bufferSource: aBufferSource });
 
     aBufferSource.addEventListener('ended', function(e) {
-      console.log('buffer ended', e)
+      console.log('FreesoundPlayer bufferSource ended', e)
       this.setState({ bufferSource: null });
       this.props.onPlayEnded(this.props.id);
     }.bind(this));
@@ -104,10 +104,10 @@ class FreesoundPlayer extends React.Component {
 
   componentWillUnmount() {
     if (this.state.bufferSource) {
-      console.log('stopping', this.state.bufferSource);
+      console.log('FreesoundPlayer.componentWillUnmount', this.state.bufferSource);
       this.state.bufferSource.stop();
     } else {
-      console.log('already stopped');
+      console.log('FreesoundPlayer.componentWillUnmount already stopped');
     }
   }
 
@@ -128,29 +128,29 @@ class Freesound extends React.Component {
     fetch('http://localhost:3001/apiv2/sounds/' + this.props.data.id + '?format=json')
     .then(result=>result.json())
     .then(function(data) {
-      console.log('fetched details', data);
+      console.log('Freesound.componentDidMount fetched', data);
       this.loadAndDecodeBuffer(data);
       this.props.handleDetails(data);
     }.bind(this));
   }
 
   componentWillUnmount() {
-    console.log('sound unmount', this.props.data.id);
+    console.log('Freesound.componentWillUnmount', this.props.data.id);
   }
 
   loadAndDecodeBuffer(data) {
     fetch(data.previews['preview-hq-mp3'])
     .then(result => result.blob())
     .then(function(blob) {
-      console.log('blob', blob);
+      console.log('Freesound.loadAndDecodeBuffer blob', blob);
       let reader = new FileReader();
 
       reader.onload = function(event) {
-        console.log('file read blob', event.target.result);
+        console.log('Freesound.loadAndDecodeBuffer file read blob', event.target.result);
         gAudioContext.decodeAudioData(event.target.result, function(inBuffer) {
           this.props.handleBuffer(data, inBuffer);
         }.bind(this), function(inError) {
-          console.log('error', data.id, inError);
+          console.log('Freesound.loadAndDecodeBuffer error', data.id, inError);
         });
       }.bind(this);
 
@@ -190,12 +190,12 @@ class FreesoundList extends React.Component {
   }
 
   componentWillUnmount() {
-    console.log('freesound list unmount', this.props.term);
+    console.log('FreesoundList.componentWillUnmount', this.props.term);
   }
 
   handleRemove(event) {
     let freesoundID = event.target.getAttribute('data-freesound-id');
-    console.log('handleRemove', freesoundID);
+    console.log('FreesoundList.handleRemove', freesoundID);
     this.setState(prevState => ({
       listItems: prevState.listItems.filter(item => item.id != freesoundID)
     }));
@@ -203,13 +203,13 @@ class FreesoundList extends React.Component {
 
   handlePlayToggle(event) {
     let freesoundID = event.target.getAttribute('data-freesound-id');
-    console.log('handlePlayToggle', event.target, freesoundID);
+    console.log('FreesoundList.handlePlayToggle', event.target, freesoundID);
 
     this.setState(function(prevState) {
       let temp = prevState.listItems.filter(item => item.id == freesoundID);
       let others = prevState.listItems.filter(item => item.id != freesoundID);
       temp[0].play = ! temp[0].play;
-      console.log('temp', temp, 'others', others.length);
+
       return {
         listItems: others.concat(temp)
       }
@@ -217,13 +217,17 @@ class FreesoundList extends React.Component {
   }
 
   handlePlayEnded(inFreesoundID) {
-    console.log('handlePlayEnded', inFreesoundID);
+    console.log('FreesoundList.handlePlayEnded', inFreesoundID);
 
     this.setState(function(prevState) {
       let temp = prevState.listItems.filter(item => item.id == inFreesoundID);
       let others = prevState.listItems.filter(item => item.id != inFreesoundID);
-      temp[0].play = false;
-      console.log('temp', temp, 'others', others.length);
+      if (temp.length == 1) {
+        temp[0].play = false;
+      } else {
+        console.log('FreesoundList.handlePlayEnded wrong number of listItem', inFreesoundID, 'found', temp.length);
+      }
+
       return {
         listItems: others.concat(temp)
       }
@@ -235,7 +239,7 @@ class FreesoundList extends React.Component {
       let temp = prevState.listItems.filter(item => item.id == data.id);
       let others = prevState.listItems.filter(item => item.id != data.id);
       temp[0].details = data;
-      console.log('temp', temp, 'others', others.length);
+
       return {
         listItems: others.concat(temp)
       }
@@ -243,12 +247,12 @@ class FreesoundList extends React.Component {
   }
 
   handleBuffer(data, inBuffer) {
-    console.log('handleBuffer', data, inBuffer);
+    console.log('FreesoundList.handleBuffer', data, inBuffer);
     this.setState(function(prevState) {
       let temp = prevState.listItems.filter(item => item.id == data.id);
       let others = prevState.listItems.filter(item => item.id != data.id);
       temp[0].buffer = inBuffer;
-      console.log('added buffer', temp);
+
       return {
         listItems: others.concat(temp)
       }
