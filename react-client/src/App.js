@@ -88,6 +88,7 @@ class FreesoundPlayer extends React.Component {
   }
 
   componentDidMount() {
+    console.log('FreesoundPlayer componentDidMount', this.props);
     let aBufferSource = gAudioContext.createBufferSource();
     aBufferSource.buffer = this.props.buffer;
     aBufferSource.connect(gAudioContext.destination);
@@ -121,8 +122,6 @@ class Freesound extends React.Component {
     this.state = {
       play: false
     };
-    this.bufferDecoded = this.bufferDecoded.bind(this);
-    this.bufferError = this.bufferError.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.loadAndDecodeBuffer = this.loadAndDecodeBuffer.bind(this);
     this.handlePlayToggle = this.handlePlayToggle.bind(this);
@@ -148,7 +147,7 @@ class Freesound extends React.Component {
     .then(result=>result.json())
     .then(function(data) {
       console.log('fetched details', data);
-      this.loadAndDecodeBuffer(data.previews);
+      this.loadAndDecodeBuffer(data);
       this.props.handleDetails(data);
     }.bind(this));
   }
@@ -157,8 +156,8 @@ class Freesound extends React.Component {
     console.log('sound unmount', this.props.data.id);
   }
 
-  loadAndDecodeBuffer(previews) {
-    fetch(previews['preview-hq-mp3'])
+  loadAndDecodeBuffer(data) {
+    fetch(data.previews['preview-hq-mp3'])
     .then(result => result.blob())
     .then(function(blob) {
       console.log('blob', blob);
@@ -166,20 +165,15 @@ class Freesound extends React.Component {
 
       reader.onload = function(event) {
         console.log('file read blob', event.target.result);
-        gAudioContext.decodeAudioData(event.target.result, this.bufferDecoded, this.bufferError);
+        gAudioContext.decodeAudioData(event.target.result, function(inBuffer) {
+          this.props.handleBuffer(data, inBuffer);
+        }.bind(this), function(inError) {
+          console.log('error', data.id, inError);
+        });
       }.bind(this);
 
       reader.readAsArrayBuffer(blob);
     }.bind(this));
-  }
-
-  bufferDecoded(buffer) {
-    console.log('onBufferDecoded', buffer);
-    this.setState({ buffer: buffer });
-  }
-
-  bufferError(error) {
-    console.log('error', error);
   }
 
   render() {
@@ -188,10 +182,10 @@ class Freesound extends React.Component {
         <td><button data-freesound-id={this.props.data.id} onClick={this.props.handleRemove}>remove</button></td>
         <td>Sound "{this.props.data.name}" (#{this.props.data.id})</td>
         <td>
-          {this.state.buffer && Math.round(this.state.buffer.duration)}s
+          {this.props.data.buffer && Math.round(this.props.data.buffer.duration)}s
         </td>
         <td><button onClick={this.handlePlayToggle}>toggle</button></td>
-        <td>{this.state.buffer && this.state.play && <FreesoundPlayer onPlayEnded={this.handlePlayEnded} buffer={this.state.buffer} />}</td>
+        <td>{this.props.data.buffer && this.state.play && <FreesoundPlayer onPlayEnded={this.handlePlayEnded} buffer={this.props.data.buffer} />}</td>
         <td>{this.props.data.details && <a target='_blank' href={this.props.data.details.previews['preview-hq-mp3']}>download</a>}</td>
       </tr>
     )
@@ -204,6 +198,7 @@ class FreesoundList extends React.Component {
     this.state = {listItems: []};
     this.handleRemove = this.handleRemove.bind(this);
     this.handleDetails = this.handleDetails.bind(this);
+    this.handleBuffer = this.handleBuffer.bind(this);
   }
 
   componentDidMount() {
@@ -236,12 +231,28 @@ class FreesoundList extends React.Component {
     })
   }
 
+  handleBuffer(data, inBuffer) {
+    console.log('handleBuffer', data, inBuffer);
+    this.setState(function(prevState) {
+      let temp = prevState.listItems.filter(item => item.id == data.id);
+      let others = prevState.listItems.filter(item => item.id != data.id);
+      temp[0].buffer = inBuffer;
+      console.log('added buffer', temp);
+      return {
+        listItems: others.concat(temp)
+      }
+    })
+  }
+
   render() {
     return (
       <div>
         <h1>
-          {this.props.term}, {this.state.listItems.length} items
           <button data-freesound-search={this.props.term} onClick={this.props.onRemoveSearch}>remove</button>
+          {this.props.term},
+          {this.state.listItems.length} items, 
+          {this.state.listItems.filter(li => li.details).length} details, 
+          {this.state.listItems.filter(li => li.buffer).length} buffers
         </h1>
         <table>
           <thead>
@@ -253,7 +264,7 @@ class FreesoundList extends React.Component {
             <td>download</td>
           </thead>
           <tbody>
-            {this.state.listItems.map(item => <Freesound key={item.id} data={item} handleDetails={this.handleDetails} handleRemove={this.handleRemove} />)}
+            {this.state.listItems.map(item => <Freesound key={item.id} data={item} handleBuffer={this.handleBuffer} handleDetails={this.handleDetails} handleRemove={this.handleRemove} />)}
           </tbody>
         </table>
       </div>
