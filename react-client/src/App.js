@@ -178,16 +178,14 @@ class Freesound extends React.Component {
 
   render() {
     return (
-      <tr key={this.props.data.id}>
-        <td><button data-freesound-id={this.props.data.id} onClick={this.props.handleRemove}>remove</button></td>
-        <td>Sound "{this.props.data.name}" (#{this.props.data.id})</td>
-        <td>
-          {this.props.data.buffer && Math.round(this.props.data.buffer.duration)}s
-        </td>
-        <td><button onClick={this.handlePlayToggle}>toggle</button></td>
-        <td>{this.props.data.buffer && this.state.play && <FreesoundPlayer onPlayEnded={this.handlePlayEnded} buffer={this.props.data.buffer} />}</td>
-        <td>{this.props.data.details && <a target='_blank' href={this.props.data.details.previews['preview-hq-mp3']}>download</a>}</td>
-      </tr>
+      <div key={this.props.data.id}>
+        <button data-freesound-id={this.props.data.id} onClick={this.props.handleRemove}>remove</button>
+        Sound "{this.props.data.name}" (#{this.props.data.id})
+        {this.props.data.buffer && Math.round(this.props.data.buffer.duration)}s
+        <button onClick={this.handlePlayToggle}>toggle</button>
+        {this.props.data.buffer && this.state.play && <FreesoundPlayer onPlayEnded={this.handlePlayEnded} buffer={this.props.data.buffer} />}
+        {this.props.data.details && <a target='_blank' href={this.props.data.details.previews['preview-hq-mp3']}>download</a>}
+      </div>
     )
   }
 }
@@ -254,21 +252,8 @@ class FreesoundList extends React.Component {
           {this.state.listItems.filter(li => li.details).length} details, 
           {this.state.listItems.filter(li => li.buffer).length} buffers
         </h1>
-        <table>
-          <thead>
-            <tr>
-              <th>remove</th>
-              <th>title</th>
-              <th>duration</th>
-              <th>toggle</th>
-              <th>player</th>
-              <th>download</th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.state.listItems.map(item => <Freesound key={item.id} data={item} handleBuffer={this.handleBuffer} handleDetails={this.handleDetails} handleRemove={this.handleRemove} />)}
-          </tbody>
-        </table>
+
+        {this.state.listItems.map(item => <Freesound key={item.id} data={item} handleBuffer={this.handleBuffer} handleDetails={this.handleDetails} handleRemove={this.handleRemove} />)}
       </div>
     )
   }
