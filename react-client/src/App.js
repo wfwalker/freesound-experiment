@@ -256,12 +256,14 @@ class FreesoundList extends React.Component {
         </h1>
         <table>
           <thead>
-            <td>remove</td>
-            <td>title</td>
-            <td>duration</td>
-            <td>toggle</td>
-            <td>player</td>
-            <td>download</td>
+            <tr>
+              <th>remove</th>
+              <th>title</th>
+              <th>duration</th>
+              <th>toggle</th>
+              <th>player</th>
+              <th>download</th>
+            </tr>
           </thead>
           <tbody>
             {this.state.listItems.map(item => <Freesound key={item.id} data={item} handleBuffer={this.handleBuffer} handleDetails={this.handleDetails} handleRemove={this.handleRemove} />)}
