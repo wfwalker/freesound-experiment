@@ -181,16 +181,39 @@ class FreesoundList extends React.Component {
     this.handleBuffer = this.handleBuffer.bind(this);
     this.handlePlayToggle = this.handlePlayToggle.bind(this);
     this.handlePlayEnded = this.handlePlayEnded.bind(this);
+    this.handleClock = this.handleClock.bind(this);
   }
 
   componentDidMount() {
     fetch('http://localhost:3001/apiv2/search/text?format=json&query=' + this.props.term + '&filter=duration:[1 TO 90]')
     .then(result=>result.json())
     .then(data=>this.setState({listItems: data.results}))
+
+    setInterval(this.handleClock, 1000);
+  }
+
+  handleClock() {
+    let playing = this.state.listItems.filter(li => li.play);
+    if (playing.length < 2) {
+      let randomIndex = Math.floor(Math.random() * this.state.listItems.length);
+      let randomID = this.state.listItems[randomIndex].id;
+      console.log('start a new one', randomIndex, randomID);
+
+      this.setState(function(prevState) {
+        let temp = prevState.listItems.filter(item => item.id == randomID);
+        let others = prevState.listItems.filter(item => item.id != randomID);
+        temp[0].play = true;
+
+        return {
+          listItems: others.concat(temp)
+        }
+      })
+    }
   }
 
   componentWillUnmount() {
     console.log('FreesoundList.componentWillUnmount', this.props.term);
+    // TODO stop clock
   }
 
   handleRemove(event) {
