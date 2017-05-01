@@ -44,7 +44,7 @@ class SearchForm extends React.Component {
 class FreesoundSearch extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { searches: ['surf'] };
+    this.state = { searches: ['wind'] };
     this.searchFreesound = this.searchFreesound.bind(this);
     this.handleRemoveSearch = this.handleRemoveSearch.bind(this);
   }
@@ -169,7 +169,7 @@ class Freesound extends React.Component {
     return (
       <div key={this.props.data.id} className='freesound'>
         <button data-freesound-id={this.props.data.id} onClick={this.props.handleRemove}>remove</button>
-        <button data-freesound-id={this.props.data.id} onClick={this.props.handlePlayToggle}>toggle</button>
+        <button data-freesound-id={this.props.data.id} onClick={this.props.handlePlayToggle}>{this.props.data.buffer && this.props.data.play ? 'stop' : 'start'}</button>
 
         {this.props.data.buffer && this.props.data.play && <FreesoundPlayer id={this.props.data.id} onPlayEnded={this.props.handlePlayEnded} buffer={this.props.data.buffer} />}
 
