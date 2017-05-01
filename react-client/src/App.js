@@ -81,7 +81,8 @@ class FreesoundPlayer extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      bufferSource: null
+      bufferSource: null,
+      startTime: null
     };
     this.componentDidMount = this.componentDidMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
@@ -93,11 +94,17 @@ class FreesoundPlayer extends React.Component {
     aBufferSource.buffer = this.props.buffer;
     aBufferSource.connect(gAudioContext.destination);
     aBufferSource.start();
-    this.setState({ bufferSource: aBufferSource });
+    this.setState({
+      bufferSource: aBufferSource,
+      startTime: gAudioContext.currentTime
+    });
 
     aBufferSource.addEventListener('ended', function(e) {
       console.log('FreesoundPlayer bufferSource ended', e)
-      this.setState({ bufferSource: null });
+      this.setState({
+        bufferSource: null,
+        startTime: null
+      });
       this.props.onPlayEnded(this.props.id);
     }.bind(this));
   }
@@ -112,7 +119,7 @@ class FreesoundPlayer extends React.Component {
   }
 
   render() {
-    return (<span>PLAYAH {this.state.bufferSource && ('ing')}</span>);
+    return (<span>PLAY {this.state.bufferSource && (Math.round(this.state.startTime))}</span>);
   }
 }
 
@@ -162,11 +169,11 @@ class Freesound extends React.Component {
     return (
       <div key={this.props.data.id}>
         <button data-freesound-id={this.props.data.id} onClick={this.props.handleRemove}>remove</button>
-        Sound "{this.props.data.name}" (#{this.props.data.id})
-        {this.props.data.buffer && Math.round(this.props.data.buffer.duration)}s
         <button data-freesound-id={this.props.data.id} onClick={this.props.handlePlayToggle}>toggle</button>
         {this.props.data.buffer && this.props.data.play && <FreesoundPlayer id={this.props.data.id} onPlayEnded={this.props.handlePlayEnded} buffer={this.props.data.buffer} />}
-        {this.props.data.details && <a target='_blank' href={this.props.data.details.previews['preview-hq-mp3']}>download</a>}
+        "{this.props.data.name}" (#{this.props.data.id})
+        {this.props.data.buffer && Math.round(this.props.data.buffer.duration)}s
+        {this.props.data.details && <a target='_blank' href={this.props.data.details.previews['preview-hq-mp3']}>mp3</a>}
       </div>
     )
   }
