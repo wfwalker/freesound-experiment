@@ -119,7 +119,7 @@ class FreesoundPlayer extends React.Component {
   }
 
   render() {
-    return (<span>PLAY {this.state.bufferSource && (Math.round(this.state.startTime))}</span>);
+    return (<div className='player'>PLAY @ T{this.state.bufferSource && (Math.round(this.state.startTime))}s</div>);
   }
 }
 
@@ -167,22 +167,33 @@ class Freesound extends React.Component {
 
   render() {
     return (
-      <div key={this.props.data.id}>
+      <div key={this.props.data.id} className='freesound'>
         <button data-freesound-id={this.props.data.id} onClick={this.props.handleRemove}>remove</button>
         <button data-freesound-id={this.props.data.id} onClick={this.props.handlePlayToggle}>toggle</button>
+
         {this.props.data.buffer && this.props.data.play && <FreesoundPlayer id={this.props.data.id} onPlayEnded={this.props.handlePlayEnded} buffer={this.props.data.buffer} />}
-        "{this.props.data.name}" (#{this.props.data.id})
-        {this.props.data.buffer && Math.round(this.props.data.buffer.duration)}s
-        {this.props.data.details && <a target='_blank' href={this.props.data.details.previews['preview-hq-mp3']}>mp3</a>}
+
+        <FreesoundDescription id={this.props.data.id} name={this.props.data.name} buffer={this.props.data.buffer} details={this.props.data.details} />
       </div>
     )
   }
 }
 
+function FreesoundDescription(props) {
+  return (
+    <div className='description'>
+      "{props.name}" {props.buffer && Math.round(props.buffer.duration)}s {props.details && <a target='_blank' href={props.details.previews['preview-hq-mp3']}>mp3</a>}
+    </div>
+  );
+}
+
 class FreesoundList extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {listItems: []};
+    this.state = {
+      listItems: [],
+      currenTime: 0
+    };
     this.handleRemove = this.handleRemove.bind(this);
     this.handleDetails = this.handleDetails.bind(this);
     this.handleBuffer = this.handleBuffer.bind(this);
@@ -200,6 +211,10 @@ class FreesoundList extends React.Component {
   }
 
   handleClock() {
+    this.setState({
+      currentTime: gAudioContext.currentTime
+    });
+
     let playing = this.state.listItems.filter(li => li.play);
     if (playing.length < 2) {
       let randomIndex = Math.floor(Math.random() * this.state.listItems.length);
@@ -294,11 +309,9 @@ class FreesoundList extends React.Component {
       <div>
         <h1>
           <button data-freesound-search={this.props.term} onClick={this.props.onRemoveSearch}>remove</button>
-          {this.props.term},
-          {this.state.listItems.length} items, 
-          {this.state.listItems.filter(li => li.details).length} details, 
-          {this.state.listItems.filter(li => li.buffer).length} buffers,
-          {this.state.listItems.filter(li => li.play).length} playing
+          {this.props.term} 
+          ({this.state.listItems.filter(li => li.play).length} / {this.state.listItems.filter(li => li.buffer).length})
+          {Math.round(this.state.currentTime)}s
         </h1>
 
         {this.state.listItems.map(item => <Freesound key={item.id} data={item} handlePlayToggle={this.handlePlayToggle} handlePlayEnded={this.handlePlayEnded} handleBuffer={this.handleBuffer} handleDetails={this.handleDetails} handleRemove={this.handleRemove} />)}

@@ -5,3 +5,18 @@
   background-color: #eee;
 }
 
+.description {
+	padding-left: 10px;
+	display: inline;
+}
+
+.player {
+	padding-left: 10px;
+	display: inline;
+	font-weight: bold;
+}
+
+.freesound {
+	padding-top: 5px;
+	padding-top: 5px;
+}
