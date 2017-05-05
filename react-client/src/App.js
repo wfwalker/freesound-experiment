@@ -308,9 +308,9 @@ class FreesoundList extends React.Component {
     return (
       <div>
         <h1>
-          <button data-freesound-search={this.props.term} onClick={this.props.onRemoveSearch}>remove</button>
-          {this.props.term} 
-          ({this.state.listItems.filter(li => li.play).length} / {this.state.listItems.filter(li => li.buffer).length})
+          <button data-freesound-search={this.props.term} onClick={this.props.onRemoveSearch}>remove</button>&nbsp;
+          {this.props.term}
+          &nbsp;({this.state.listItems.filter(li => li.play).length} / {this.state.listItems.filter(li => li.buffer).length})&nbsp;
           {Math.round(this.state.currentTime)}s
         </h1>
 
