@@ -86,6 +86,7 @@ class FreesoundPlayer extends React.Component {
     };
     this.componentDidMount = this.componentDidMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
+    this.handleClock = this.handleClock.bind(this);
   }
 
   componentDidMount() {
@@ -94,20 +95,32 @@ class FreesoundPlayer extends React.Component {
     aBufferSource.buffer = this.props.buffer;
     aBufferSource.connect(gAudioContext.destination);
     aBufferSource.start();
+    let timerID = setInterval(this.handleClock, 1000);   
+
     this.setState({
       bufferSource: aBufferSource,
-      startTime: gAudioContext.currentTime
+      startTime: gAudioContext.currentTime,
+      timerID: timerID
     });
 
     aBufferSource.addEventListener('ended', function(e) {
       console.log('FreesoundPlayer bufferSource ended', e)
       this.setState({
         bufferSource: null,
-        startTime: null
+        startTime: null,
+        currentTime: null
       });
       this.props.onPlayEnded(this.props.id);
     }.bind(this));
+
   }
+
+  handleClock() {
+    console.log('tick');
+    this.setState({
+      currentTime: gAudioContext.currentTime
+    });
+  } 
 
   componentWillUnmount() {
     if (this.state.bufferSource) {
@@ -116,10 +129,11 @@ class FreesoundPlayer extends React.Component {
     } else {
       console.log('FreesoundPlayer.componentWillUnmount already stopped');
     }
+    clearInterval(this.state.timerID);
   }
 
   render() {
-    return (<div className='player'>PLAY @ T{this.state.bufferSource && (Math.round(this.state.startTime))}s</div>);
+    return (<div className='player'>PLAY @ {this.state.bufferSource && (Math.round(this.state.currentTime - this.state.startTime))}s</div>);
   }
 }
 
@@ -203,18 +217,21 @@ class FreesoundList extends React.Component {
   }
 
   componentDidMount() {
+    let timerID = setInterval(this.handleClock);
+    this.setState({
+      timerID: timerID
+    });
+
     fetch('http://localhost:3001/apiv2/search/text?format=json&query=' + this.props.term + '&filter=duration:[1 TO 90]')
     .then(result=>result.json())
     .then(data=>this.setState({listItems: data.results}))
-
-    setInterval(this.handleClock, 1000);
   }
 
   handleClock() {
-    this.setState({
-      currentTime: gAudioContext.currentTime
-    });
-
+    if (this.state.listItems.length == 0) {
+      return;
+    }
+    
     let playing = this.state.listItems.filter(li => li.play);
     if (playing.length < 2) {
       let randomIndex = Math.floor(Math.random() * this.state.listItems.length);
@@ -231,11 +248,11 @@ class FreesoundList extends React.Component {
         }
       })
     }
-  }
+  } 
 
   componentWillUnmount() {
     console.log('FreesoundList.componentWillUnmount', this.props.term);
-    // TODO stop clock
+    clearInterval(this.state.timerID);
   }
 
   handleRemove(event) {
@@ -311,10 +328,9 @@ class FreesoundList extends React.Component {
           <button data-freesound-search={this.props.term} onClick={this.props.onRemoveSearch}>remove</button>&nbsp;
           {this.props.term}
           &nbsp;({this.state.listItems.filter(li => li.play).length} / {this.state.listItems.filter(li => li.buffer).length})&nbsp;
-          {Math.round(this.state.currentTime)}s
         </h1>
 
-        {this.state.listItems.map(item => <Freesound key={item.id} data={item} handlePlayToggle={this.handlePlayToggle} handlePlayEnded={this.handlePlayEnded} handleBuffer={this.handleBuffer} handleDetails={this.handleDetails} handleRemove={this.handleRemove} />)}
+        {this.state.listItems.map(item => <Freesound currentTime={this.state.currentTime} key={item.id} data={item} handlePlayToggle={this.handlePlayToggle} handlePlayEnded={this.handlePlayEnded} handleBuffer={this.handleBuffer} handleDetails={this.handleDetails} handleRemove={this.handleRemove} />)}
       </div>
     )
   }
