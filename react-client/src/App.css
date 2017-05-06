@@ -2,7 +2,6 @@
   width: 1024px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #eee;
 }
 
 .description {
@@ -19,6 +18,17 @@
 .freesound {
 	padding-top: 5px;
 	padding-top: 5px;
+}
+
+.list {
+	padding: 15px;
+	background-color: #eee;
+	border-radius: 15px;
+	margin-bottom: 10px;
+}
+
+.stop {
+	background-color: red;
 }
 
 button {

@@ -182,7 +182,7 @@ class Freesound extends React.Component {
   render() {
     return (
       <div key={this.props.data.id} className='freesound'>
-        <button data-freesound-id={this.props.data.id} onClick={this.props.handleRemove}>remove</button>
+        <button data-freesound-id={this.props.data.id} onClick={this.props.handleRemove}>-</button>
         <button data-freesound-id={this.props.data.id} onClick={this.props.handlePlayToggle}>{this.props.data.buffer && this.props.data.play ? 'stop' : 'start'}</button>
 
         {this.props.data.buffer && this.props.data.play && <FreesoundPlayer id={this.props.data.id} onPlayEnded={this.props.handlePlayEnded} buffer={this.props.data.buffer} />}
@@ -231,7 +231,7 @@ class FreesoundList extends React.Component {
     if (this.state.listItems.length == 0) {
       return;
     }
-    
+
     let playing = this.state.listItems.filter(li => li.play);
     if (playing.length < 2) {
       let randomIndex = Math.floor(Math.random() * this.state.listItems.length);
@@ -323,9 +323,9 @@ class FreesoundList extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className='list'>
         <h1>
-          <button data-freesound-search={this.props.term} onClick={this.props.onRemoveSearch}>remove</button>&nbsp;
+          <button data-freesound-search={this.props.term} onClick={this.props.onRemoveSearch}>-</button>&nbsp;
           {this.props.term}
           &nbsp;({this.state.listItems.filter(li => li.play).length} / {this.state.listItems.filter(li => li.buffer).length})&nbsp;
         </h1>
