@@ -206,7 +206,8 @@ class FreesoundList extends React.Component {
     super(props);
     this.state = {
       listItems: [],
-      currenTime: 0
+      currenTime: 0,
+      playCount: 2
     };
     this.handleRemove = this.handleRemove.bind(this);
     this.handleDetails = this.handleDetails.bind(this);
@@ -214,6 +215,7 @@ class FreesoundList extends React.Component {
     this.handlePlayToggle = this.handlePlayToggle.bind(this);
     this.handlePlayEnded = this.handlePlayEnded.bind(this);
     this.handleClock = this.handleClock.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
@@ -233,7 +235,7 @@ class FreesoundList extends React.Component {
     }
 
     let playing = this.state.listItems.filter(li => li.play);
-    if (playing.length < 2) {
+    if (playing.length < this.state.playCount) {
       let randomIndex = Math.floor(Math.random() * this.state.listItems.length);
       let randomID = this.state.listItems[randomIndex].id;
       console.log('start a new one', randomIndex, randomID);
@@ -308,6 +310,11 @@ class FreesoundList extends React.Component {
     })
   }
 
+  handleChange(event) {
+    this.setState({playCount: event.target.value});
+    console.log('count', this.state.playCount);
+  }
+
   handleBuffer(data, inBuffer) {
     console.log('FreesoundList.handleBuffer', data, inBuffer);
     this.setState(function(prevState) {
@@ -324,11 +331,12 @@ class FreesoundList extends React.Component {
   render() {
     return (
       <div className='list'>
-        <h1>
+        <div className='listTitle'>
           <button data-freesound-search={this.props.term} onClick={this.props.onRemoveSearch}>-</button>&nbsp;
           {this.props.term}
-          &nbsp;({this.state.listItems.filter(li => li.play).length} / {this.state.listItems.filter(li => li.buffer).length})&nbsp;
-        </h1>
+          <input type='text' value={this.state.playCount} onChange={this.handleChange} />
+          &nbsp;{this.state.listItems.filter(li => li.play).length}
+        </div>
 
         {this.state.listItems.map(item => <Freesound currentTime={this.state.currentTime} key={item.id} data={item} handlePlayToggle={this.handlePlayToggle} handlePlayEnded={this.handlePlayEnded} handleBuffer={this.handleBuffer} handleDetails={this.handleDetails} handleRemove={this.handleRemove} />)}
       </div>

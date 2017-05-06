@@ -27,12 +27,18 @@
 	margin-bottom: 10px;
 }
 
+.listTitle {
+	font-size: 16pt;
+	font-weight: bold;
+}
+
 .stop {
 	background-color: red;
 }
 
 button {
 	font-size: 12pt;
+	margin-right: 5px;
 }
 
 input[type=text] {
