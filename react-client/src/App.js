@@ -334,7 +334,7 @@ class FreesoundList extends React.Component {
         <div className='listTitle'>
           <button data-freesound-search={this.props.term} onClick={this.props.onRemoveSearch}>-</button>&nbsp;
           {this.props.term}
-          <input type='text' value={this.state.playCount} onChange={this.handleChange} />
+          <input type='number' min='0' max={this.state.listItems.length} value={this.state.playCount} onChange={this.handleChange} />
           &nbsp;{this.state.listItems.filter(li => li.play).length}
         </div>
 

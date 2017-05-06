@@ -44,3 +44,7 @@ button {
 input[type=text] {
 	font-size: 14pt;
 }
+
+input[type=number] {
+	font-size: 14pt;
+}
