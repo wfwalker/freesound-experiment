@@ -19,7 +19,7 @@ class FreesoundList extends React.Component {
   }
 
   componentDidMount() {
-    let timerID = setInterval(this.handleClock);
+    let timerID = setInterval(this.handleClock, 1000);
     this.setState({
       timerID: timerID
     });
@@ -35,6 +35,7 @@ class FreesoundList extends React.Component {
     }
 
     let playing = this.state.listItems.filter(li => li.play);
+
     if (playing.length < this.state.playCount) {
       let randomIndex = Math.floor(Math.random() * this.state.listItems.length);
       let randomID = this.state.listItems[randomIndex].id;
