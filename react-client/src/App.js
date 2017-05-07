@@ -90,12 +90,19 @@ class FreesoundPlayer extends React.Component {
       bufferSource: null,
       startTime: null
     };
-    this.componentDidMount = this.componentDidMount.bind(this);
-    this.componentWillUnmount = this.componentWillUnmount.bind(this);
-    this.handleClock = this.handleClock.bind(this);
   }
 
-  componentDidMount() {
+  handleBufferSourceEnded = (event) => {
+    console.log('FreesoundPlayer bufferSource ended', event)
+    this.setState({
+      bufferSource: null,
+      startTime: null,
+      currentTime: null
+    });
+    this.props.onPlayEnded(this.props.id);
+  }
+
+  componentDidMount = () => {
     console.log('FreesoundPlayer.componentDidMount', this.props);
     let aBufferSource = gAudioContext.createBufferSource();
     aBufferSource.buffer = this.props.buffer;
@@ -109,26 +116,16 @@ class FreesoundPlayer extends React.Component {
       timerID: timerID
     });
 
-    aBufferSource.addEventListener('ended', function(e) {
-      console.log('FreesoundPlayer bufferSource ended', e)
-      this.setState({
-        bufferSource: null,
-        startTime: null,
-        currentTime: null
-      });
-      this.props.onPlayEnded(this.props.id);
-    }.bind(this));
-
+    aBufferSource.addEventListener('ended', this.handleBufferSourceEnded);
   }
 
-  handleClock() {
-    console.log('tick');
+  handleClock = () => {
     this.setState({
       currentTime: gAudioContext.currentTime
     });
   } 
 
-  componentWillUnmount() {
+  componentWillUnmount = () => {
     if (this.state.bufferSource) {
       console.log('FreesoundPlayer.componentWillUnmount', this.state.bufferSource);
       this.state.bufferSource.stop();
