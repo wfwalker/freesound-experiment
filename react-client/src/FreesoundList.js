@@ -9,16 +9,9 @@ class FreesoundList extends React.Component {
       currenTime: 0,
       playCount: 2
     };
-    this.handleRemove = this.handleRemove.bind(this);
-    this.handleDetails = this.handleDetails.bind(this);
-    this.handleBuffer = this.handleBuffer.bind(this);
-    this.handlePlayToggle = this.handlePlayToggle.bind(this);
-    this.handlePlayEnded = this.handlePlayEnded.bind(this);
-    this.handleClock = this.handleClock.bind(this);
-    this.handleChange = this.handleChange.bind(this);
   }
 
-  componentDidMount() {
+  componentDidMount = () => {
     let timerID = setInterval(this.handleClock, 1000);
     this.setState({
       timerID: timerID
@@ -29,7 +22,7 @@ class FreesoundList extends React.Component {
     .then(data=>this.setState({listItems: data.results}))
   }
 
-  handleClock() {
+  handleClock = () => {
     if (this.state.listItems.length == 0) {
       return;
     }
@@ -53,12 +46,12 @@ class FreesoundList extends React.Component {
     }
   } 
 
-  componentWillUnmount() {
+  componentWillUnmount = () => {
     console.log('FreesoundList.componentWillUnmount', this.props.term);
     clearInterval(this.state.timerID);
   }
 
-  handleRemove(event) {
+  handleRemove = (event) => {
     let freesoundID = event.target.getAttribute('data-freesound-id');
     console.log('FreesoundList.handleRemove', freesoundID);
     this.setState(prevState => ({
@@ -66,7 +59,7 @@ class FreesoundList extends React.Component {
     }));
   }
 
-  handlePlayToggle(event) {
+  handlePlayToggle = (event) => {
     let freesoundID = event.target.getAttribute('data-freesound-id');
     console.log('FreesoundList.handlePlayToggle', event.target, freesoundID);
 
@@ -81,7 +74,7 @@ class FreesoundList extends React.Component {
     })
   }
 
-  handlePlayEnded(inFreesoundID) {
+  handlePlayEnded = (inFreesoundID) => {
     console.log('FreesoundList.handlePlayEnded', inFreesoundID);
 
     this.setState(function(prevState) {
@@ -99,7 +92,7 @@ class FreesoundList extends React.Component {
     })
   }
 
-  handleDetails(data) {
+  handleDetails = (data) => {
     this.setState(function(prevState) {
       let temp = prevState.listItems.filter(item => item.id == data.id);
       let others = prevState.listItems.filter(item => item.id != data.id);
@@ -111,12 +104,12 @@ class FreesoundList extends React.Component {
     })
   }
 
-  handleChange(event) {
+  handlePlayCountChange = (event) => {
     this.setState({playCount: event.target.value});
     console.log('count', this.state.playCount);
   }
 
-  handleBuffer(data, inBuffer) {
+  handleBuffer = (data, inBuffer) => {
     console.log('FreesoundList.handleBuffer', data, inBuffer);
     this.setState(function(prevState) {
       let temp = prevState.listItems.filter(item => item.id == data.id);
@@ -148,9 +141,9 @@ class FreesoundList extends React.Component {
 
   createListTitle = () => (
     <div className='listTitle'>
-      <button data-freesound-search={this.props.term} onClick={this.props.onRemoveSearch}>-</button>&nbsp;
+      <button data-freesound-search={this.props.title} onClick={this.props.onRemoveSearch}>-</button>&nbsp;
       {this.props.title}
-      <input type='number' min='0' max={this.state.listItems.length} value={this.state.playCount} onChange={this.handleChange} />
+      <input type='number' min='0' max={this.state.listItems.length} value={this.state.playCount} onChange={this.handlePlayCountChange} />
       &nbsp;{this.state.listItems.filter(li => li.play).length}
     </div>
   )

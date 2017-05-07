@@ -18,6 +18,8 @@ class FreesoundSearch extends React.Component {
 
   handleRemoveSearch = (event) => {
     let aSearchTerm = event.target.getAttribute('data-freesound-search');
+    console.log('FreesoundSearch.handleRemoveSearch', aSearchTerm);
+
     this.setState(function(prevState) {
       return {
         searches: prevState.searches.filter(item => (item != aSearchTerm))
