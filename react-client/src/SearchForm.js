@@ -24,11 +24,8 @@ class SearchForm extends React.Component {
     return (
       <div className='searchForm'>
         <form onSubmit={this.handleSubmit}>
-          <label>
-            Search:
-            <input type="text" value={this.state.value} onChange={this.handleChange} />
-          </label>
-          <input type="submit" disabled={!this.state.value} value="Submit" />
+          <button onClick={this.handleSubmit} disabled={!this.state.value}>+</button>
+          <input type="text" value={this.state.value} onChange={this.handleChange} />
         </form>
       </div>
     );
