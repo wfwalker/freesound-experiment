@@ -49,6 +49,10 @@ input[type=number] {
 	font-size: 14pt;
 }
 
+input[type=submit] {
+	font-size: 16pt;
+}
+
 .searchForm {
 	border-radius: 15px;
 	margin-bottom: 10px;

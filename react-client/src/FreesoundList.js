@@ -11,6 +11,18 @@ class FreesoundList extends React.Component {
     };
   }
 
+  sortByID = (s1, s2) => (
+    s1.id - s2.id
+  )
+
+  handleFetchErrors = (response) => {
+    if (! response.ok) {
+      alert(response.statusText);
+      throw Error(response.statusText);
+    }
+    return response;
+  }
+
   componentDidMount = () => {
     let timerID = setInterval(this.handleClock, 1000);
     this.setState({
@@ -18,6 +30,7 @@ class FreesoundList extends React.Component {
     });
 
     fetch(this.props.queryURL)
+    .then(this.handleFetchErrors)
     .then(result=>result.json())
     .then(data=>this.setState({listItems: data.results}))
   }
@@ -40,7 +53,7 @@ class FreesoundList extends React.Component {
         temp[0].play = true;
 
         return {
-          listItems: others.concat(temp)
+          listItems: others.concat(temp).sort(this.sortByID)
         }
       })
     }
@@ -55,7 +68,7 @@ class FreesoundList extends React.Component {
     let freesoundID = event.target.getAttribute('data-freesound-id');
     console.log('FreesoundList.handleRemove', freesoundID);
     this.setState(prevState => ({
-      listItems: prevState.listItems.filter(item => item.id != freesoundID)
+      listItems: prevState.listItems.filter(item => item.id != freesoundID).sort(this.sortByID)
     }));
   }
 
@@ -69,7 +82,7 @@ class FreesoundList extends React.Component {
       temp[0].play = ! temp[0].play;
 
       return {
-        listItems: others.concat(temp)
+        listItems: others.concat(temp).sort(this.sortByID)
       }
     })
   }
@@ -87,19 +100,7 @@ class FreesoundList extends React.Component {
       }
 
       return {
-        listItems: others.concat(temp)
-      }
-    })
-  }
-
-  handleDetails = (data) => {
-    this.setState(function(prevState) {
-      let temp = prevState.listItems.filter(item => item.id == data.id);
-      let others = prevState.listItems.filter(item => item.id != data.id);
-      temp[0].details = data;
-
-      return {
-        listItems: others.concat(temp)
+        listItems: others.concat(temp).sort(this.sortByID)
       }
     })
   }
@@ -117,7 +118,7 @@ class FreesoundList extends React.Component {
       temp[0].buffer = inBuffer;
 
       return {
-        listItems: others.concat(temp)
+        listItems: others.concat(temp).sort(this.sortByID)
       }
     })
   }
