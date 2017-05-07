@@ -22,7 +22,7 @@
 
 .list {
 	padding: 15px;
-	background-color: #eee;
+	background-color: #efefef;
 	border-radius: 15px;
 	margin-bottom: 10px;
 }
@@ -57,5 +57,5 @@ input[type=submit] {
 	border-radius: 15px;
 	margin-bottom: 10px;
 	padding: 10px;
-	background-color: #eff;
+	background-color: #efefef;
 }

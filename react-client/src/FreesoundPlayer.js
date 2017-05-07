@@ -30,6 +30,7 @@ class FreesoundPlayer extends React.Component {
     this.setState({
       bufferSource: aBufferSource,
       startTime: this.props.audioContext.currentTime,
+      currentTime: this.props.audioContext.currentTime,
       timerID: timerID
     });
 
@@ -53,7 +54,7 @@ class FreesoundPlayer extends React.Component {
   }
 
   render() {
-    return (<div className='player'>PLAY @ {this.state.bufferSource && (Math.round(this.state.currentTime - this.state.startTime))}s</div>);
+    return (<div className='player'>PLAY {this.state.currentTime && this.state.bufferSource && (Math.round(this.state.currentTime - this.state.startTime))}s</div>);
   }
 }
 

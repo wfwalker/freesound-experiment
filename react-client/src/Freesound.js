@@ -4,7 +4,7 @@ import FreesoundPlayer from './FreesoundPlayer';
 function FreesoundDescription(props) {
   return (
     <div className='description'>
-      "{props.data.name}" {Math.round(props.data.duration)}s <a target='_blank' href={props.data.previews['preview-hq-mp3']}>mp3</a>
+      {props.data.name} {Math.round(props.data.duration)}s <a target='_blank' href={props.data.previews['preview-hq-mp3']}>mp3</a>
     </div>
   );
 }
