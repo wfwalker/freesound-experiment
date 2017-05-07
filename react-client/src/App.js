@@ -45,11 +45,9 @@ class FreesoundSearch extends React.Component {
   constructor(props) {
     super(props);
     this.state = { searches: ['wind'] };
-    this.searchFreesound = this.searchFreesound.bind(this);
-    this.handleRemoveSearch = this.handleRemoveSearch.bind(this);
   }
 
-  searchFreesound(inTerm) {
+  searchFreesound = (inTerm) => {
     this.setState(function(prevState) {
       return {
         searches: prevState.searches.concat([inTerm])
@@ -57,7 +55,7 @@ class FreesoundSearch extends React.Component {
     });
   }
 
-  handleRemoveSearch(event) {
+  handleRemoveSearch = (event) => {
     let aSearchTerm = event.target.getAttribute('data-freesound-search');
     this.setState(function(prevState) {
       return {
@@ -66,12 +64,20 @@ class FreesoundSearch extends React.Component {
     })
   }
 
+  createFreesoundList = (aTerm) => (
+    <FreesoundList onRemoveSearch={this.handleRemoveSearch} key={aTerm} term={aTerm} />
+  )
+
+  createFreesoundLists = () => (
+    this.state.searches.map(this.createFreesoundList)
+  )
+
   render() {
     return (
       <div>
         <SearchForm onSubmit={this.searchFreesound} />
         <h1>{this.state.searches.length} searches</h1>
-        {this.state.searches.map(aSearch => <FreesoundList onRemoveSearch={this.handleRemoveSearch} key={aSearch} term={aSearch} />)}
+        {this.createFreesoundLists()}
       </div>
     )
   }
