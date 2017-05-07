@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import FreesoundPlayer from './FreesoundPlayer';
 
 window.AudioContext = window.AudioContext||window.webkitAudioContext;
 var gAudioContext = new AudioContext();
@@ -83,63 +84,6 @@ class FreesoundSearch extends React.Component {
   }
 }
 
-class FreesoundPlayer extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      bufferSource: null,
-      startTime: null
-    };
-  }
-
-  handleBufferSourceEnded = (event) => {
-    console.log('FreesoundPlayer bufferSource ended', event)
-    this.setState({
-      bufferSource: null,
-      startTime: null,
-      currentTime: null
-    });
-    this.props.onPlayEnded(this.props.id);
-  }
-
-  componentDidMount = () => {
-    console.log('FreesoundPlayer.componentDidMount', this.props);
-    let aBufferSource = gAudioContext.createBufferSource();
-    aBufferSource.buffer = this.props.buffer;
-    aBufferSource.connect(gAudioContext.destination);
-    aBufferSource.start();
-    let timerID = setInterval(this.handleClock, 1000);   
-
-    this.setState({
-      bufferSource: aBufferSource,
-      startTime: gAudioContext.currentTime,
-      timerID: timerID
-    });
-
-    aBufferSource.addEventListener('ended', this.handleBufferSourceEnded);
-  }
-
-  handleClock = () => {
-    this.setState({
-      currentTime: gAudioContext.currentTime
-    });
-  } 
-
-  componentWillUnmount = () => {
-    if (this.state.bufferSource) {
-      console.log('FreesoundPlayer.componentWillUnmount', this.state.bufferSource);
-      this.state.bufferSource.stop();
-    } else {
-      console.log('FreesoundPlayer.componentWillUnmount already stopped');
-    }
-    clearInterval(this.state.timerID);
-  }
-
-  render() {
-    return (<div className='player'>PLAY @ {this.state.bufferSource && (Math.round(this.state.currentTime - this.state.startTime))}s</div>);
-  }
-}
-
 class Freesound extends React.Component {
   constructor(props) {
     super(props);
@@ -188,7 +132,7 @@ class Freesound extends React.Component {
         <button data-freesound-id={this.props.data.id} onClick={this.props.handleRemove}>-</button>
         <button data-freesound-id={this.props.data.id} onClick={this.props.handlePlayToggle}>{this.props.data.buffer && this.props.data.play ? 'stop' : 'start'}</button>
 
-        {this.props.data.buffer && this.props.data.play && <FreesoundPlayer id={this.props.data.id} onPlayEnded={this.props.handlePlayEnded} buffer={this.props.data.buffer} />}
+        {this.props.data.buffer && this.props.data.play && <FreesoundPlayer audioContext={gAudioContext} id={this.props.data.id} onPlayEnded={this.props.handlePlayEnded} buffer={this.props.data.buffer} />}
 
         <FreesoundDescription id={this.props.data.id} name={this.props.data.name} buffer={this.props.data.buffer} details={this.props.data.details} />
       </div>
