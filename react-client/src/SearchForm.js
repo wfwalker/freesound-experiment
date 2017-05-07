@@ -17,17 +17,20 @@ class SearchForm extends React.Component {
     console.log('SearchForm.handleSubmit', this.state.value);
     event.preventDefault();
     this.props.onSubmit(this.state.value);
+    this.setState({value: ''});
   }
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          Search:
-          <input type="text" value={this.state.value} onChange={this.handleChange} />
-        </label>
-        <input type="submit" value="Submit" />
-      </form>
+      <div className='searchForm'>
+        <form onSubmit={this.handleSubmit}>
+          <label>
+            Search:
+            <input type="text" value={this.state.value} onChange={this.handleChange} />
+          </label>
+          <input type="submit" disabled={!this.state.value} value="Submit" />
+        </form>
+      </div>
     );
   }
 }
