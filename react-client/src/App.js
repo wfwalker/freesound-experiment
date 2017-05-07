@@ -77,7 +77,6 @@ class FreesoundSearch extends React.Component {
     return (
       <div>
         <SearchForm onSubmit={this.searchFreesound} />
-        <h1>{this.state.searches.length} searches</h1>
         {this.createFreesoundLists()}
       </div>
     )
@@ -275,17 +274,36 @@ class FreesoundList extends React.Component {
     })
   }
 
+  createFreesound = (item) => (
+    <Freesound
+      currentTime={this.state.currentTime}
+      key={item.id} data={item}
+      handlePlayToggle={this.handlePlayToggle}
+      handlePlayEnded={this.handlePlayEnded}
+      handleBuffer={this.handleBuffer}
+      handleDetails={this.handleDetails}
+      handleRemove={this.handleRemove}
+    />
+  )
+
+  createFreesounds = () => (
+    this.state.listItems.map(this.createFreesound)
+  )
+
+  createListTitle = () => (
+    <div className='listTitle'>
+      <button data-freesound-search={this.props.term} onClick={this.props.onRemoveSearch}>-</button>&nbsp;
+      {this.props.term}
+      <input type='number' min='0' max={this.state.listItems.length} value={this.state.playCount} onChange={this.handleChange} />
+      &nbsp;{this.state.listItems.filter(li => li.play).length}
+    </div>
+  )
+
   render() {
     return (
       <div className='list'>
-        <div className='listTitle'>
-          <button data-freesound-search={this.props.term} onClick={this.props.onRemoveSearch}>-</button>&nbsp;
-          {this.props.term}
-          <input type='number' min='0' max={this.state.listItems.length} value={this.state.playCount} onChange={this.handleChange} />
-          &nbsp;{this.state.listItems.filter(li => li.play).length}
-        </div>
-
-        {this.state.listItems.map(item => <Freesound currentTime={this.state.currentTime} key={item.id} data={item} handlePlayToggle={this.handlePlayToggle} handlePlayEnded={this.handlePlayEnded} handleBuffer={this.handleBuffer} handleDetails={this.handleDetails} handleRemove={this.handleRemove} />)}
+        {this.createListTitle()}
+        {this.createFreesounds()}
       </div>
     )
   }
