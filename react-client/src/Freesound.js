@@ -4,7 +4,7 @@ import FreesoundPlayer from './FreesoundPlayer';
 function FreesoundDescription(props) {
   return (
     <div className='description'>
-      "{props.name}" {props.buffer && Math.round(props.buffer.duration)}s {props.details && <a target='_blank' href={props.details.previews['preview-hq-mp3']}>mp3</a>}
+      "{props.data.name}" {Math.round(props.data.duration)}s <a target='_blank' href={props.data.previews['preview-hq-mp3']}>mp3</a>
     </div>
   );
 }
@@ -18,13 +18,8 @@ class Freesound extends React.Component {
   }
 
   componentDidMount() {
-    fetch('http://localhost:3001/apiv2/sounds/' + this.props.data.id + '?format=json')
-    .then(result=>result.json())
-    .then(function(data) {
-      console.log('Freesound.componentDidMount fetched', data);
-      this.loadAndDecodeBuffer(data);
-      this.props.handleDetails(data);
-    }.bind(this));
+    console.log('Freesound.componentDidMount', this.props.data.id);
+    this.loadAndDecodeBuffer(this.props.data);
   }
 
   componentWillUnmount() {
@@ -51,15 +46,23 @@ class Freesound extends React.Component {
     }.bind(this));
   }
 
+  createPlayer = () => (
+    <FreesoundPlayer
+      audioContext={this.props.audioContext}
+      id={this.props.data.id}
+      onPlayEnded={this.props.handlePlayEnded}
+      buffer={this.props.data.buffer} />
+  )
+
   render() {
     return (
       <div key={this.props.data.id} className='freesound'>
         <button data-freesound-id={this.props.data.id} onClick={this.props.handleRemove}>-</button>
         <button data-freesound-id={this.props.data.id} onClick={this.props.handlePlayToggle}>{this.props.data.buffer && this.props.data.play ? 'stop' : 'start'}</button>
 
-        {this.props.data.buffer && this.props.data.play && <FreesoundPlayer audioContext={this.props.audioContext} id={this.props.data.id} onPlayEnded={this.props.handlePlayEnded} buffer={this.props.data.buffer} />}
+        <FreesoundDescription data={this.props.data} />
 
-        <FreesoundDescription id={this.props.data.id} name={this.props.data.name} buffer={this.props.data.buffer} details={this.props.data.details} />
+        {this.props.data.buffer && this.props.data.play && this.createPlayer()}
       </div>
     )
   }
