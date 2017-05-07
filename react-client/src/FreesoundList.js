@@ -24,7 +24,7 @@ class FreesoundList extends React.Component {
       timerID: timerID
     });
 
-    fetch('http://localhost:3001/apiv2/search/text?format=json&query=' + this.props.term + '&filter=duration:[1 TO 90]')
+    fetch(this.props.queryURL)
     .then(result=>result.json())
     .then(data=>this.setState({listItems: data.results}))
   }
@@ -149,7 +149,7 @@ class FreesoundList extends React.Component {
   createListTitle = () => (
     <div className='listTitle'>
       <button data-freesound-search={this.props.term} onClick={this.props.onRemoveSearch}>-</button>&nbsp;
-      {this.props.term}
+      {this.props.title}
       <input type='number' min='0' max={this.state.listItems.length} value={this.state.playCount} onChange={this.handleChange} />
       &nbsp;{this.state.listItems.filter(li => li.play).length}
     </div>
