@@ -55,8 +55,17 @@ class Freesound extends React.Component {
   )
 
   render() {
+    let classNames = ['freesound'];
+    if (this.props.data.play) {
+      classNames.push('freesound-playing');
+    } else if (this.props.data.buffer) {
+      classNames.push('freesound-ready')
+    } else {
+      classNames.push('freesound-loading');
+    }
+
     return (
-      <div key={this.props.data.id} className='freesound'>
+      <div key={this.props.data.id} className={classNames.join(' ')}>
         <button data-freesound-id={this.props.data.id} onClick={this.props.handleRemove}>-</button>
         <button data-freesound-id={this.props.data.id} onClick={this.props.handlePlayToggle}>{this.props.data.buffer && this.props.data.play ? 'stop' : 'start'}</button>
 
