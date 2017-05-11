@@ -11,11 +11,7 @@ var freesound = require('./lib/freesound.js');
 
 var server = express();
 
-server.set('view engine', 'handlebars');
-
-server.use('/lib', express.static('lib'));
-server.use('/client', express.static('client'));
-
+server.use('/', express.static('react-client/build'));
 
 server.use('/apiv2', function(req, res) {
   var options = {
@@ -38,5 +34,5 @@ var myPort = process.env.PORT || 3001;
 var mHost = process.env.VCAP_APP_HOST || "127.0.0.1";
 
 server.listen(myPort, function () {
-  console.log('Example app listening on port', myPort);
+  console.log('freesound-experiment server listening on port', myPort);
 });
