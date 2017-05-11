@@ -20,11 +20,13 @@ class FreesoundList extends React.Component {
       alert(response.statusText);
       throw Error(response.statusText);
     }
+
     return response;
   }
 
   componentDidMount = () => {
     let timerID = setInterval(this.handleClock, 1000);
+
     this.setState({
       timerID: timerID
     });
