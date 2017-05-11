@@ -4,7 +4,10 @@ import FreesoundPlayer from './FreesoundPlayer';
 function FreesoundDescription(props) {
   return (
     <div className='description'>
-      {props.data.name} {Math.round(props.data.duration)}s <a target='_blank' href={props.data.previews['preview-hq-mp3']}>mp3</a>
+      <img height='20px' src={props.data.images.waveform_m} />
+      <a target='_blank' href={props.data.previews['preview-hq-mp3']}>
+        {props.data.name} {Math.round(props.data.duration)}s
+      </a>
     </div>
   );
 }
@@ -56,6 +59,7 @@ class Freesound extends React.Component {
 
   render() {
     let classNames = ['freesound'];
+  
     if (this.props.data.play) {
       classNames.push('freesound-playing');
     } else if (this.props.data.buffer) {
@@ -67,7 +71,7 @@ class Freesound extends React.Component {
     return (
       <div key={this.props.data.id} className={classNames.join(' ')}>
         <button data-freesound-id={this.props.data.id} onClick={this.props.handleRemove}>-</button>
-        <button data-freesound-id={this.props.data.id} onClick={this.props.handlePlayToggle}>{this.props.data.buffer && this.props.data.play ? 'stop' : 'start'}</button>
+        <button data-freesound-id={this.props.data.id} onClick={this.props.handlePlayToggle}>{this.props.data.buffer && this.props.data.play ? '[]' : '>'}</button>
 
         <FreesoundDescription data={this.props.data} />
 
