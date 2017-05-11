@@ -28,7 +28,7 @@ class FreesoundSearch extends React.Component {
   }
 
   createQueryURL = (term) => (
-    'http://localhost:3001/apiv2/search/text?format=json&query=' + term + '&filter=duration:[1 TO 90]&fields=id,name,description,previews,duration,images'
+    '/apiv2/search/text?format=json&query=' + term + '&filter=duration:[1 TO 90]&fields=id,name,description,previews,duration,images'
   )
 
   createFreesoundList = (aTerm) => (
