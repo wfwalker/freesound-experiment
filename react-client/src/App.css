@@ -53,6 +53,17 @@
 	border-bottom: solid 3px lightgray;
 }
 
+.meter {
+	border: solid 1px darkgreen;
+}
+
+.timeLabel {
+	display: inline-block;
+	width: 4em;
+	text-align: right;
+	font-family: monospace;
+}
+
 .stop {
 	background-color: red;
 }
@@ -72,6 +83,10 @@ input[type=number] {
 
 input[type=submit] {
 	font-size: 16pt;
+}
+
+.searchLabel {
+	font-size: 14pt;
 }
 
 .searchForm {

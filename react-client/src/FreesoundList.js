@@ -67,7 +67,7 @@ class FreesoundList extends React.Component {
   }
 
   handleRemove = (event) => {
-    let freesoundID = event.target.getAttribute('data-freesound-id');
+    let freesoundID = event.target.parentElement.getAttribute('data-freesound-id');
     console.log('FreesoundList.handleRemove', freesoundID);
     this.setState(prevState => ({
       listItems: prevState.listItems.filter(item => item.id != freesoundID).sort(this.sortByID)
@@ -75,8 +75,8 @@ class FreesoundList extends React.Component {
   }
 
   handlePlayToggle = (event) => {
-    let freesoundID = event.target.getAttribute('data-freesound-id');
-    console.log('FreesoundList.handlePlayToggle', event.target, freesoundID);
+    let freesoundID = event.target.parentElement.getAttribute('data-freesound-id');
+    console.log('FreesoundList.handlePlayToggle', event.target.parentElement, freesoundID);
 
     this.setState(function(prevState) {
       let temp = prevState.listItems.filter(item => item.id == freesoundID);

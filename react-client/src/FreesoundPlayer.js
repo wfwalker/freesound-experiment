@@ -115,7 +115,7 @@ class FreesoundPlayer extends React.Component {
   createDrawFrameForID = (inFreesoundID, inMeter) => {
     let canvasContext = document.getElementById( "meter" + inFreesoundID ).getContext("2d");  
     let WIDTH = 200;
-    let HEIGHT = 25;
+    let HEIGHT = 15;
 
     return () => {
         // clear the background
@@ -202,8 +202,8 @@ class FreesoundPlayer extends React.Component {
   render() {
     return (
       <div className='player'>
-        <canvas id={'meter' + this.props.id} width="200" height="25"></canvas>
-        PLAY {this.state.currentTime && this.state.bufferSource && (Math.round(this.state.currentTime - this.state.startTime))}s
+        <canvas className='meter' id={'meter' + this.props.id} width="200" height="15"></canvas>
+        <span className='timeLabel'>{this.state.currentTime && this.state.bufferSource && (Math.round(this.state.currentTime - this.state.startTime))}s</span>
       </div>);
   }
 }

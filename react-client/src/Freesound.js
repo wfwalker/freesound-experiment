@@ -6,7 +6,8 @@ function FreesoundDescription(props) {
     <div className='description'>
       <img height='20px' src={props.data.images.waveform_m} />
       <a target='_blank' href={props.data.previews['preview-hq-mp3']}>
-        {props.data.name} {Math.round(props.data.duration)}s
+        <span className='timeLabel'>{Math.round(props.data.duration)}s</span>
+        {props.data.name}
       </a>
     </div>
   );
@@ -70,8 +71,8 @@ class Freesound extends React.Component {
 
     return (
       <div key={this.props.data.id} className={classNames.join(' ')}>
-        <button data-freesound-id={this.props.data.id} onClick={this.props.handleRemove}>-</button>
-        <button data-freesound-id={this.props.data.id} onClick={this.props.handlePlayToggle}>{this.props.data.buffer && this.props.data.play ? '[]' : '>'}</button>
+        <button data-freesound-id={this.props.data.id} onClick={this.props.handleRemove}><i className='material-icons'>delete</i></button>
+        <button data-freesound-id={this.props.data.id} onClick={this.props.handlePlayToggle}><i className='material-icons'>play_arrow</i></button>
 
         <FreesoundDescription data={this.props.data} />
 
