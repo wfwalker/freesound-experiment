@@ -1,0 +1,17 @@
+
+.freesound {
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+.freesound-ready {
+	color: black;
+}
+
+.freesound-playing {
+	background-color: #b3e6b3;
+}
+
+.freesound-loading {
+	color: darkgray;
+}
