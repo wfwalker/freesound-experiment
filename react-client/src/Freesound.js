@@ -1,18 +1,7 @@
 import React, { Component } from 'react';
 import FreesoundPlayer from './FreesoundPlayer';
+import FreesoundDescription from './FreesoundDescription';
 import './Freesound.css';
-
-function FreesoundDescription(props) {
-  return (
-    <div className='description'>
-      <img height='20px' src={props.data.images.waveform_m} />
-      <a target='_blank' href={props.data.previews['preview-hq-mp3']}>
-        <span className='timeLabel'>{Math.round(props.data.duration)}s</span>
-        {props.data.name}
-      </a>
-    </div>
-  );
-}
 
 class Freesound extends React.Component {
   constructor(props) {

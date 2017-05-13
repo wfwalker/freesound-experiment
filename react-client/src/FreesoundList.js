@@ -7,7 +7,8 @@ class FreesoundList extends React.Component {
     this.state = {
       listItems: [],
       currenTime: 0,
-      playCount: 2
+      playCount: 2,
+      expanded: false
     };
   }
 
@@ -112,6 +113,10 @@ class FreesoundList extends React.Component {
     console.log('count', this.state.playCount);
   }
 
+  handleToggle = (event) => {
+    this.setState({expanded: !this.state.expanded});
+  }
+
   handleBuffer = (data, inBuffer) => {
     console.log('FreesoundList.handleBuffer', data, inBuffer);
     this.setState(function(prevState) {
@@ -138,16 +143,15 @@ class FreesoundList extends React.Component {
     />
   )
 
-  createFreesounds = () => (
-    this.state.listItems.map(this.createFreesound)
-  )
-
   createListTitle = () => (
     <div className='listTitle'>
       <button data-freesound-search={this.props.title} onClick={this.props.onRemoveSearch}>-</button>&nbsp;
       {this.props.title}
       &nbsp;<input type='number' min='0' max={this.state.listItems.length} value={this.state.playCount} onChange={this.handlePlayCountChange} />
       &nbsp;{this.state.listItems.filter(li => li.play).length}
+      <span onClick={this.handleToggle} style={{float: 'right'}}>
+        <i className='material-icons'>{this.state.expanded ? 'expand_less': 'expand_more'}</i>
+      </span>
     </div>
   )
 
@@ -155,7 +159,8 @@ class FreesoundList extends React.Component {
     return (
       <div className='list'>
         {this.createListTitle()}
-        {this.createFreesounds()}
+        {this.state.listItems.filter(li => li.play).map(this.createFreesound)}
+        {this.state.expanded && this.state.listItems.filter(li => !li.play).map(this.createFreesound)}
       </div>
     )
   }
