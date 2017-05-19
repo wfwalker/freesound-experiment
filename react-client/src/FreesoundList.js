@@ -159,7 +159,9 @@ class FreesoundList extends React.Component {
     return (
       <div className='list'>
         {this.createListTitle()}
-        {this.state.listItems.filter(li => li.play).map(this.createFreesound)}
+        <div className='playing'>
+          {this.state.listItems.filter(li => li.play).map(this.createFreesound)}
+        </div>
         {this.state.expanded && this.state.listItems.filter(li => !li.play).map(this.createFreesound)}
       </div>
     )
