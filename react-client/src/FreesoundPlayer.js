@@ -80,6 +80,10 @@ class FreesoundPlayer extends React.Component {
     });
   } 
 
+  handlePlaybackRate = (event) => {
+    this.state.bufferSource.playbackRate.value = event.target.value;
+  }
+
   componentWillUnmount = () => {
     if (this.state.bufferSource) {
       console.log('FreesoundPlayer.componentWillUnmount', this.state.bufferSource);
@@ -100,6 +104,8 @@ class FreesoundPlayer extends React.Component {
   render() {
     return (
       <div className='player'>
+        <i className='material-icons'>import_export</i>
+        <input type='range' min='0.1' max='2.0' step='0.01' onChange={this.handlePlaybackRate}></input>
         <canvas className='meter' id={'meter' + this.props.id} width="200" height="15"></canvas>
         <span className='timeLabel'>{this.state.currentTime && this.state.bufferSource && (Math.round(this.state.currentTime - this.state.startTime))}s</span>
       </div>);
