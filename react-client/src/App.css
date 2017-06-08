@@ -37,7 +37,7 @@
 }
 
 .playing {
-	height: 100px;
+	min-height: 64px;
 }
 
 .meter {

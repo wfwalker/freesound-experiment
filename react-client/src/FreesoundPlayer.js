@@ -68,6 +68,8 @@ class FreesoundPlayer extends React.Component {
       timerID: timerID
     });
 
+    // TODO: set play rate slider to 1.0
+
     this.drawFrame = this.createDrawFrameForID(this.props.id, this.meter);
     this.drawLoop();
 

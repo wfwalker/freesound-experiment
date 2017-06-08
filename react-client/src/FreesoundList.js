@@ -111,6 +111,7 @@ class FreesoundList extends React.Component {
   handlePlayCountChange = (event) => {
     this.setState({playCount: event.target.value});
     console.log('count', this.state.playCount);
+    // TODO: set min-height of "playing" to 32 * count
   }
 
   handleToggle = (event) => {
