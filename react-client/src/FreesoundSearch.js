@@ -17,7 +17,7 @@ class FreesoundSearch extends React.Component {
   }
 
   handleRemoveSearch = (event) => {
-    let aSearchTerm = event.target.getAttribute('data-freesound-search');
+    let aSearchTerm = event.target.parentElement.getAttribute('data-freesound-search');
     console.log('FreesoundSearch.handleRemoveSearch', aSearchTerm);
 
     this.setState(function(prevState) {
@@ -30,8 +30,8 @@ class FreesoundSearch extends React.Component {
   // TODO: set it to localhost:3001 if you're running the react dev server
   // for more info, see https://www.freesound.org/docs/api/resources_apiv2.html
   createQueryURL = (term) => (
+    // 'http://localhost:3001' +
     '/apiv2/search/text?format=json&query=' + term + '&filter=duration:[1 TO 90]%20tag:field-recording&fields=id,name,description,previews,duration,images'
-    // 'http://localhost:3001/apiv2/search/text?format=json&query=' + term + '&filter=duration:[1 TO 90]%20tag:field-recording&fields=id,name,description,url,previews,duration,images&page_size=50'
   )
 
   createFreesoundList = (aTerm) => (
