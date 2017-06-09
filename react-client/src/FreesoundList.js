@@ -146,7 +146,10 @@ class FreesoundList extends React.Component {
 
   createListTitle = () => (
     <div className='listTitle'>
-      <button data-freesound-search={this.props.title} onClick={this.props.onRemoveSearch}>-</button>&nbsp;
+      <span className='playerButton' data-freesound-search={this.props.title} onClick={this.props.onRemoveSearch}>
+        <i className='material-icons'>delete</i>
+      </span>
+
       {this.props.title}
       &nbsp;<input type='number' min='0' max={this.state.listItems.length} value={this.state.playCount} onChange={this.handlePlayCountChange} />
       &nbsp;{this.state.listItems.filter(li => li.play).length}
@@ -160,7 +163,7 @@ class FreesoundList extends React.Component {
     return (
       <div className='list'>
         {this.createListTitle()}
-        <div className='playing'>
+        <div className='playing' style={{minHeight: (this.state.playCount * 32) + 'px'}}>
           {this.state.listItems.filter(li => li.play).map(this.createFreesound)}
         </div>
         {this.state.expanded && this.state.listItems.filter(li => !li.play).map(this.createFreesound)}
