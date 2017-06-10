@@ -55,9 +55,13 @@ class FreesoundPlayer extends React.Component {
 
     let aBufferSource = this.props.audioContext.createBufferSource();
     aBufferSource.buffer = this.props.buffer;
+
+    this.gainNode = this.props.audioContext.createGain();
+    this.gainNode.connect(this.props.audioContext.destination);
+
     this.meter = createAudioMeter(this.props.audioContext, this.props.id);
     aBufferSource.connect(this.meter);
-    aBufferSource.connect(this.props.audioContext.destination);
+    aBufferSource.connect(this.gainNode);
     aBufferSource.start();
     let timerID = setInterval(this.handleClock, 1000);   
 
@@ -84,6 +88,11 @@ class FreesoundPlayer extends React.Component {
     this.state.bufferSource.playbackRate.value = event.target.value;
   }
 
+  handleVolume = (event) => {
+    // TODO: remember this the next time we play this sound!
+    this.gainNode.gain.value = event.target.value;
+  }
+
   componentWillUnmount = () => {
     if (this.state.bufferSource) {
       console.log('FreesoundPlayer.componentWillUnmount', this.state.bufferSource);
@@ -104,8 +113,10 @@ class FreesoundPlayer extends React.Component {
   render() {
     return (
       <div className='player'>
+        <i className='material-icons'>volume_up</i>
+        <input type='range' defaultValue='1.0' min='0.0' max='1.0' step='0.01' onChange={this.handleVolume}></input>
         <i className='material-icons'>import_export</i>
-        <input id={'slider' + this.props.id} type='range' defaultValue='1.0' min='0.1' max='2.0' step='0.01' onChange={this.handlePlaybackRate}></input>
+        <input type='range' defaultValue='1.0' min='0.1' max='2.0' step='0.01' onChange={this.handlePlaybackRate}></input>
         <canvas className='meter' id={'meter' + this.props.id} width="100" height="15"></canvas>
         <span className='timeLabel'>{this.state.currentTime && this.state.bufferSource && (Math.round(this.state.currentTime - this.state.startTime))}s</span>
       </div>);
