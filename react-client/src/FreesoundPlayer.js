@@ -68,8 +68,6 @@ class FreesoundPlayer extends React.Component {
       timerID: timerID
     });
 
-    // TODO: set play rate slider to 1.0
-
     this.drawFrame = this.createDrawFrameForID(this.props.id, this.meter);
     this.drawLoop();
 
@@ -107,7 +105,7 @@ class FreesoundPlayer extends React.Component {
     return (
       <div className='player'>
         <i className='material-icons'>import_export</i>
-        <input type='range' min='0.1' max='2.0' step='0.01' onChange={this.handlePlaybackRate}></input>
+        <input id={'slider' + this.props.id} type='range' defaultValue='1.0' min='0.1' max='2.0' step='0.01' onChange={this.handlePlaybackRate}></input>
         <canvas className='meter' id={'meter' + this.props.id} width="100" height="15"></canvas>
         <span className='timeLabel'>{this.state.currentTime && this.state.bufferSource && (Math.round(this.state.currentTime - this.state.startTime))}s</span>
       </div>);
