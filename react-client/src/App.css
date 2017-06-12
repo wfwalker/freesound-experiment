@@ -6,6 +6,7 @@
 
 .description {
 	display: inline;
+	vertical-align: middle
 }
 
 .description a {
@@ -19,6 +20,7 @@
 	display: inline;
 	font-weight: bold;
 	float: right;
+	vertical-align: middle
 }
 
 .list {
@@ -34,6 +36,7 @@
 	margin-bottom: 3px;
 	padding-bottom: 5px;
 	border-bottom: solid 3px lightgray;
+	vertical-align: middle
 }
 
 .meter {
@@ -45,6 +48,16 @@
 	width: 4em;
 	text-align: right;
 	font-family: monospace;
+	vertical-align: middle
+}
+
+.soundnameLabel {
+	display: inline-block;
+	width: 300px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	vertical-align: middle
 }
 
 .stop {

@@ -25,7 +25,9 @@ class SearchForm extends React.Component {
     return (
       <div className='searchForm'>
         <form onSubmit={this.handleSubmit}>
-          <button onClick={this.handleSubmit} disabled={!this.state.value}>+</button>
+          <span className='playerButton' data-freesound-search={this.props.title} onClick={this.handleSubmit}>
+            <i className='material-icons'>search</i>
+          </span>
           <input type="text" value={this.state.value} onChange={this.handleChange} />
         </form>
       </div>
