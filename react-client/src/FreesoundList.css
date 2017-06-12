@@ -1,0 +1,20 @@
+input[type=number] {
+	font-size: 14pt;
+}
+
+.list {
+	padding: 15px;
+	background-color: #efefef;
+	border-radius: 15px;
+	margin-bottom: 10px;
+}
+
+.listTitle {
+	font-size: 16pt;
+	font-weight: bold;
+	margin-bottom: 3px;
+	padding-bottom: 5px;
+	border-bottom: solid 3px lightgray;
+	vertical-align: middle
+}
+

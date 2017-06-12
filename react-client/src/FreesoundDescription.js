@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './FreesoundDescription.css';
 
 function FreesoundDescription(props) {
   return (

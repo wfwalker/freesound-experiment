@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { createAudioMeter, volumeAudioProcess} from './volume-meter.js';
+import './FreesoundPlayer.css';
+import './FreesoundDescription.css';
 
 class FreesoundPlayer extends React.Component {
   constructor(props) {

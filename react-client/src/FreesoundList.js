@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Freesound from './Freesound';
+import './FreesoundList.css';
 
 class FreesoundList extends React.Component {
   constructor(props) {

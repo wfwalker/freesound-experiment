@@ -1,0 +1,11 @@
+.player {
+	padding-left: 10px;
+	display: inline;
+	font-weight: bold;
+	float: right;
+	vertical-align: middle
+}
+
+.meter {
+	border: solid 1px darkgreen;
+}

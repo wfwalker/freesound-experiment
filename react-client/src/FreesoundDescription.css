@@ -1,0 +1,28 @@
+.timeLabel {
+	display: inline-block;
+	width: 4em;
+	text-align: right;
+	font-family: monospace;
+	vertical-align: middle
+}
+
+.soundnameLabel {
+	display: inline-block;
+	width: 300px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	vertical-align: middle
+}
+
+.description {
+	display: inline;
+	vertical-align: middle
+}
+
+.description a {
+	padding-left: 5px;
+	text-decoration: none;
+	color: #555;
+}
+
