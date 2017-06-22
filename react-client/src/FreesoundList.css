@@ -3,10 +3,10 @@ input[type=number] {
 }
 
 .list {
-	padding: 15px;
-	background-color: #efefef;
-	border-radius: 15px;
-	margin-bottom: 10px;
+	display: grid;
+	grid-gap: 20px;
+	grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+	padding-bottom: 30px;
 }
 
 .listTitle {
@@ -15,6 +15,9 @@ input[type=number] {
 	margin-bottom: 3px;
 	padding-bottom: 5px;
 	border-bottom: solid 3px lightgray;
-	vertical-align: middle
+	vertical-align: middle;
+	background-color: #efefef;
+	position: sticky;
+	top: 0px;
 }
 
