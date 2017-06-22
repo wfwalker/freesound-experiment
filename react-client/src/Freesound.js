@@ -44,6 +44,7 @@ class Freesound extends React.Component {
     <FreesoundPlayer
       audioContext={this.props.audioContext}
       id={this.props.data.id}
+      duration={this.props.data.duration}
       onPlayEnded={this.props.handlePlayEnded}
       buffer={this.props.data.buffer} />
   )
@@ -68,8 +69,6 @@ class Freesound extends React.Component {
           <span className='playerButton' data-freesound-id={this.props.data.id} onClick={this.props.handlePlayToggle}>
             <i className='material-icons smaller'>{this.props.data.play ? 'stop' : 'play_arrow'}</i>
           </span>
-
-          <div>{Math.round(this.props.data.duration)}s</div>
 
           <img alt='waveform' height='20px' width='33px' className='waveform' src={this.props.data.images.waveform_m} />
 

@@ -166,7 +166,7 @@ class FreesoundList extends React.Component {
           <i className='material-icons smaller'>{item.play ? 'stop' : 'play_arrow'}</i>
         </span>
 
-        <div>{Math.round(item.duration)}s</div>
+        <div className='timeLabel'>{Math.round(item.duration)}s</div>
 
         <img alt='waveform' height='20px' width='33px' className='waveform' src={item.images.waveform_m} />
 
@@ -192,6 +192,14 @@ class FreesoundList extends React.Component {
     </div>
   )
 
+  createFreesoundNoPlayers = (items) => {
+    return (
+      <div className='list'>
+        {items.map(this.createFreesoundNoPlayer)}
+      </div>
+    )
+  }
+
   render() {
     return (
       <div className='searchContainer'>
@@ -199,9 +207,7 @@ class FreesoundList extends React.Component {
         <div className='list playing'>
           {this.state.listItems.filter(li => li.play).map(this.createFreesound)}
         </div>
-        <div className='list'>
-          {this.state.expanded && this.state.listItems.map(this.createFreesoundNoPlayer)}
-        </div>
+        {this.state.expanded && this.createFreesoundNoPlayers(this.state.listItems)}
       </div>
     )
   }

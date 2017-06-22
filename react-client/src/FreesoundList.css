@@ -6,7 +6,7 @@ input[type=number] {
 	display: grid;
 	grid-gap: 15px;
 	grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
-	padding: 15px 30px 15px 15px;
+	padding: 15px 15px 15px 15px;
 }
 
 .numberInput {
@@ -28,7 +28,6 @@ input[type=number] {
 .searchContainer {
 	border: solid 1px lightgray;
 	margin-bottom: 30px;
-
 }
 
 .freesound-summary {
