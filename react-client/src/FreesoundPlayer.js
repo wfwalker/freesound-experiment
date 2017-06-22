@@ -114,14 +114,21 @@ class FreesoundPlayer extends React.Component {
 
   render() {
     return (
-      <div className='player'>
-        <i className='material-icons'>volume_up</i>
+      <div>
+        <div>
+        <i className='material-icons smaller'>volume_up</i>
         <input type='range' defaultValue='1.0' min='0.0' max='1.0' step='0.01' onChange={this.handleVolume}></input>
-        <i className='material-icons'>import_export</i>
+        </div>
+
+        <div>
+        <i className='material-icons smaller'>import_export</i>
         <input type='range' defaultValue='1.0' min='0.1' max='2.0' step='0.01' onChange={this.handlePlaybackRate}></input>
+        </div>
+
         <canvas className='meter' id={'meter' + this.props.id} width="100" height="15"></canvas>
         <span className='timeLabel'>{this.state.currentTime && this.state.bufferSource && (Math.round(this.state.currentTime - this.state.startTime))}s</span>
-      </div>);
+      </div>
+    )
   }
 }
 
