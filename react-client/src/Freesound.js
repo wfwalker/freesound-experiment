@@ -62,15 +62,15 @@ class Freesound extends React.Component {
     return (
       <div key={this.props.data.id} className={classNames.join(' ')}>
         <span className='playerButton' data-freesound-id={this.props.data.id} onClick={this.props.handleRemove}>
-          <i className='material-icons'>delete</i>
+          <i className='material-icons smaller'>delete</i>
         </span>
         <span className='playerButton' data-freesound-id={this.props.data.id} onClick={this.props.handlePlayToggle}>
-          <i className='material-icons'>{this.props.data.play ? 'stop' : 'play_arrow'}</i>
+          <i className='material-icons smaller'>{this.props.data.play ? 'stop' : 'play_arrow'}</i>
         </span>
 
         <FreesoundDescription data={this.props.data} />
 
-        {this.props.data.buffer && this.props.data.play && this.createPlayer()}
+        {this.props.allowPlayer && this.props.data.buffer && this.props.data.play && this.createPlayer()}
       </div>
     )
   }
