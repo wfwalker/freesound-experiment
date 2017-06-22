@@ -5,3 +5,7 @@
 .material-icons.smaller {
 	font-size: 14pt;
 }
+
+a:link {
+	color: black;
+}
