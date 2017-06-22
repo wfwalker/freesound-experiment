@@ -4,8 +4,8 @@ input[type=number] {
 
 .list {
 	display: grid;
-	grid-gap: 20px;
-	grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+	grid-gap: 15px;
+	grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
 	padding-bottom: 30px;
 }
 
@@ -21,3 +21,32 @@ input[type=number] {
 	top: 0px;
 }
 
+.freesound-summary {
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	padding: 10px;
+	border: solid 1px lightgray;
+}
+
+.freesound-summary-ready {
+	color: black;
+}
+
+.freesound-summary-playing {
+	background-color: #b3e6b3;
+}
+
+.freesound-summary-loading {
+	color: darkgray;
+}
+
+.playerButton {
+	padding: 0px;
+}
+
+.waveform {
+	padding-left: 3px;
+	padding-right: 3px;
+}

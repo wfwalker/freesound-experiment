@@ -147,25 +147,40 @@ class FreesoundList extends React.Component {
   )
 
   createFreesoundNoPlayer = (item) => {
+    let classNames = ['freesound-summary'];
+  
+    if (item.play) {
+      classNames.push('freesound-summary-playing');
+    } else if (item.buffer) {
+      classNames.push('freesound-summary-ready')
+    } else {
+      classNames.push('freesound-summary-loading');
+    }
+
     return (
-    <Freesound
-      allowPlayer={false}
-      currentTime={this.state.currentTime}
-      key={item.id} data={item}
-      handlePlayToggle={this.handlePlayToggle}
-      handlePlayEnded={this.handlePlayEnded}
-      handleBuffer={this.handleBuffer}
-      handleDetails={this.handleDetails}
-      handleRemove={this.handleRemove}
-      audioContext={this.props.audioContext}
-    />
+      <div key={item.id}  className={classNames.join(' ')}>
+        <span className='playerButton' data-freesound-id={item.id} onClick={this.handleRemove}>
+          <i className='material-icons smaller'>delete</i>
+        </span>
+        <span className='playerButton' data-freesound-id={item.id} onClick={this.handlePlayToggle}>
+          <i className='material-icons smaller'>{item.play ? 'stop' : 'play_arrow'}</i>
+        </span>
+
+        <div>{Math.round(item.duration)}s</div>
+
+        <img alt='waveform' height='20px' width='33px' className='waveform' src={item.images.waveform_m} />
+
+        <a target='_blank' href={item.previews['preview-hq-mp3']}>
+          <div className='soundnameLabel'>{item.name}</div>
+        </a>
+      </div>
     )
   }
 
   createListTitle = () => (
     <div className='listTitle'>
       <span className='playerButton' data-freesound-search={this.props.title} onClick={this.props.onRemoveSearch}>
-        <i className='material-icons'>delete</i>
+        <i className='material-icons smaller'>delete</i>
       </span>
 
       {this.props.title}

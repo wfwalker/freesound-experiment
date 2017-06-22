@@ -1,9 +1,10 @@
 .timeLabel {
 	display: inline-block;
-	width: 4em;
+	width: 3em;
 	text-align: right;
 	font-family: monospace;
-	vertical-align: middle
+	vertical-align: middle;
+	padding-right: 3px;
 }
 
 .soundnameLabel {
