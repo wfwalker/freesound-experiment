@@ -61,14 +61,22 @@ class Freesound extends React.Component {
 
     return (
       <div key={this.props.data.id} className={classNames.join(' ')}>
-        <span className='playerButton' data-freesound-id={this.props.data.id} onClick={this.props.handleRemove}>
-          <i className='material-icons smaller'>delete</i>
-        </span>
-        <span className='playerButton' data-freesound-id={this.props.data.id} onClick={this.props.handlePlayToggle}>
-          <i className='material-icons smaller'>{this.props.data.play ? 'stop' : 'play_arrow'}</i>
-        </span>
+        <div className='playerTopLine'>
+          <span className='playerButton' data-freesound-id={this.props.data.id} onClick={this.props.handleRemove}>
+            <i className='material-icons smaller'>delete</i>
+          </span>
+          <span className='playerButton' data-freesound-id={this.props.data.id} onClick={this.props.handlePlayToggle}>
+            <i className='material-icons smaller'>{this.props.data.play ? 'stop' : 'play_arrow'}</i>
+          </span>
 
-        <FreesoundDescription data={this.props.data} />
+          <div>{Math.round(this.props.data.duration)}s</div>
+
+          <img alt='waveform' height='20px' width='33px' className='waveform' src={this.props.data.images.waveform_m} />
+
+          <a target='_blank' href={this.props.data.previews['preview-hq-mp3']}>
+            <div className='soundnameLabel'>{this.props.data.name}</div>
+          </a>
+        </div>
 
         {this.props.allowPlayer && this.props.data.buffer && this.props.data.play && this.createPlayer()}
       </div>
