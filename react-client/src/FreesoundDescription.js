@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import './FreesoundDescription.css';
+import React, { Component } from 'react'
+import './FreesoundDescription.css'
 
 function FreesoundDescription(props) {
   return (
@@ -12,7 +12,7 @@ function FreesoundDescription(props) {
         <div className='soundnameLabel'>{props.data.name}</div>
       </a>
     </div>
-  );
+  )
 }
 
-export default FreesoundDescription;
+export default FreesoundDescription
