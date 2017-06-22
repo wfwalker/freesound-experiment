@@ -179,22 +179,22 @@ class FreesoundList extends React.Component {
 
   createListTitle = () => (
     <div className='listTitle'>
+      <span onClick={this.handleToggle} style={{float: 'right'}}>
+        <i className='material-icons smaller'>{this.state.expanded ? 'expand_less': 'expand_more'}</i>
+      </span>
       <span className='playerButton' data-freesound-search={this.props.title} onClick={this.props.onRemoveSearch}>
         <i className='material-icons smaller'>delete</i>
       </span>
 
       {this.props.title}
-      &nbsp;<input type='number' min='0' max={this.state.listItems.length} value={this.state.playCount} onChange={this.handlePlayCountChange} />
+      &nbsp;<input type='number' className='numberInput' min='0' max={this.state.listItems.length} value={this.state.playCount} onChange={this.handlePlayCountChange} />
       &nbsp;{this.state.listItems.filter(li => li.play).length}
-      <span onClick={this.handleToggle} style={{float: 'right'}}>
-        <i className='material-icons'>{this.state.expanded ? 'expand_less': 'expand_more'}</i>
-      </span>
     </div>
   )
 
   render() {
     return (
-      <div>
+      <div className='searchContainer'>
         {this.createListTitle()}
         <div className='list playing'>
           {this.state.listItems.filter(li => li.play).map(this.createFreesound)}

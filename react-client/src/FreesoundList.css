@@ -6,19 +6,29 @@ input[type=number] {
 	display: grid;
 	grid-gap: 15px;
 	grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
-	padding-bottom: 30px;
+	padding: 15px 30px 15px 15px;
+}
+
+.numberInput {
+	width: 3em;
 }
 
 .listTitle {
-	font-size: 16pt;
-	font-weight: bold;
-	margin-bottom: 3px;
-	padding-bottom: 5px;
-	border-bottom: solid 3px lightgray;
-	vertical-align: middle;
+	padding: 5px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	overflow: hidden;
 	background-color: #efefef;
 	position: sticky;
 	top: 0px;
+	margin-bottom: 3px;
+}
+
+.searchContainer {
+	border: solid 1px lightgray;
+	margin-bottom: 30px;
+
 }
 
 .freesound-summary {
