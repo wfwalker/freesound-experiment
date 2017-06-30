@@ -5,6 +5,10 @@
 	padding: 15px 15px 15px 15px;
 }
 
+.playing {
+	grid-template-rows: 110px auto;
+}
+
 .numberInput {
 	width: 3em;
 }
