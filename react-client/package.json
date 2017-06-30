@@ -7,13 +7,13 @@
     "react-dom": "^15.5.1"
   },
   "devDependencies": {
-    "react-scripts": "0.9.5",
     "eslint": "^4.0.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-node": "^5.0.0",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-react": "^7.1.0",
-    "eslint-plugin-standard": "^3.0.1"
+    "eslint-plugin-standard": "^3.0.1",
+    "react-scripts": "^0.9.5"
   },
   "scripts": {
     "start": "react-scripts start",

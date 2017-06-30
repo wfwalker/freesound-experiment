@@ -25,7 +25,7 @@ class FreesoundPlayer extends React.Component {
         if (inMeter.checkClipping())
             canvasContext.fillStyle = "red";
         else
-            canvasContext.fillStyle = "green";
+            canvasContext.fillStyle = "#33363b";
 
         // draw a bar based on the current volume
         canvasContext.fillRect(0, 0, inMeter.volume*WIDTH*1.4, HEIGHT);

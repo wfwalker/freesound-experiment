@@ -28,7 +28,7 @@ class SearchForm extends React.Component {
           <span className='playerButton' data-freesound-search={this.props.title} onClick={this.handleSubmit}>
             <i className='material-icons'>search</i>
           </span>
-          <input type="text" value={this.state.value} onChange={this.handleChange} />
+          <input type="text" size='10' value={this.state.value} onChange={this.handleChange} />
         </form>
       </div>
     );
