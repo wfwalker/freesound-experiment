@@ -54,4 +54,5 @@
 .waveform {
 	padding-left: 3px;
 	padding-right: 3px;
+	filter: grayscale(100%) invert(75%) contrast(175%);
 }
