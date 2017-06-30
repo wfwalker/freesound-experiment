@@ -17,8 +17,8 @@ class FreesoundSearch extends React.Component {
   }
 
   handleRemoveSearch = (event) => {
-    let aSearchTerm = event.target.parentElement.getAttribute('data-freesound-search');
-    console.log('FreesoundSearch.handleRemoveSearch', aSearchTerm);
+    let aSearchTerm = event.target.parentElement.getAttribute('data-freesound-search')
+    console.log('FreesoundSearch.handleRemoveSearch', aSearchTerm)
 
     this.setState(function(prevState) {
       return {
@@ -57,4 +57,4 @@ class FreesoundSearch extends React.Component {
   }
 }
 
-export default FreesoundSearch;
+export default FreesoundSearch
