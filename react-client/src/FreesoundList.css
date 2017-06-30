@@ -19,14 +19,14 @@
 	align-items: center;
 	justify-content: flex-start;
 	overflow: hidden;
-	background-color: #efefef;
+	background-color: #c2dceb;
 	position: sticky;
 	top: 0px;
 	margin-bottom: 3px;
 }
 
 .searchContainer {
-	border: solid 1px lightgray;
+	border: solid 1px #eaeaea;
 	margin-bottom: 30px;
 }
 
@@ -36,7 +36,7 @@
 	align-items: center;
 	justify-content: flex-start;
 	padding: 10px;
-	border: solid 1px lightgray;
+	border: solid 1px #eaeaea;
 }
 
 .freesound-summary-ready {
@@ -44,7 +44,7 @@
 }
 
 .freesound-summary-playing {
-	background-color: #b3e6b3;
+	background-color: #eaeaea;
 }
 
 .freesound-summary-loading {
