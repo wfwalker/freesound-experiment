@@ -3,7 +3,7 @@
 /* colors inspired by Basic Blue Green at https://timbdesign.com/website-color-schemes */
 
 .searchForm {
-	padding: 5px;
+	padding: 10px;
 	display: flex;
 	align-items: top;
 	justify-content: flex-start;

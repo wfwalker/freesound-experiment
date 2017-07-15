@@ -1,5 +1,9 @@
 .App {
-  padding: 20px;
+  padding: 10px;
+}
+
+.logotype {
+	font-size: 18pt;
 }
 
 .material-icons.smaller {

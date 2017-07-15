@@ -12,6 +12,7 @@ class App extends Component {
   render () {
     return (
       <div className="App">
+    <div className='logotype'>Freesound Musique Concrete</div>
         <FreesoundSearch audioContext={gAudioContext} />
       </div>
     )
