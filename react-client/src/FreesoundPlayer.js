@@ -112,6 +112,10 @@ class FreesoundPlayer extends React.Component {
     this.drawLoop = null;
   }
 
+  durationFormat = (num) => (
+    Math.round(num).toString().padStart(2, '0')
+  )
+
   render() {
     return (
       <div className='playerGrid'>
@@ -120,8 +124,8 @@ class FreesoundPlayer extends React.Component {
         <i className='material-icons smaller'>import_export</i>
         <input type='range' defaultValue='1.0' min='0.1' max='2.0' step='0.01' onChange={this.handlePlaybackRate}></input>
         <span className='timeLabel'>
-          {this.state.currentTime && this.state.bufferSource && (Math.round(this.state.currentTime - this.state.startTime))}/
-          {Math.round(this.props.duration)}s
+          {this.state.currentTime && this.state.bufferSource && (this.durationFormat(this.state.currentTime - this.state.startTime))}/
+          {this.durationFormat(this.props.duration)}s
         </span>
         <canvas className='meter' id={'meter' + this.props.id} width="100" height="15"></canvas>
       </div>

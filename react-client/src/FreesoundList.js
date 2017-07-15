@@ -146,6 +146,11 @@ class FreesoundList extends React.Component {
     />
   )
 
+  // TODO: fix duplication!
+  durationFormat = (num) => (
+    Math.round(num).toString().padStart(2, '0')
+  )
+
   createFreesoundNoPlayer = (item) => {
     let classNames = ['freesound-summary'];
   
@@ -166,7 +171,7 @@ class FreesoundList extends React.Component {
           <i className='material-icons smaller'>{item.play ? 'stop' : 'play_arrow'}</i>
         </span>
 
-        <div className='timeLabel'>{Math.round(item.duration)}s</div>
+        <div className='timeLabel'>{this.durationFormat(item.duration)}s</div>
 
         <img alt='waveform' height='20px' width='33px' className='waveform' src={item.images.waveform_m} />
 
