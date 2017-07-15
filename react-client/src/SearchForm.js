@@ -23,10 +23,10 @@ class SearchForm extends React.Component {
 
   render() {
     return (
-      <div className='searchForm'>
-        <form onSubmit={this.handleSubmit}>
+      <div>
+        <form className='searchForm' onSubmit={this.handleSubmit}>
           <span className='playerButton' data-freesound-search={this.props.title} onClick={this.handleSubmit}>
-            <i className='material-icons'>search</i>
+            <i className='material-icons smaller'>search</i>
           </span>
           <input type="text" size='10' value={this.state.value} onChange={this.handleChange} />
         </form>
