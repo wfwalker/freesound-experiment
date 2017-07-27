@@ -2,6 +2,23 @@ import React from 'react';
 import Freesound from './Freesound';
 import './FreesoundList.css';
 
+const ListTitle = (props) => {
+  return (
+      <div className='listTitle'>
+        <span onClick={props.handleToggle} style={{float: 'right'}}>
+          <i className='material-icons smaller'>{props.expanded ? 'expand_less': 'expand_more'}</i>
+        </span>
+        <span className='playerButton' data-freesound-search={props.title} onClick={props.onRemoveSearch}>
+          <i className='material-icons smaller'>delete</i>
+        </span>
+
+        {props.title}
+        &nbsp;<input type='number' className='numberInput' min='0' max={props.listItems.length} value={props.playCount} onChange={props.handlePlayCountChange} />
+        &nbsp;{props.listItems.filter(li => li.play).length}
+      </div>
+    )
+}
+
 class FreesoundList extends React.Component {
   constructor(props) {
     super(props);
@@ -182,21 +199,6 @@ class FreesoundList extends React.Component {
     )
   }
 
-  createListTitle = () => (
-    <div className='listTitle'>
-      <span onClick={this.handleToggle} style={{float: 'right'}}>
-        <i className='material-icons smaller'>{this.state.expanded ? 'expand_less': 'expand_more'}</i>
-      </span>
-      <span className='playerButton' data-freesound-search={this.props.title} onClick={this.props.onRemoveSearch}>
-        <i className='material-icons smaller'>delete</i>
-      </span>
-
-      {this.props.title}
-      &nbsp;<input type='number' className='numberInput' min='0' max={this.state.listItems.length} value={this.state.playCount} onChange={this.handlePlayCountChange} />
-      &nbsp;{this.state.listItems.filter(li => li.play).length}
-    </div>
-  )
-
   createFreesoundNoPlayers = (items) => {
     return (
       <div className='list'>
@@ -208,7 +210,7 @@ class FreesoundList extends React.Component {
   render() {
     return (
       <div className='searchContainer'>
-        {this.createListTitle()}
+        <ListTitle handleToggle={this.handleToggle} playCount={this.state.playCount} handlePlayCountChange={this.handlePlayCountChange} listItems={this.state.listItems} expanded={this.props.expanded} title={this.props.title} onRemoveSearch={this.props.onRemoveSearch} />
         <div className='list playing'>
           {this.state.listItems.filter(li => li.play).map(this.createFreesound)}
         </div>
