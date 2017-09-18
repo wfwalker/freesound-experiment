@@ -21,18 +21,19 @@ class Freesound extends React.Component {
   }
 
   loadAndDecodeBuffer(data) {
+    console.log('Freesound.loadAndDecodeBuffer start loading', data.name);
     fetch(data.previews['preview-hq-mp3'])
     .then(result => result.blob())
     .then(function(blob) {
-      console.log('Freesound.loadAndDecodeBuffer blob', blob);
+      console.log('Freesound.loadAndDecodeBuffer done loading', data.name, 'got blob', blob);
       let reader = new FileReader();
 
       reader.onload = function(event) {
-        console.log('Freesound.loadAndDecodeBuffer file read blob', event.target.result);
+        console.log('Freesound.loadAndDecodeBuffer', data.name, 'file read blob', event.target.result);
         this.props.audioContext.decodeAudioData(event.target.result, function(inBuffer) {
           this.props.handleBuffer(data, inBuffer);
         }.bind(this), function(inError) {
-          console.log('Freesound.loadAndDecodeBuffer error', data.id, inError);
+          console.log('Freesound.loadAndDecodeBuffer', data.name, 'error', data.id, inError);
         });
       }.bind(this);
 

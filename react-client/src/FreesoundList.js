@@ -44,6 +44,7 @@ class FreesoundList extends React.Component {
   }
 
   componentDidMount = () => {
+    console.log('FreesoundList.componentDidMount', this.props.term);
     let timerID = setInterval(this.handleClock, 1000);
 
     this.setState({
@@ -66,7 +67,7 @@ class FreesoundList extends React.Component {
     if (playing.length < this.state.playCount) {
       let randomIndex = Math.floor(Math.random() * this.state.listItems.length);
       let randomID = this.state.listItems[randomIndex].id;
-      console.log('start a new one', randomIndex, randomID);
+      console.log('FreesoundList.handleClock starting another sound', randomIndex, randomID);
 
       this.setState(function(prevState) {
         let temp = prevState.listItems.filter(item => item.id == randomID);
@@ -128,10 +129,11 @@ class FreesoundList extends React.Component {
 
   handlePlayCountChange = (event) => {
     this.setState({playCount: event.target.value});
-    console.log('count', this.state.playCount);
+    console.log('Freesound.handlePlayCountChange', this.props.term, 'count', this.state.playCount);
   }
 
   handleToggle = (event) => {
+    console.log('FreesoundList.handleToggle', this.props.term);
     this.setState({expanded: !this.state.expanded});
   }
 
