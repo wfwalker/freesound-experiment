@@ -129,7 +129,6 @@ class FreesoundList extends React.Component {
   handlePlayCountChange = (event) => {
     this.setState({playCount: event.target.value});
     console.log('count', this.state.playCount);
-    // TODO: set min-height of "playing" to 32 * count
   }
 
   handleToggle = (event) => {
@@ -210,7 +209,7 @@ class FreesoundList extends React.Component {
   render() {
     return (
       <div className='searchContainer'>
-        <ListTitle handleToggle={this.handleToggle} playCount={this.state.playCount} handlePlayCountChange={this.handlePlayCountChange} listItems={this.state.listItems} expanded={this.props.expanded} title={this.props.title} onRemoveSearch={this.props.onRemoveSearch} />
+        <ListTitle handleToggle={this.handleToggle} playCount={this.state.playCount} handlePlayCountChange={this.handlePlayCountChange} listItems={this.state.listItems} expanded={this.state.expanded} title={this.props.title} onRemoveSearch={this.props.onRemoveSearch} />
         <div className='list playing'>
           {this.state.listItems.filter(li => li.play).map(this.createFreesound)}
         </div>

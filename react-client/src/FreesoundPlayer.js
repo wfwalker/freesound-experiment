@@ -55,6 +55,8 @@ class FreesoundPlayer extends React.Component {
   componentDidMount = () => {
     console.log('FreesoundPlayer.componentDidMount', this.props);
 
+    // THIS IS THE ACTUAL WEB AUDIO PART
+
     let aBufferSource = this.props.audioContext.createBufferSource();
     aBufferSource.buffer = this.props.buffer;
 

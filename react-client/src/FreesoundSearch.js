@@ -5,24 +5,26 @@ import FreesoundList from './FreesoundList';
 class FreesoundSearch extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { searches: ['wind'] };
+    // TESTING: this.state = { termSearches: ['wind'], locationSearches: [[37.3541,-121.9552]] };
+    this.state = { termSearches: ['wind'] };
   }
 
-  searchFreesound = (inTerm) => {
+  searchFreesoundForTerm = (inTerm) => {
     this.setState(function(prevState) {
+      console.log('searchFreesoundForTerm', prevState.termSearches, inTerm)
       return {
-        searches: prevState.searches.concat([inTerm])
+        termSearches: prevState.termSearches.concat([inTerm])
       };
     });
   }
 
-  handleRemoveSearch = (event) => {
+  handleRemoveTermSearch = (event) => {
     let aSearchTerm = event.target.parentElement.getAttribute('data-freesound-search')
-    console.log('FreesoundSearch.handleRemoveSearch', aSearchTerm)
+    console.log('FreesoundSearch.handleRemoveTermSearch', aSearchTerm)
 
     this.setState(function(prevState) {
       return {
-        searches: prevState.searches.filter(item => (item != aSearchTerm))
+        searches: prevState.termSearches.filter(item => (item != aSearchTerm))
       }
     })
   }
@@ -34,7 +36,16 @@ class FreesoundSearch extends React.Component {
     '/apiv2/search/text?format=json&query=' + term + '&filter=duration:[1 TO 90]%20tag:field-recording&fields=id,name,description,previews,duration,images'
   )
 
-  createFreesoundList = (aTerm) => (
+  // filter={!geofilt sfield=geotag pt=<LATITUDE>,<LONGITUDE> d=<MAX_DISTANCE_IN_KM>}
+  // from docs for barcelona: {!geofilt sfield=geotag pt=41.3833,2.1833 d=10}
+  // santa clara 37.3541,-121.9552
+
+  createLocationQueryURL = (aLat, aLong) => (
+    'http://localhost:3001' +
+    '/apiv2/search/text?format=json&filter=%7B!geofilt sfield=geotag pt=' + aLat + ',' + aLong + ' d=100%7D%20tag:field-recording&fields=id,name,description,previews,duration,images'
+  )
+
+  createFreesoundListForTerm = (aTerm) => (
     <FreesoundList
       audioContext={this.props.audioContext}
       onRemoveSearch={this.handleRemoveSearch}
@@ -43,15 +54,21 @@ class FreesoundSearch extends React.Component {
       queryURL={this.createQueryURL(aTerm)} />
   )
 
-  createFreesoundLists = () => (
-    this.state.searches.map(this.createFreesoundList)
+  createFreesoundListForLatLong = (aLat, aLong) => (
+    <FreesoundList
+      audioContext={this.props.audioContext}
+      onRemoveSearch={this.handleRemoveSearch}
+      key={aLat + ',' + aLong}
+      title={aLat + ',' + aLong}
+      queryURL={this.createLocationQueryURL(aLat, aLong)} />
   )
 
   render() {
     return (
       <div>
-        <SearchForm onSubmit={this.searchFreesound} />
-        {this.createFreesoundLists()}
+        <SearchForm onSubmit={this.searchFreesoundForTerm} />
+        {this.state.termSearches.map(this.createFreesoundListForTerm)}
+        {this.state.locationSearches.map(this.createFreesoundListForLatLong)}
       </div>
     )
   }
