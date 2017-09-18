@@ -24,9 +24,13 @@ class FreesoundSearch extends React.Component {
 
     this.setState(function(prevState) {
       return {
-        searches: prevState.termSearches.filter(item => (item != aSearchTerm))
+        termSearches: prevState.termSearches.filter(item => (item != aSearchTerm))
       }
     })
+  }
+
+  handleRemoveLatLongSearch = (event) => {
+    console.log('FreesoundSearch.handleRemoveLatLongSearch NOT IMPLEMENTED')
   }
 
   // TODO: set it to localhost:3001 if you're running the react dev server
@@ -48,7 +52,7 @@ class FreesoundSearch extends React.Component {
   createFreesoundListForTerm = (aTerm) => (
     <FreesoundList
       audioContext={this.props.audioContext}
-      onRemoveSearch={this.handleRemoveSearch}
+      onRemoveSearch={this.handleRemoveTermSearch}
       key={aTerm}
       title={aTerm}
       queryURL={this.createQueryURL(aTerm)} />
@@ -57,7 +61,7 @@ class FreesoundSearch extends React.Component {
   createFreesoundListForLatLong = (aLat, aLong) => (
     <FreesoundList
       audioContext={this.props.audioContext}
-      onRemoveSearch={this.handleRemoveSearch}
+      onRemoveSearch={this.handleRemoveLatLongSearch}
       key={aLat + ',' + aLong}
       title={aLat + ',' + aLong}
       queryURL={this.createLocationQueryURL(aLat, aLong)} />
