@@ -6,7 +6,7 @@ class FreesoundSearch extends React.Component {
   constructor(props) {
     super(props);
     // TESTING: this.state = { termSearches: ['wind'], locationSearches: [[37.3541,-121.9552]] };
-    this.state = { termSearches: ['wind'] };
+    this.state = { termSearches: ['wind'], locationSearches: [] };
   }
 
   searchFreesoundForTerm = (inTerm) => {
