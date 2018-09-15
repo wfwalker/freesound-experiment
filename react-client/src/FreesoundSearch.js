@@ -33,10 +33,9 @@ class FreesoundSearch extends React.Component {
     console.log('FreesoundSearch.handleRemoveLatLongSearch NOT IMPLEMENTED')
   }
 
-  // TODO: set it to localhost:3001 if you're running the react dev server
+  // TODO: prepend localhost:3001 if you're running the react dev server
   // for more info, see https://www.freesound.org/docs/api/resources_apiv2.html
   createQueryURL = (term) => (
-    'http://localhost:3001' +
     '/apiv2/search/text?format=json&query=' + term + '&filter=duration:[1 TO 90]%20tag:field-recording&fields=id,name,description,previews,duration,images'
   )
 
@@ -45,7 +44,6 @@ class FreesoundSearch extends React.Component {
   // santa clara 37.3541,-121.9552
 
   createLocationQueryURL = (aLat, aLong) => (
-//    'http://localhost:3001' +
     '/apiv2/search/text?format=json&filter=%7B!geofilt sfield=geotag pt=' + aLat + ',' + aLong + ' d=100%7D%20tag:field-recording&fields=id,name,description,previews,duration,images'
   )
 
