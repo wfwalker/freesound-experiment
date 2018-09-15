@@ -19,6 +19,37 @@ const ListTitle = (props) => {
     )
 }
 
+// const FreesoundSummary = (props) => {
+//   let classNames = ['freesound-summary'];
+
+//   if (item.play) {
+//     classNames.push('freesound-summary-playing');
+//   } else if (item.buffer) {
+//     classNames.push('freesound-summary-ready')
+//   } else {
+//     classNames.push('freesound-summary-loading');
+//   }
+
+//   return (
+//     <div key={item.id}  className={classNames.join(' ')}>
+//       <span className='playerButton' data-freesound-id={item.id} onClick={this.handleRemove}>
+//         <i className='material-icons smaller'>delete</i>
+//       </span>
+//       <span className='playerButton' data-freesound-id={item.id} onClick={this.handlePlayToggle}>
+//         <i className='material-icons smaller'>{item.play ? 'stop' : 'play_arrow'}</i>
+//       </span>
+
+//       <div className='timeLabel'>{this.durationFormat(item.duration)}s</div>
+
+//       <img alt='waveform' height='20px' width='33px' className='waveform' src={item.images.waveform_m} />
+
+//       <a target='_blank' href={item.previews['preview-hq-mp3']}>
+//         <div className='soundnameLabel'>{item.name}</div>
+//       </a>
+//     </div>
+//   )  
+// }
+
 class FreesoundList extends React.Component {
   constructor(props) {
     super(props);
@@ -43,6 +74,27 @@ class FreesoundList extends React.Component {
     return response;
   }
 
+  loadAndDecodeBuffer(data) {
+    console.log('FreesoundList.loadAndDecodeBuffer start loading', data.name);
+    fetch(data.previews['preview-hq-mp3'])
+    .then(result => result.blob())
+    .then(function(blob) {
+      console.log('FreesoundList.loadAndDecodeBuffer done loading', data.name, 'got blob', blob);
+      let reader = new FileReader();
+
+      reader.onload = function(event) {
+        console.log('FreesoundList.loadAndDecodeBuffer', data.name, 'file read blob', event.target.result);
+        this.props.audioContext.decodeAudioData(event.target.result, function(inBuffer) {
+          this.handleBuffer(data, inBuffer);
+        }.bind(this), function(inError) {
+          console.log('FreesoundList.loadAndDecodeBuffer', data.name, 'error', data.id, inError);
+        });
+      }.bind(this);
+
+      reader.readAsArrayBuffer(blob);
+    }.bind(this));
+  }
+
   componentDidMount = () => {
     console.log('FreesoundList.componentDidMount', this.props.term);
     let timerID = setInterval(this.handleClock, 1000);
@@ -54,7 +106,10 @@ class FreesoundList extends React.Component {
     fetch(this.props.queryURL)
     .then(this.handleFetchErrors)
     .then(result=>result.json())
-    .then(data=>this.setState({listItems: data.results}))
+    .then(data=> {
+      data.results.forEach(dataItem => this.loadAndDecodeBuffer(dataItem))
+      this.setState({listItems: data.results})
+    })
   }
 
   handleClock = () => {
