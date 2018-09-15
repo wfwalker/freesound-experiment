@@ -45,7 +45,7 @@ class FreesoundSearch extends React.Component {
   // santa clara 37.3541,-121.9552
 
   createLocationQueryURL = (aLat, aLong) => (
-    'http://localhost:3001' +
+//    'http://localhost:3001' +
     '/apiv2/search/text?format=json&filter=%7B!geofilt sfield=geotag pt=' + aLat + ',' + aLong + ' d=100%7D%20tag:field-recording&fields=id,name,description,previews,duration,images'
   )
 
