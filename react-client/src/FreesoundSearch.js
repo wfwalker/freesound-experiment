@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import SearchForm from './SearchForm';
 import FreesoundList from './FreesoundList';
 
+import { API_ROOT } from './api-config';
+
 class FreesoundSearch extends React.Component {
   constructor(props) {
     super(props);
@@ -36,7 +38,7 @@ class FreesoundSearch extends React.Component {
   // TODO: prepend localhost:3001 if you're running the react dev server
   // for more info, see https://www.freesound.org/docs/api/resources_apiv2.html
   createQueryURL = (term) => (
-    '/apiv2/search/text?format=json&query=' + term + '&filter=duration:[1 TO 90]%20tag:field-recording&fields=id,name,description,previews,duration,images'
+    API_ROOT + '/apiv2/search/text?format=json&query=' + term + '&filter=duration:[1 TO 90]%20tag:field-recording&fields=id,name,description,previews,duration,images'
   )
 
   // filter={!geofilt sfield=geotag pt=<LATITUDE>,<LONGITUDE> d=<MAX_DISTANCE_IN_KM>}
@@ -44,7 +46,7 @@ class FreesoundSearch extends React.Component {
   // santa clara 37.3541,-121.9552
 
   createLocationQueryURL = (aLat, aLong) => (
-    '/apiv2/search/text?format=json&filter=%7B!geofilt sfield=geotag pt=' + aLat + ',' + aLong + ' d=100%7D%20tag:field-recording&fields=id,name,description,previews,duration,images'
+    API_ROOT + '/apiv2/search/text?format=json&filter=%7B!geofilt sfield=geotag pt=' + aLat + ',' + aLong + ' d=100%7D%20tag:field-recording&fields=id,name,description,previews,duration,images'
   )
 
   createFreesoundListForTerm = (aTerm) => (

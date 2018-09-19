@@ -8,7 +8,9 @@
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	vertical-align: middle
+	vertical-align: middle;
+	text-align: left;
+	width: 250px;
 }
 
 .description {
