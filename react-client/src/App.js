@@ -12,7 +12,7 @@ class App extends Component {
   render () {
     return (
       <div className="App">
-    <div className='logotype'><img src='/tapereel.png' width='24px' height='24px' />Freesound Musique Concrete</div>
+	    <div className='logotype'><img src='/tapereel.png' width='24px' height='24px' />Freesound Musique Concrete</div>
         <FreesoundSearch audioContext={gAudioContext} />
       </div>
     )
