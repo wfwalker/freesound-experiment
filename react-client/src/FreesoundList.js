@@ -5,50 +5,22 @@ import './FreesoundList.css';
 const ListTitle = (props) => {
   return (
       <div className='listTitle'>
-        <span onClick={props.handleToggle} style={{float: 'right'}}>
+        <div onClick={props.handleToggle} className='playerButton' style={{float: 'left'}}>
           <i className='material-icons smaller'>{props.expanded ? 'expand_less': 'expand_more'}</i>
-        </span>
-        <span className='playerButton' data-freesound-search={props.title} onClick={props.onRemoveSearch}>
-          <i className='material-icons smaller'>delete</i>
-        </span>
+        </div>
 
         {props.title}
+        &nbsp;{props.listItems.filter(li => li.play).length}&nbsp;of
         &nbsp;<input type='number' className='numberInput' min='0' max={props.listItems.length} value={props.playCount} onChange={props.handlePlayCountChange} />
-        &nbsp;{props.listItems.filter(li => li.play).length}
+
+        <div style={{flexGrow: 1}}></div>
+
+        <div className='playerButton' data-freesound-search={props.title} onClick={props.onRemoveSearch} style={{float: 'right'}}>
+          <i className='material-icons smaller'>delete</i>
+        </div>
       </div>
     )
 }
-
-// const FreesoundSummary = (props) => {
-//   let classNames = ['freesound-summary'];
-
-//   if (item.play) {
-//     classNames.push('freesound-summary-playing');
-//   } else if (item.buffer) {
-//     classNames.push('freesound-summary-ready')
-//   } else {
-//     classNames.push('freesound-summary-loading');
-//   }
-
-//   return (
-//     <div key={item.id}  className={classNames.join(' ')}>
-//       <span className='playerButton' data-freesound-id={item.id} onClick={this.handleRemove}>
-//         <i className='material-icons smaller'>delete</i>
-//       </span>
-//       <span className='playerButton' data-freesound-id={item.id} onClick={this.handlePlayToggle}>
-//         <i className='material-icons smaller'>{item.play ? 'stop' : 'play_arrow'}</i>
-//       </span>
-
-//       <div className='timeLabel'>{this.durationFormat(item.duration)}s</div>
-
-//       <img alt='waveform' height='20px' width='33px' className='waveform' src={item.images.waveform_m} />
-
-//       <a target='_blank' href={item.previews['preview-hq-mp3']}>
-//         <div className='soundnameLabel'>{item.name}</div>
-//       </a>
-//     </div>
-//   )  
-// }
 
 class FreesoundList extends React.Component {
   constructor(props) {
@@ -237,12 +209,9 @@ class FreesoundList extends React.Component {
 
     return (
       <div key={item.id}  className={classNames.join(' ')}>
-        <span className='playerButton' data-freesound-id={item.id} onClick={this.handleRemove}>
-          <i className='material-icons smaller'>delete</i>
-        </span>
-        <span className='playerButton' data-freesound-id={item.id} onClick={this.handlePlayToggle}>
+        <div className='playerButton' data-freesound-id={item.id} onClick={this.handlePlayToggle}>
           <i className='material-icons smaller'>{item.play ? 'stop' : 'play_arrow'}</i>
-        </span>
+        </div>
 
         <div className='timeLabel'>{this.durationFormat(item.duration)}s</div>
 
@@ -251,6 +220,12 @@ class FreesoundList extends React.Component {
         <a target='_blank' href={item.previews['preview-hq-mp3']}>
           <div className='soundnameLabel'>{item.name}</div>
         </a>
+
+        <div style={{flexGrow: 1}} />
+
+        <div className='playerButton' data-freesound-id={item.id} onClick={this.handleRemove}>
+          <i className='material-icons smaller'>delete</i>
+        </div>
       </div>
     )
   }

@@ -10,11 +10,12 @@
 }
 
 .numberInput {
-	width: 3em;
+	width: 5em;
+	margin-right: 5px;
 }
 
 .listTitle {
-	padding: 5px;
+	padding: 10px;
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
@@ -53,10 +54,4 @@
 
 .playerButton {
 	padding: 0px;
-}
-
-.waveform {
-	padding-left: 3px;
-	padding-right: 3px;
-	filter: grayscale(100%) invert(75%) contrast(175%);
 }

@@ -129,7 +129,10 @@ class FreesoundPlayer extends React.Component {
           {this.state.currentTime && this.state.bufferSource && (this.durationFormat(this.state.currentTime - this.state.startTime))}/
           {this.durationFormat(this.props.duration)}s
         </span>
-        <canvas className='meter' id={'meter' + this.props.id} width="100" height="15"></canvas>
+        <span>
+          <canvas className='meter' id={'meter' + this.props.id} width="100" height="15"></canvas>
+          <img alt='waveform' height='20px' width='33px' className='waveform' src={this.props.waveform} />
+        </span>
       </div>
     )
   }
