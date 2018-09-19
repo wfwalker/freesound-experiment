@@ -13,6 +13,8 @@ const ListTitle = (props) => {
         &nbsp;{props.listItems.filter(li => li.play).length}&nbsp;of
         &nbsp;<input type='number' className='numberInput' min='0' max={props.listItems.length} value={props.playCount} onChange={props.handlePlayCountChange} />
 
+        <div>{props.status}</div>
+
         <div style={{flexGrow: 1}}></div>
 
         <div className='playerButton' data-freesound-search={props.title} onClick={props.onRemoveSearch} style={{float: 'right'}}>
@@ -27,9 +29,10 @@ class FreesoundList extends React.Component {
     super(props);
     this.state = {
       listItems: [],
-      currenTime: 0,
+      currentTime: 0,
       playCount: 2,
-      expanded: false
+      expanded: false,
+      status: 'initialized'
     };
   }
 
@@ -48,6 +51,9 @@ class FreesoundList extends React.Component {
 
   loadAndDecodeBuffer(data) {
     console.log('FreesoundList.loadAndDecodeBuffer start loading', data.name);
+    this.setState({
+      status: 'loading ' + data.name
+    })
     fetch(data.previews['preview-hq-mp3'])
     .then(result => result.blob())
     .then(function(blob) {
@@ -69,6 +75,9 @@ class FreesoundList extends React.Component {
 
   componentDidMount = () => {
     console.log('FreesoundList.componentDidMount', this.props.term);
+    this.setState({
+      status: 'mounted'
+    })
     let timerID = setInterval(this.handleClock, 1000);
 
     this.setState({
@@ -80,7 +89,10 @@ class FreesoundList extends React.Component {
     .then(result=>result.json())
     .then(data=> {
       data.results.forEach(dataItem => this.loadAndDecodeBuffer(dataItem))
-      this.setState({listItems: data.results})
+      this.setState({
+        listItems: data.results,
+        status: 'list of ' + data.results.length
+      })
     })
   }
 
@@ -95,6 +107,9 @@ class FreesoundList extends React.Component {
       let randomIndex = Math.floor(Math.random() * this.state.listItems.length);
       let randomID = this.state.listItems[randomIndex].id;
       console.log('FreesoundList.handleClock starting another sound', randomIndex, randomID);
+      this.setState({
+        status: 'starting new'
+      })
 
       this.setState(function(prevState) {
         let temp = prevState.listItems.filter(item => item.id == randomID);
@@ -172,7 +187,8 @@ class FreesoundList extends React.Component {
       temp[0].buffer = inBuffer;
 
       return {
-        listItems: others.concat(temp).sort(this.sortByID)
+        listItems: others.concat(temp).sort(this.sortByID),
+        status: ''
       }
     })
   }
@@ -241,7 +257,7 @@ class FreesoundList extends React.Component {
   render() {
     return (
       <div className='searchContainer'>
-        <ListTitle handleToggle={this.handleToggle} playCount={this.state.playCount} handlePlayCountChange={this.handlePlayCountChange} listItems={this.state.listItems} expanded={this.state.expanded} title={this.props.title} onRemoveSearch={this.props.onRemoveSearch} />
+        <ListTitle handleToggle={this.handleToggle} playCount={this.state.playCount} handlePlayCountChange={this.handlePlayCountChange} listItems={this.state.listItems} expanded={this.state.expanded} status={this.state.status} title={this.props.title} onRemoveSearch={this.props.onRemoveSearch} />
         <div className='list playing'>
           {this.state.listItems.filter(li => li.play).map(this.createFreesound)}
         </div>
