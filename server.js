@@ -19,6 +19,10 @@ server.use('/apiv2', function(req, res) {
 
   var r = request(options);
 
+  r.on('error', function(err) {
+    console.log('ERROR', err);
+  })
+
   req.pipe(r).pipe(res);
 });
 
