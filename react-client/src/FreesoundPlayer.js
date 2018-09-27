@@ -123,16 +123,20 @@ class FreesoundPlayer extends React.Component {
       <div className='playerGrid'>
         <i className='material-icons smaller'>volume_up</i>
         <input type='range' defaultValue='1.0' min='0.0' max='1.0' step='0.01' onChange={this.handleVolume}></input>
+
         <i className='material-icons smaller'>import_export</i>
         <input type='range' defaultValue='1.0' min='0.1' max='2.0' step='0.01' onChange={this.handlePlaybackRate}></input>
-        <span className='timeLabel'>
-          {this.state.currentTime && this.state.bufferSource && (this.durationFormat(this.state.currentTime - this.state.startTime))}/
-          {this.durationFormat(this.props.duration)}s
-        </span>
+
+        <span className='timeLabel'>{this.durationFormat(this.props.duration)}"</span>
+        <progress value={this.state.currentTime - this.state.startTime} max={this.props.duration}></progress>
+
+        <i className='material-icons smaller'>mic</i>
         <span>
           <canvas className='meter' id={'meter' + this.props.id} width="100" height="15"></canvas>
-          <img alt='waveform' height='20px' width='33px' className='waveform' src={this.props.waveform} />
         </span>
+
+        <i className='material-icons smaller'>speaker</i>
+        <img alt='waveform' height='20px' width='100px' className='waveform' src={this.props.waveform} />
       </div>
     )
   }
