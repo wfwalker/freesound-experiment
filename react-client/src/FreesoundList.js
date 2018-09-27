@@ -9,13 +9,15 @@ const ListTitle = (props) => {
           <i className='material-icons smaller'>{props.expanded ? 'expand_less': 'expand_more'}</i>
         </div>
 
-        {props.title}
-        &nbsp;{props.listItems.filter(li => li.play).length}&nbsp;of
-        &nbsp;<input type='number' className='numberInput' min='0' max={props.listItems.length} value={props.playCount} onChange={props.handlePlayCountChange} />
-
-        <div>{props.status}</div>
+        <div>
+          {props.title}{' '}
+          <input type='number' className='numberInput' min='0' max={props.listItems.length} value={props.playCount} onChange={props.handlePlayCountChange} />{' of '}
+          {props.listItems.length}{' '}
+        </div>
 
         <div style={{flexGrow: 1}}></div>
+
+        <div>{props.status}</div>
 
         <div className='playerButton' data-freesound-search={props.title} onClick={props.onRemoveSearch} style={{float: 'right'}}>
           <i className='material-icons smaller'>delete</i>
