@@ -40,6 +40,10 @@
 	border: solid 1px #eaeaea;
 }
 
+.freesound-summary a {
+	text-decoration: none;
+}
+
 .freesound-summary-ready {
 	color: black;
 }

@@ -1,9 +1,16 @@
 .App {
-  padding: 10px;
+	padding: 10px;
+	font-family: Futura;
+	font-stretch: Condensed;
+	font-weight: light;
+}
+
+.searchTermText {
+	font-family: Courier;
+	font-size: 12pt;
 }
 
 .logotype {
-	font-size: 20pt;
 	padding: 10px;
 	display: flex;
 	align-items: top;
@@ -13,6 +20,9 @@
 	top: 0px;
 	margin-bottom: 3px;
 	background-color: #d1db97;
+	font-family: Futura;
+	font-stretch: Condensed;
+	font-size: 20pt;
 }
 
 .material-icons.smaller {

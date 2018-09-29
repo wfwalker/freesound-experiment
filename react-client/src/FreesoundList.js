@@ -10,9 +10,13 @@ const ListTitle = (props) => {
         </div>
 
         <div>
-          {props.title}{' '}
-          <input type='number' className='numberInput' min='0' max={props.listItems.length} value={props.playCount} onChange={props.handlePlayCountChange} />{' of '}
-          {props.listItems.length}{' '}
+          <span className='searchTermText'>{props.title}{' '}</span>
+          { props.listItems.length > 0 &&
+            <span>
+              <input type='number' className='numberInput' min='0' max={props.listItems.length} value={props.playCount} onChange={props.handlePlayCountChange} />
+              {' of '}{props.listItems.length}{' '}
+            </span>
+          }
         </div>
 
         <div style={{flexGrow: 1}}></div>
@@ -77,14 +81,16 @@ class FreesoundList extends React.Component {
 
   componentDidMount = () => {
     console.log('FreesoundList.componentDidMount', this.props.term);
-    this.setState({
-      status: 'mounted'
-    })
+
     let timerID = setInterval(this.handleClock, 1000);
 
     this.setState({
       timerID: timerID
     });
+
+    this.setState({
+      status: 'searching'
+    })
 
     fetch(this.props.queryURL)
     .then(this.handleFetchErrors)
@@ -235,9 +241,9 @@ class FreesoundList extends React.Component {
 
         <img alt='waveform' height='20px' width='33px' className='waveform' src={item.images.waveform_m} />
 
-        <a target='_blank' href={item.previews['preview-hq-mp3']}>
-          <div className='soundnameLabel'>{item.name}</div>
-        </a>
+        <div className='soundnameLabel'>
+          <a target='_blank' href={item.previews['preview-hq-mp3']}>{item.name}</a>
+        </div>
 
         <div style={{flexGrow: 1}} />
 
