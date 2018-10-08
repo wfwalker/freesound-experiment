@@ -80,7 +80,7 @@ class FreesoundList extends React.Component {
   }
 
   componentDidMount = () => {
-    console.log('FreesoundList.componentDidMount', this.props.term);
+    console.log('FreesoundList.componentDidMount', this.props.title);
 
     let timerID = setInterval(this.handleClock, 1000);
 

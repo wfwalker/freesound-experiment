@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import SearchForm from './SearchForm';
+import LocationSearchForm from './LocationSearchForm';
 import FreesoundList from './FreesoundList';
 
 import { API_ROOT } from './api-config';
@@ -7,8 +8,8 @@ import { API_ROOT } from './api-config';
 class FreesoundSearch extends React.Component {
   constructor(props) {
     super(props);
-    // TESTING: this.state = { termSearches: ['wind'], locationSearches: [[37.3541,-121.9552]] };
-    this.state = { termSearches: ['wind'], locationSearches: [] };
+    //TESTING: this.state = { termSearches: ['wind'], locationSearches: [[37.3541,-121.9552]] };
+    this.state = { termSearches: [], locationSearches: [] };
   }
 
   searchFreesoundForTerm = (inTerm) => {
@@ -16,6 +17,15 @@ class FreesoundSearch extends React.Component {
       console.log('searchFreesoundForTerm', prevState.termSearches, inTerm)
       return {
         termSearches: prevState.termSearches.concat([inTerm])
+      };
+    });
+  }
+
+  searchFreesoundForLocation = (latLongPair) => {
+    this.setState(function(prevState) {
+      console.log('searchFreesoundForLocation', prevState.locationSearches, latLongPair)
+      return {
+        locationSearches: prevState.locationSearches.concat([latLongPair])
       };
     });
   }
@@ -44,7 +54,7 @@ class FreesoundSearch extends React.Component {
   // santa clara 37.3541,-121.9552
 
   createLocationQueryURL = (aLat, aLong) => (
-    API_ROOT + '/apiv2/search/text?format=json&filter=%7B!geofilt sfield=geotag pt=' + aLat + ',' + aLong + ' d=100%7D%20tag:field-recording&fields=id,name,description,previews,duration,images'
+    API_ROOT + '/apiv2/search/text?format=json&page_size=100&filter=duration:[1 TO 90]%20%7B!geofilt sfield=geotag pt=' + aLat + ',' + aLong + ' d=100%7D%20tag:field-recording&fields=id,name,description,previews,duration,images'
   )
 
   createFreesoundListForTerm = (aTerm) => (
@@ -56,19 +66,20 @@ class FreesoundSearch extends React.Component {
       queryURL={this.createQueryURL(aTerm)} />
   )
 
-  createFreesoundListForLatLong = (aLat, aLong) => (
+  createFreesoundListForLatLong = (aLatLongPair) => (
     <FreesoundList
       audioContext={this.props.audioContext}
       onRemoveSearch={this.handleRemoveLatLongSearch}
-      key={aLat + ',' + aLong}
-      title={aLat + ',' + aLong}
-      queryURL={this.createLocationQueryURL(aLat, aLong)} />
+      key={aLatLongPair[0] + ',' + aLatLongPair[1]}
+      title={aLatLongPair[0] + '°, ' + aLatLongPair[1] + '°'}
+      queryURL={this.createLocationQueryURL(aLatLongPair[0], aLatLongPair[1])} />
   )
 
   render() {
     return (
       <div>
         <SearchForm onSubmit={this.searchFreesoundForTerm} />
+        <LocationSearchForm onSubmit={this.searchFreesoundForLocation} />
         {this.state.termSearches.map(this.createFreesoundListForTerm)}
         {this.state.locationSearches.map(this.createFreesoundListForLatLong)}
       </div>
