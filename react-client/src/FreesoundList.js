@@ -112,8 +112,10 @@ class FreesoundList extends React.Component {
     let playing = this.state.listItems.filter(li => li.play);
 
     if (playing.length < this.state.playCount) {
-      let randomIndex = Math.floor(Math.random() * this.state.listItems.length);
-      let randomID = this.state.listItems[randomIndex].id;
+      let withBuffer = this.state.listItems.filter(li => li.buffer);
+      console.log('withBuffer', withBuffer.length);
+      let randomIndex = Math.floor(Math.random() * withBuffer.length);
+      let randomID = withBuffer[randomIndex].id;
       console.log('FreesoundList.handleClock starting another sound', randomIndex, randomID);
       this.setState({
         status: 'starting new'
