@@ -26,6 +26,11 @@
 	margin-bottom: 3px;
 }
 
+.listTitleText {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
 .searchContainer {
 	border: solid 1px #eaeaea;
 	margin-bottom: 10px;

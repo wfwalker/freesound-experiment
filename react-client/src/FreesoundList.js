@@ -9,12 +9,12 @@ const ListTitle = (props) => {
           <i className='material-icons smaller'>{props.expanded ? 'expand_less': 'expand_more'}</i>
         </div>
 
-        <div>
+        <div className='listTitleText'>
           <span className='searchTermText'>{props.title}{' '}</span>
           { props.listItems.length > 0 &&
             <span>
               <input type='number' className='numberInput' min='0' max={props.listItems.length} value={props.playCount} onChange={props.handlePlayCountChange} />
-              {' of '}{props.listItems.length}{' '}
+              {' of '}{props.listItems.filter(li => li.buffer).length}{'/'}{props.listItems.length}
             </span>
           }
         </div>
