@@ -26,6 +26,12 @@
 	margin-bottom: 3px;
 }
 
+.listTitle input {
+	background-color: #c2dceb;
+	border: solid 1px #777;
+	border-radius: 3px;
+}
+
 .listTitleText {
 	margin-left: 10px;
 	margin-right: 10px;
