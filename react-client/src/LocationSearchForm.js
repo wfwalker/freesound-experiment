@@ -44,11 +44,11 @@ class LocationSearchForm extends React.Component {
           </span>
           <input className='searchTermText' type="text" size='10' value={this.state.lat} placeholder='37.3541' onChange={this.handleLatChange} />
           <input className='searchTermText' type="text" size='10' value={this.state.long} placeholder='-121.9552' onChange={this.handleLongChange} />
-          <select onChange={this.handleSelectChange} >
-            <option data-lat="48.8566" data-long="2.3522" value="paris">Paris</option>
-            <option data-lat="51.5074" data-long="0.1278" value="london">London</option>
-            <option data-lat="48.1351" data-long="11.5820" value="munich">Munich</option>
-            <option data-lat="43.0962" data-long="-79.0377" value="niagrafalls">Niagra Falls</option>
+          <select className='searchTermText' onChange={this.handleSelectChange} >
+            <option className='searchTermText' data-lat="48.8566" data-long="2.3522" value="paris">Paris</option>
+            <option className='searchTermText' data-lat="51.5074" data-long="0.1278" value="london">London</option>
+            <option className='searchTermText' data-lat="48.1351" data-long="11.5820" value="munich">Munich</option>
+            <option className='searchTermText' data-lat="43.0962" data-long="-79.0377" value="niagrafalls">Niagra Falls</option>
           </select>
         </form>
       </div>
