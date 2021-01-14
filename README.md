@@ -8,4 +8,6 @@ npm install
 FREESOUND_API_KEY=yours node server.js
 ```
 
+you'll need to provide your own freesound.org API key
+
 point your browser to ```localhost:3001/client/test.html``` to see client-side fetching high quality MP3 previews from freesound
