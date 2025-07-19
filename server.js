@@ -9,10 +9,7 @@ server.use('/', express.static('react-client/build'));
 
 server.use('/apiv2', function(req, res) {
   var options = {
-    url: 'https://www.freesound.org/apiv2'+ req.url,
-    headers: {
-      "Authorization": "Token " + process.env.FREESOUND_API_KEY,
-    }
+    url: 'https://www.freesound.org/apiv2'+ req.url + '&token='+process.env.FREESOUND_API_KEY,
   };
 
   console.log('proxy', options.url);
